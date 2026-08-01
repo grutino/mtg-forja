@@ -1,0 +1,528 @@
+{
+  "version": 1,
+  "nota": "Patrones genéricos de interacción en Magic. Cada regla se comprueba contra el texto de oráculo real que devuelve Scryfall, nunca contra conocimiento memorizado. Añadir reglas es solo añadir objetos a esta lista.",
+  "reglas": [
+    {
+      "id": "tierra-indestructible-cantrip",
+      "nombre": "Rampa y robo con tierra indestructible",
+      "bloque": "Motor",
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "Pronto",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "destroy target land",
+          "oracle2": "search their library for a basic land",
+          "oracle3": "draw a card"
+        },
+        {
+          "rol": "b",
+          "tipo": "Land",
+          "oracle": "indestructible"
+        }
+      ],
+      "resumen": "{a} apuntado a tu propia {b} no la destruye, pero el objetivo sigue siendo legal: buscas la básica y robas igualmente. Te quedas con las dos tierras.",
+      "pasos": [
+        "Ten {b} en mesa: es indestructible, así que sobrevive.",
+        "Lanza {a} apuntando a esa tierra tuya.",
+        "El objetivo es legal aunque no se destruya, de modo que igualmente buscas una tierra básica e igualmente robas.",
+        "Balance: una tierra más en juego y una carta más, por el coste de {a}."
+      ]
+    },
+    {
+      "id": "destruccion-tierra-alternativa",
+      "nombre": "Destrucción de tierra que roba",
+      "bloque": "Motor",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Temprano",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "destroy target land",
+          "oracle2": "draw a card"
+        }
+      ],
+      "resumen": "Contra mazos con pocas tierras básicas, {a} es destrucción de tierra pura que además te roba una carta.",
+      "pasos": [
+        "Comprueba si el rival juega tierras básicas: muchos mazos no llevan ninguna.",
+        "Apunta a su tierra con habilidad, a una tierra-criatura o a la que le da un color único.",
+        "Si sí lleva básicas, sigue mereciendo la pena contra tierras raras o de utilidad."
+      ]
+    },
+    {
+      "id": "barajar-rompe-posicion",
+      "nombre": "Barajar descoloca la carta de victoria",
+      "bloque": "Remate",
+      "tipo": "conflicto",
+      "fuerza": 3,
+      "turno": "Clave",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "from the top of (your|its owner's) library|seventh from the top"
+        },
+        {
+          "rol": "b",
+          "oracle": "then shuffle|shuffle your library"
+        }
+      ],
+      "resumen": "{b} baraja tu biblioteca, lo que descoloca la posición en la que {a} se dejó a sí mismo.",
+      "pasos": [
+        "Comprueba si el barajado de {b} es opcional: muchas búsquedas dicen «puede».",
+        "Si lo es, renuncia a buscar una vez {a} esté colocado y conservarás el orden.",
+        "Si el efecto apunta a un permanente del rival, comprueba quién baraja: puede que sea él y tu biblioteca no se toque."
+      ]
+    },
+    {
+      "id": "fondo-biblioteca-acelera",
+      "nombre": "Robar sin barajar acelera el remate",
+      "bloque": "Remate",
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "seventh from the top|from the top of your library"
+        },
+        {
+          "rol": "b",
+          "oracle": "on the bottom of (your|their) library",
+          "oracle2": "draw"
+        }
+      ],
+      "resumen": "{b} manda cartas al fondo y roba de arriba: no baraja nada, así que acorta la distancia hasta {a} sin moverlo de sitio.",
+      "pasos": [
+        "Guarda {b} para después de haber colocado {a} en la biblioteca.",
+        "Cada carta que mandes abajo es un robo más, y cada robo te acerca un paso.",
+        "Al ser instantáneo en muchos casos, úsalo al final del turno rival."
+      ]
+    },
+    {
+      "id": "barrido-tierra-criatura",
+      "nombre": "Barrer sin perder tu amenaza",
+      "bloque": "Control",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "destroy all creatures|exile all creatures"
+        },
+        {
+          "rol": "b",
+          "tipo": "Land",
+          "oracle": "becomes a .{0,60}creature"
+        }
+      ],
+      "resumen": "{b} solo es criatura cuando la activas, así que sobrevive a tu propio {a} y ataca al turno siguiente.",
+      "pasos": [
+        "No actives {b} el turno en que planeas lanzar {a}.",
+        "Barre la mesa y empieza a atacar con la tierra en tu turno siguiente.",
+        "Contra mazos de control es tu vía de victoria más segura: su remoción de criaturas no la alcanza."
+      ]
+    },
+    {
+      "id": "barrido-planeswalker",
+      "nombre": "Los planeswalkers sobreviven al barrido",
+      "bloque": "Control",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "destroy all creatures|exile all creatures"
+        },
+        {
+          "rol": "b",
+          "tipo": "Planeswalker"
+        }
+      ],
+      "resumen": "{b} se queda en mesa después de {a}, y sin criaturas rivales nadie puede atacarlo.",
+      "pasos": [
+        "Baja {b} antes o después del barrido: en ambos casos queda protegido por la mesa vacía.",
+        "Con la mesa limpia puedes subir lealtad sin presión hasta la habilidad grande."
+      ]
+    },
+    {
+      "id": "legendario-reinicio",
+      "nombre": "Reiniciar contadores con la regla de legendarios",
+      "bloque": "Motor",
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "tipo": "Legendary",
+          "oracle": "counter on",
+          "copias_min": 2
+        }
+      ],
+      "resumen": "Al lanzar una segunda copia de {a}, la regla de legendarios te hace sacrificar la vieja y empiezas de cero con los contadores.",
+      "pasos": [
+        "Deja acumular contadores en la primera copia mientras el coste sea asumible.",
+        "Lanza la segunda copia y sacrifica la primera: los contadores vuelven a cero.",
+        "Si la carta tiene disparo al entrar, además lo repites."
+      ]
+    },
+    {
+      "id": "autoexilio-reinicio",
+      "nombre": "Exiliar lo tuyo para reiniciarlo o salvarlo",
+      "bloque": "Control",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Reacción",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "exile target (nonland )?permanent",
+          "oracle2": "may (play|cast) it|return"
+        },
+        {
+          "rol": "b",
+          "oracle": "counter on|when .{0,40}enters",
+          "no_tipo": "Land"
+        }
+      ],
+      "resumen": "{a} sirve también sobre tus propios permanentes: exiliar {b} lo devuelve limpio de contadores y repite su disparo al entrar.",
+      "pasos": [
+        "En respuesta a una remoción rival, exilia tu propio {b} para salvarlo.",
+        "En respuesta a tu propio barrido, sácalo de la mesa antes de que se lo lleve.",
+        "Comprueba si el coste extra al relanzar se aplica solo al oponente: en muchas cartas es así."
+      ]
+    },
+    {
+      "id": "vida-por-mano",
+      "nombre": "Ganar vida a escala de tu mano",
+      "bloque": "Motor",
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "cards in your hand"
+        },
+        {
+          "rol": "b",
+          "oracle": "draw .{0,30}card"
+        }
+      ],
+      "resumen": "{a} escala con el tamaño de tu mano, así que {b} multiplica su efecto.",
+      "pasos": [
+        "Lanza {a} cuando la mano esté llena, no antes.",
+        "Si es instantáneo, guárdalo para el final del turno rival."
+      ]
+    },
+    {
+      "id": "coste-de-vida-compensado",
+      "nombre": "Pagar el alquiler de los costes de vida",
+      "bloque": "Motor",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "you lose \\d+ life|pay \\d+ life"
+        },
+        {
+          "rol": "b",
+          "oracle": "you gain \\d+ life"
+        }
+      ],
+      "resumen": "{a} te cobra vida para funcionar y {b} la devuelve. La pareja convierte un coste real en un trámite.",
+      "pasos": [
+        "Cuenta la vida antes de activar {a}, no después.",
+        "Usa {b} como remoción o como respuesta, no solo como ganancia de vida."
+      ]
+    },
+    {
+      "id": "apagon-artefactos-asimetrico",
+      "nombre": "Apagón de artefactos que a ti no te afecta",
+      "bloque": "Control",
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "artifacts your opponents control can't be activated"
+        },
+        {
+          "rol": "b",
+          "tipo": "Artifact",
+          "oracle": "\\{T\\}:|: (draw|add)",
+          "no_tipo": "Land"
+        }
+      ],
+      "resumen": "{a} apaga las habilidades activadas de los artefactos del rival, pero no las tuyas: {b} sigue funcionando.",
+      "pasos": [
+        "Contra mazos con motores de artefacto, bajar {a} pronto vale más que cualquier remoción.",
+        "Ojo: solo afecta a habilidades activadas. Las disparadas siguen funcionando.",
+        "Tus propios artefactos quedan intactos, así que la asimetría es total."
+      ]
+    },
+    {
+      "id": "animar-artefacto-grande",
+      "nombre": "Animar un artefacto como amenaza",
+      "bloque": "Amenazas",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Tarde",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "becomes an artifact creature with power and toughness each equal to its mana value"
+        },
+        {
+          "rol": "b",
+          "tipo": "Artifact",
+          "no_tipo": "Creature|Land",
+          "mv_min": 3
+        }
+      ],
+      "resumen": "{a} convierte {b} en una criatura del tamaño de su valor de maná, que además bloquea durante el turno rival.",
+      "pasos": [
+        "Anima {b} solo si lo controlas desde el comienzo de tu turno: si no, no puede atacar.",
+        "Un artefacto animado es una criatura, así que muere a tus propios barridos.",
+        "Es el plan alternativo cuando el remate principal no aparece."
+      ]
+    },
+    {
+      "id": "animar-artefacto-cero",
+      "nombre": "Animar algo de valor cero lo mata",
+      "bloque": "Amenazas",
+      "tipo": "conflicto",
+      "fuerza": 2,
+      "turno": "Ojo",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "becomes an artifact creature with power and toughness each equal to its mana value"
+        },
+        {
+          "rol": "b",
+          "tipo": "Artifact",
+          "no_tipo": "Creature",
+          "mv_max": 0
+        }
+      ],
+      "resumen": "{b} tiene valor de maná cero, así que {a} lo convertiría en un 0/0 que muere de inmediato.",
+      "pasos": [
+        "No apuntes nunca {a} a {b} ni a una ficha.",
+        "Si tiene contadores +1/+1 encima sobrevive, pero es un uso residual."
+      ]
+    },
+    {
+      "id": "deseo-banquillo",
+      "nombre": "Tutor al banquillo: monta una caja de herramientas",
+      "bloque": "Amenazas",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "from outside the game"
+        }
+      ],
+      "resumen": "{a} busca cartas fuera de la partida, es decir, de tu banquillo. Cada copia multiplica el valor de una sola carta reservada.",
+      "pasos": [
+        "Reserva entre cuatro y seis huecos del banquillo como caja de herramientas.",
+        "Prioriza respuestas de un solo uso muy específicas: odio de cementerio, cierres de habilidades, una amenaza que gane sola.",
+        "Una carta en el banquillo cuenta como tantas copias como tutores lleves."
+      ]
+    },
+    {
+      "id": "pocas-basicas-para-buscar",
+      "nombre": "Pocas básicas para tanta búsqueda",
+      "bloque": "Maná",
+      "tipo": "aviso",
+      "fuerza": 2,
+      "turno": "Ajuste",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "search (their|your) library for a basic land"
+        }
+      ],
+      "conteo": [
+        {
+          "que": "basicas",
+          "max": 7
+        }
+      ],
+      "resumen": "{a} necesita tierras básicas en la biblioteca y el mazo lleva pocas: las últimas copias resolverán sin encontrar nada.",
+      "pasos": [
+        "Sube el número de básicas hasta siete u ocho.",
+        "Cambia tierras que entren giradas y no aporten nada más por básicas.",
+        "De paso arreglas los costes de doble símbolo de color."
+      ]
+    },
+    {
+      "id": "doble-simbolo-tierra-incolora",
+      "nombre": "Doble símbolo de color con tierras incoloras",
+      "bloque": "Maná",
+      "tipo": "aviso",
+      "fuerza": 2,
+      "turno": "Ajuste",
+      "piezas": [
+        {
+          "rol": "a",
+          "coste": "\\{W\\}\\{W\\}|\\{U\\}\\{U\\}|\\{B\\}\\{B\\}|\\{R\\}\\{R\\}|\\{G\\}\\{G\\}"
+        },
+        {
+          "rol": "b",
+          "tipo": "Land",
+          "oracle": "add \\{C\\}",
+          "copias_min": 3
+        }
+      ],
+      "resumen": "{a} pide dos símbolos del mismo color y {b} solo produce incoloro: encadenar varias es la forma más habitual de atascarse.",
+      "pasos": [
+        "No juegues dos {b} seguidas en los primeros turnos.",
+        "Cuenta cuántas fuentes reales de ese color tienes antes de guardar una mano."
+      ]
+    },
+    {
+      "id": "barrido-modal-simetrico",
+      "nombre": "El barrido modal también se lleva lo tuyo",
+      "bloque": "Control",
+      "tipo": "conflicto",
+      "fuerza": 3,
+      "turno": "Ojo",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "choose (one or more|any number)",
+          "oracle2": "exile all|destroy all"
+        },
+        {
+          "rol": "b",
+          "tipo": "Artifact|Enchantment",
+          "no_tipo": "Land"
+        }
+      ],
+      "resumen": "{a} es modal pero afecta a todos los jugadores: si marcas el modo equivocado, te llevas por delante tu propio {b}.",
+      "pasos": [
+        "Lee los modos cada vez, incluso cuando vas con prisa.",
+        "Si tienes forma de salvar el permanente en respuesta, hazlo antes de lanzarlo."
+      ]
+    },
+    {
+      "id": "mana-abierto-fin-turno",
+      "nombre": "Dejar el maná abierto para el disparo de tu paso final",
+      "bloque": "Control",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "at the beginning of your end step"
+        },
+        {
+          "rol": "b",
+          "tipo": "Instant",
+          "oracle": "destroy target|exile target|deals \\d+ damage"
+        }
+      ],
+      "resumen": "{a} se dispara al final de tu turno, así que no hay prisa por gastar el maná: guárdalo para {b}.",
+      "pasos": [
+        "Pasa el turno con el maná abierto siempre que puedas.",
+        "Si el rival no hace nada, ya recuperarás valor con el disparo de {a}."
+      ]
+    },
+    {
+      "id": "barrido-deja-ficha",
+      "nombre": "Barrido que deja una amenaza detrás",
+      "bloque": "Control",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "exile all creatures|destroy all creatures",
+          "oracle2": "create|incubate"
+        }
+      ],
+      "resumen": "{a} limpia la mesa y te deja algo encima, así que no es solo un botón defensivo: es también tu reloj.",
+      "pasos": [
+        "Cuanto más tarde lo lances, mayor suele ser lo que deja detrás.",
+        "Contra mesas pequeñas puede compensar esperar un turno más."
+      ]
+    },
+    {
+      "id": "victoria-unica-copia",
+      "nombre": "La carta de victoria va sola",
+      "bloque": "Remate",
+      "tipo": "aviso",
+      "fuerza": 3,
+      "turno": "Ojo",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "you win the game",
+          "copias_max": 1
+        }
+      ],
+      "resumen": "Llevas una única copia de {a}: un contrahechizo o un exilio de cementerio en el momento justo borra el plan entero.",
+      "pasos": [
+        "Ten siempre una vía de victoria alternativa en mesa o en la mano.",
+        "Contra control, fuerza el momento en que el rival no tenga maná abierto.",
+        "Meter una segunda copia es la forma más barata de blindar el plan."
+      ]
+    },
+    {
+      "id": "proteccion-total",
+      "nombre": "Un turno de inmunidad",
+      "bloque": "Control",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "Reacción",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "protection from everything|your life total can't change|phases out"
+        },
+        {
+          "rol": "b",
+          "oracle": "you lose \\d+ life|pay \\d+ life"
+        }
+      ],
+      "resumen": "{a} te vuelve intocable durante un turno, lo que cubre tanto un ataque letal como el coste de vida de {b}.",
+      "pasos": [
+        "Guárdalo para el turno en que la vida es el recurso que se te acaba.",
+        "Con la protección activa puedes barrer o rematar sin miedo a la respuesta."
+      ]
+    },
+    {
+      "id": "tierra-sacrificable-robo",
+      "nombre": "Tierras que se convierten en cartas",
+      "bloque": "Maná",
+      "tipo": "sinergia",
+      "fuerza": 1,
+      "turno": "Tarde",
+      "piezas": [
+        {
+          "rol": "a",
+          "tipo": "Land",
+          "oracle": "sacrifice",
+          "oracle2": "draw a card"
+        }
+      ],
+      "resumen": "{a} deja de ser una tierra muerta en la parte alta de la partida: se convierte en carta cuando ya no necesitas más maná.",
+      "pasos": [
+        "No la sacrifiques mientras sigas subiendo la curva.",
+        "Si el coste es vida, cuéntala junto con el resto de costes de vida del mazo."
+      ]
+    }
+  ]
+}

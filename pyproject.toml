@@ -1,0 +1,23 @@
+[project]
+name = "mtg-forja"
+version = "0.1.0"
+description = "Analiza mazos de Magic: The Gathering y genera guías, chuletas y mapas de sinergias. Servidor MCP y línea de comandos."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["mtg", "magic", "mcp", "scryfall", "deckbuilding"]
+dependencies = ["mcp>=1.2.0"]
+
+[project.scripts]
+mtg-forja = "mtg_forja.cli:main"
+mtg-forja-mcp = "mtg_forja.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mtg_forja"]
+
+[tool.hatch.build]
+include = ["src/mtg_forja/**/*.py", "src/mtg_forja/reglas.json", "src/mtg_forja/render/grafo.js"]

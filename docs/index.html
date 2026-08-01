@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MTG Forja — mapa de sinergias de tu mazo</title>
+<meta name="description" content="Pega la lista de tu mazo de Magic y obtén un mapa navegable de sus sinergias, comprobadas contra el texto de oráculo real de Scryfall.">
+<style>
+:root{--ceniza:#15120F;--fondo:#1E1A16;--pap:#EFEADF;--brasa:#C1462A;--laton:#D8B15E;
+ --humo:#8B8175;--lin:#3A332B;
+ --s:"Charter","Bitstream Charter",Georgia,serif;
+ --c:"Avenir Next Condensed","DejaVu Sans Condensed","Arial Narrow",sans-serif}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--ceniza);color:var(--pap);font-family:var(--s)}
+
+/* ---------- PORTADA ---------- */
+#inicio{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;
+ position:relative;overflow:hidden}
+#inicio .sol{position:absolute;left:50%;top:-40%;transform:translateX(-50%);width:900px;height:900px;
+ border-radius:50%;background:radial-gradient(circle,rgba(230,196,120,.20) 0%,
+ rgba(168,50,26,.14) 42%,rgba(21,18,15,0) 68%);pointer-events:none}
+.caja{width:min(680px,100%);position:relative;z-index:2}
+.eyebrow{font-family:var(--c);text-transform:uppercase;letter-spacing:.2em;font-size:11px;
+ font-weight:700;color:var(--laton);margin:0}
+h1{font-size:clamp(34px,6vw,52px);line-height:1;margin:10px 0 10px;letter-spacing:-.015em}
+h1 em{font-style:normal;color:var(--laton)}
+.dek{color:#B9AE9C;font-size:16px;line-height:1.5;max-width:56ch;margin:0 0 24px}
+textarea{width:100%;height:210px;background:var(--fondo);color:var(--pap);border:1px solid var(--lin);
+ border-radius:8px;padding:14px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:13px;
+ line-height:1.5;resize:vertical}
+textarea:focus{outline:2px solid var(--laton);outline-offset:1px}
+.acciones{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+button{font-family:var(--c);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+ border-radius:999px;padding:11px 22px;cursor:pointer;border:1px solid var(--lin);
+ background:transparent;color:var(--humo)}
+button:hover{color:var(--pap);border-color:#5C5245}
+button.pri{background:var(--laton);color:var(--ceniza);border-color:var(--laton)}
+button.pri:hover{filter:brightness(1.08);color:var(--ceniza)}
+button:disabled{opacity:.5;cursor:default}
+.nota{font-size:13px;color:var(--humo);margin-top:16px;line-height:1.5}
+.nota a{color:var(--laton)}
+#estado{font-family:var(--c);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+ color:var(--humo);min-height:18px}
+#estado.mal{color:var(--brasa)}
+
+/* ---------- RESULTADO ---------- */
+#app{display:none;height:100vh}
+#app.on{display:flex}
+#lienzo{flex:1;position:relative;min-width:0}
+svg{width:100%;height:100%;display:block;cursor:grab}svg.arrastrando{cursor:grabbing}
+.enlace{stroke:#5C5245;stroke-width:1.4;transition:stroke .2s,stroke-width .2s,opacity .2s}
+.enlace.riesgo{stroke:#7C3320;stroke-dasharray:5 4}
+.enlace.fuerte{stroke-width:2.6}
+.enlace.on{stroke:var(--laton);stroke-width:3}.enlace.riesgo.on{stroke:var(--brasa)}
+.enlace.off{opacity:.10}
+.etq{font-family:var(--c);font-size:10px;fill:var(--laton);letter-spacing:.06em;
+ text-transform:uppercase;pointer-events:none}
+.etq.riesgo{fill:var(--brasa)}
+.nodo{cursor:pointer}
+.nodo .aro{fill:var(--fondo);stroke-width:2.5;transition:stroke-width .15s}
+.nodo:hover .aro{stroke-width:4}.nodo.sel .aro{stroke-width:5}.nodo.off{opacity:.16}
+.nodo .nom{font-family:var(--c);font-size:11px;font-weight:700;fill:#D9CFBE;text-anchor:middle;
+ letter-spacing:.03em;pointer-events:none}
+.nodo .cnt{font-family:var(--c);font-size:11px;font-weight:700;fill:#fff;text-anchor:middle;
+ pointer-events:none}
+.cntbg{fill:var(--brasa)}
+.barra{position:absolute;top:0;left:0;right:0;padding:16px 20px;display:flex;gap:16px;
+ align-items:flex-start;justify-content:space-between;pointer-events:none;flex-wrap:wrap}
+.barra h2{font-size:19px;margin:0;line-height:1.05;letter-spacing:-.01em}
+.barra h2 em{font-style:normal;color:var(--laton)}
+.barra p{margin:3px 0 0;font-family:var(--c);font-size:10.5px;text-transform:uppercase;
+ letter-spacing:.14em;color:var(--humo)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;pointer-events:auto}
+.chip{font-family:var(--c);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+ background:transparent;color:var(--humo);border:1px solid var(--lin);border-radius:999px;
+ padding:5px 11px;cursor:pointer}
+.chip:hover{color:var(--pap);border-color:#5C5245}
+.chip.act{color:var(--ceniza);background:var(--laton);border-color:var(--laton)}
+.pie{position:absolute;left:20px;bottom:14px;font-family:var(--c);font-size:10px;letter-spacing:.1em;
+ text-transform:uppercase;color:#544B41;pointer-events:none}
+.leyenda{position:absolute;right:20px;bottom:14px;display:flex;gap:14px;font-family:var(--c);
+ font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--humo);pointer-events:none}
+.leyenda i{display:inline-block;width:16px;height:0;border-top:2px solid var(--laton);
+ vertical-align:3px;margin-right:5px}
+.leyenda i.r{border-top:2px dashed var(--brasa)}
+#panel{width:340px;flex:0 0 340px;background:var(--fondo);border-left:1px solid var(--lin);
+ overflow-y:auto;padding:20px}
+.carta-img{width:100%;aspect-ratio:488/680;border-radius:10px;object-fit:cover;background:#2A241D;
+ display:block}
+.rolcap{font-family:var(--c);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+ margin:14px 0 2px}
+#panel h2{font-size:20px;margin:0 0 2px;line-height:1.1;letter-spacing:-.01em}
+.meta{font-family:var(--c);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+ color:var(--humo);margin:0 0 12px}
+.bloq{font-size:13.5px;line-height:1.45;color:#CFC5B4;margin:0 0 12px}
+.bloq b{color:var(--pap)}
+h3{font-family:var(--c);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--laton);margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--lin)}
+h3.r{color:var(--brasa)}
+.conn{display:flex;gap:10px;align-items:flex-start;padding:8px;margin:0 -8px;border-radius:6px;
+ cursor:pointer;background:none;border:0;width:calc(100% + 16px);text-align:left;color:inherit;
+ font:inherit;text-transform:none;letter-spacing:0}
+.conn:hover{background:rgba(216,177,94,.09)}
+.conn img{width:34px;aspect-ratio:488/680;object-fit:cover;border-radius:3px;background:#2A241D;
+ flex:0 0 auto}
+.conn .qn{font-size:13px;font-weight:700;line-height:1.2}
+.conn .qd{font-size:12px;line-height:1.35;color:#A79C8C;margin-top:2px}
+.pill{font-family:var(--c);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+ color:var(--laton);display:block;margin-bottom:1px}
+.pill.r{color:var(--brasa)}
+.ev{font-size:11px;color:#8B8175;font-style:italic;margin-top:6px;padding-left:8px;
+ border-left:1px solid var(--lin)}
+.volver{position:absolute;top:16px;right:20px;pointer-events:auto}
+@media (max-width:860px){html,body{height:auto}#app.on{flex-direction:column;height:auto}
+ #lienzo{height:70vh}#panel{width:100%;flex:1 1 auto;border-left:0;border-top:1px solid var(--lin)}}
+</style>
+</head>
+<body>
+
+<section id="inicio">
+  <div class="sol"></div>
+  <div class="caja">
+    <p class="eyebrow">MTG Forja</p>
+    <h1>El mapa de sinergias <em>de tu mazo</em></h1>
+    <p class="dek">Pega la lista de tu mazo y te devuelve un mapa navegable de cómo encajan sus
+    cartas: qué combina con qué, qué se estorba entre sí y por qué. Todo se comprueba contra el
+    texto de oráculo real, no contra suposiciones.</p>
+
+    <textarea id="lista" spellcheck="false" placeholder="4 Lightning Helix&#10;4 Cleansing Wildfire&#10;3 Sunfall&#10;…&#10;&#10;Vale el formato de exportación de MTG Arena, el de Moxfield o una carta por línea."></textarea>
+
+    <div class="acciones">
+      <button class="pri" id="analizar">Analizar mazo</button>
+      <button id="ejemplo">Cargar ejemplo</button>
+      <span id="estado"></span>
+    </div>
+
+    <p class="nota">Se ejecuta entero en tu navegador. Los datos de las cartas vienen de
+    <a href="https://scryfall.com" target="_blank" rel="noopener">Scryfall</a> y no se envía nada a
+    ningún servidor. Para generar además la guía extensa y la chuleta imprimible, o para usarlo
+    desde Claude, mira el
+    <a href="https://github.com/" id="repo" target="_blank" rel="noopener">repositorio</a>.</p>
+  </div>
+</section>
+
+<div id="app">
+  <div id="lienzo">
+    <svg id="svg"></svg>
+    <div class="barra">
+      <div><h2 id="titulo">Mazo <em>· mapa de sinergias</em></h2><p id="subtitulo"></p></div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="volver"><button id="otro">Otro mazo</button></div>
+    <div class="pie">Arrastra las cartas · rueda para acercar</div>
+    <div class="leyenda"><span><i></i>sinergia</span><span><i class="r"></i>conflicto</span></div>
+  </div>
+  <aside id="panel"></aside>
+</div>
+
+<script src="motor.js"></script>
+<script>
+const EJEMPLO = `Deck
+4 Cleansing Wildfire
+4 Cascading Cataracts
+4 Rustvale Bridge
+3 Valakut Awakening
+4 Karn, the Great Creator
+3 The One Ring
+2 Palantir of Orthanc
+4 Lightning Helix
+2 Union of the Third Path
+1 Soul Partition
+3 Sunfall
+2 Farewell
+1 Teferi's Protection
+1 Approach of the Second Sun
+1 Restless Bivouac
+1 Castle Ardenvale
+3 Plains
+2 Mountain`;
+
+const $ = (s) => document.querySelector(s);
+$("#ejemplo").onclick = () => { $("#lista").value = EJEMPLO; };
+$("#otro").onclick = () => {
+  $("#app").classList.remove("on");
+  $("#inicio").style.display = "flex";
+  $("#estado").textContent = "";
+};
+
+$("#analizar").onclick = async () => {
+  const texto = $("#lista").value.trim();
+  const estado = $("#estado");
+  estado.classList.remove("mal");
+  if (!texto) { estado.textContent = "Pega antes una lista"; estado.classList.add("mal"); return; }
+  $("#analizar").disabled = true;
+  try {
+    estado.textContent = "Resolviendo cartas en Scryfall…";
+    const mazo = await Forja.resolver(texto);
+    if (!mazo.cartas.length) throw new Error("No se ha reconocido ninguna carta");
+    estado.textContent = "Buscando patrones…";
+    const reglas = await Forja.reglas();
+    const sinergias = Forja.detectar(mazo, reglas);
+    if (!sinergias.length) {
+      estado.textContent = "Sin sinergias detectadas en este mazo";
+      estado.classList.add("mal");
+      return;
+    }
+    const doc = Forja.documento(mazo, sinergias);
+    window.DATOS = Forja.datosGrafo(doc);
+    $("#titulo").innerHTML = "Mazo <em>· mapa de sinergias</em>";
+    $("#subtitulo").textContent =
+      `${mazo.total} cartas · ${sinergias.length} sinergias` +
+      (mazo.no_resueltas.length ? ` · ${mazo.no_resueltas.length} sin resolver` : "");
+    $("#inicio").style.display = "none";
+    $("#app").classList.add("on");
+    const s = document.createElement("script");
+    s.src = "grafo.js";
+    document.body.appendChild(s);
+  } catch (err) {
+    estado.textContent = String(err.message || err);
+    estado.classList.add("mal");
+  } finally {
+    $("#analizar").disabled = false;
+  }
+};
+</script>
+</body>
+</html>
