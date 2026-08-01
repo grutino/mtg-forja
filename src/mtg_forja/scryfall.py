@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import os
 import time
+import unicodedata
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -16,7 +17,7 @@ from typing import Any
 from .modelo import Carta, Mazo, parsear_lista
 
 API = "https://api.scryfall.com/cards/collection"
-AGENTE = "mtg-forja/0.1 (https://github.com/)"
+AGENTE = "mtg-forja/0.1 (https://github.com/grutino/mtg-forja)"
 LOTE = 75
 CACHE = Path(os.environ.get("MTG_FORJA_CACHE", Path.home() / ".cache" / "mtg-forja"))
 
@@ -41,8 +42,22 @@ def _cache_escribir(nombre: str, dato: dict[str, Any]) -> None:
         pass
 
 
+def _clave(nombre: str) -> str:
+    """Clave estable para emparejar un nombre pedido con el que responde Scryfall.
+
+    Scryfall acepta el nombre sin tildes, pero siempre contesta con la grafía
+    canónica: pides "Palantir of Orthanc" y te devuelve "Palantír of Orthanc".
+    Si se comparan como texto, la carta llega y se descarta. Plegamos acentos y
+    puntuación para que las dos grafías caigan en la misma clave, aquí y en la
+    caché.
+    """
+    plano = unicodedata.normalize("NFKD", nombre)
+    plano = "".join(c for c in plano if not unicodedata.combining(c))
+    return " ".join("".join(c if c.isalnum() else " " for c in plano.lower()).split())
+
+
 def _slug(nombre: str) -> str:
-    return "".join(c if c.isalnum() else "-" for c in nombre.lower())[:80]
+    return _clave(nombre).replace(" ", "-")[:80]
 
 
 def _fixture() -> dict[str, dict[str, Any]] | None:
@@ -53,7 +68,7 @@ def _fixture() -> dict[str, dict[str, Any]] | None:
     datos = json.loads(Path(ruta).read_text(encoding="utf-8"))
     if isinstance(datos, dict) and "data" in datos:
         datos = datos["data"]
-    return {c["name"].split("//")[0].strip().lower(): c for c in datos}
+    return {_clave(c["name"].split("//")[0]): c for c in datos}
 
 
 def _pedir(nombres: list[str]) -> list[dict[str, Any]]:
@@ -97,7 +112,7 @@ def resolver(lista: str, nombre_mazo: str = "Mazo") -> Mazo:
     pendientes: list[str] = []
 
     for n in unicos:
-        clave = n.lower()
+        clave = _clave(n)
         if fix is not None:
             if clave in fix:
                 encontrados[clave] = fix[clave]
@@ -112,7 +127,7 @@ def resolver(lista: str, nombre_mazo: str = "Mazo") -> Mazo:
         trozo = pendientes[i : i + LOTE]
         try:
             for bruto in _pedir(trozo):
-                clave = bruto["name"].split("//")[0].strip().lower()
+                clave = _clave(bruto["name"].split("//")[0])
                 encontrados[clave] = bruto
                 _cache_escribir(clave, bruto)
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
@@ -123,7 +138,7 @@ def resolver(lista: str, nombre_mazo: str = "Mazo") -> Mazo:
     mazo = Mazo(nombre=nombre_mazo)
     vistos: dict[tuple[str, bool], Carta] = {}
     for copias, nombre, banq in entradas:
-        bruto = encontrados.get(nombre.lower())
+        bruto = encontrados.get(_clave(nombre))
         if bruto is None:
             if nombre not in mazo.no_resueltas:
                 mazo.no_resueltas.append(nombre)
@@ -143,7 +158,7 @@ def resolver(lista: str, nombre_mazo: str = "Mazo") -> Mazo:
                 rarezas=bruto.get("rarity", ""),
                 scryfall_uri=bruto.get("scryfall_uri", ""),
             )
-        clave = (carta.nombre.lower(), banq)
+        clave = (_clave(carta.nombre), banq)
         if clave in vistos:
             vistos[clave].copias += copias
         else:

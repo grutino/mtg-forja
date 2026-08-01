@@ -49,6 +49,14 @@ def test_evidencia_es_texto_de_oraculo():
             assert ev.split()[0] in " ".join(carta.oraculo.split()) or carta.tipo
 
 
+def test_nombre_sin_tilde_resuelve():
+    """Scryfall responde con la grafía canónica; pedir sin tilde debe casar igual."""
+    assert scryfall._clave("Palantir of Orthanc") == scryfall._clave("Palantír of Orthanc")
+    assert scryfall._clave("Teferi's Protection") == scryfall._clave("Teferi’s Protection")
+    # y la caché tiene que caer en el mismo archivo para las dos grafías
+    assert scryfall._slug("Palantir of Orthanc") == scryfall._slug("Palantír of Orthanc")
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")

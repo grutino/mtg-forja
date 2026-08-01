@@ -69,6 +69,19 @@
     };
   }
 
+  // Scryfall acepta el nombre sin tildes pero responde con la grafía canónica:
+  // pides "Palantir of Orthanc" y te devuelve "Palantír of Orthanc". Comparados
+  // como texto no casan y la carta se descarta, así que plegamos acentos y
+  // puntuación para que las dos grafías caigan en la misma clave.
+  function clave(nombre) {
+    return nombre
+      .normalize("NFKD")
+      .replace(/\p{M}/gu, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+
   async function resolver(texto) {
     const entradas = parsear(texto);
     const unicos = [...new Set(entradas.map((e) => e.nombre))];
@@ -84,7 +97,7 @@
       if (!r.ok) throw new Error("Scryfall ha respondido " + r.status);
       const datos = await r.json();
       for (const bruto of datos.data || []) {
-        encontrados.set(bruto.name.split("//")[0].trim().toLowerCase(), bruto);
+        encontrados.set(clave(bruto.name.split("//")[0]), bruto);
       }
       if (i + LOTE < unicos.length) await new Promise((s) => setTimeout(s, 120));
     }
@@ -93,7 +106,7 @@
     const vistos = new Map();
     const no_resueltas = [];
     for (const ent of entradas) {
-      const bruto = encontrados.get(ent.nombre.toLowerCase());
+      const bruto = encontrados.get(clave(ent.nombre));
       let carta;
       if (!bruto) {
         if (!no_resueltas.includes(ent.nombre)) no_resueltas.push(ent.nombre);
@@ -112,9 +125,9 @@
       carta.rol = rol(carta);
       carta.es_tierra = /Land/i.test(carta.tipo);
       carta.es_basica = carta.es_tierra && /Basic/i.test(carta.tipo);
-      const clave = carta.nombre.toLowerCase() + "|" + ent.banquillo;
-      if (vistos.has(clave)) vistos.get(clave).copias += ent.copias;
-      else { vistos.set(clave, carta); cartas.push(carta); }
+      const k = clave(carta.nombre) + "|" + ent.banquillo;
+      if (vistos.has(k)) vistos.get(k).copias += ent.copias;
+      else { vistos.set(k, carta); cartas.push(carta); }
     }
 
     const principal = cartas.filter((c) => !c.banquillo);
