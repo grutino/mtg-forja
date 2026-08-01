@@ -131,7 +131,8 @@ def _datos(documento: dict[str, Any]) -> dict[str, Any]:
 
 
 def render(documento: dict[str, Any]) -> str:
-    datos = json.dumps(_datos(documento), ensure_ascii=False)
+    # El escape de "<" evita que un nombre de carta con "</script>" corte el bloque.
+    datos = json.dumps(_datos(documento), ensure_ascii=False).replace("<", "\\u003c")
     return f"""<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(documento.get('titulo',''))} — mapa de sinergias</title>

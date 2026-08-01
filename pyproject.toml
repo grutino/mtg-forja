@@ -1,6 +1,6 @@
 [project]
 name = "mtg-forja"
-version = "0.1.0"
+dynamic = ["version"]          # la fuente única es __version__ en src/mtg_forja/__init__.py
 description = "Analiza mazos de Magic: The Gathering y genera guías, chuletas y mapas de sinergias. Servidor MCP y línea de comandos."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -15,6 +15,9 @@ mtg-forja-mcp = "mtg_forja.server:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/mtg_forja/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mtg_forja"]

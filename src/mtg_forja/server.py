@@ -22,13 +22,17 @@ try:  # SDK de MCP 2.x
 except ImportError:  # SDK de MCP 1.x
     from mcp.server.fastmcp import FastMCP as _Servidor
 
+from . import __version__
 from . import reglas as motor
 from . import scryfall
 from .render import chuleta as r_chuleta
 from .render import guia as r_guia
 from .render import mapa as r_mapa
 
-mcp = _Servidor("mtg-forja")
+try:  # los SDK que la aceptan la anuncian en el handshake como serverInfo.version
+    mcp = _Servidor("mtg-forja", version=__version__)
+except TypeError:  # SDK antiguo sin ese parámetro
+    mcp = _Servidor("mtg-forja")
 
 SALIDA = Path(os.environ.get("MTG_FORJA_SALIDA", Path.cwd() / "mtg-forja-salida"))
 

@@ -57,6 +57,26 @@ def test_nombre_sin_tilde_resuelve():
     assert scryfall._slug("Palantir of Orthanc") == scryfall._slug("Palantír of Orthanc")
 
 
+def test_json_incrustado_no_corta_el_bloque_script():
+    """Los tres HTML llevan el documento dentro de un <script>: hay que escapar "<"."""
+    hostil = "</script><h1>ups"
+    doc = {
+        "titulo": "Prueba", "subtitulo": "1 carta", "curva": {"1": 1},
+        "cartas": [{"nombre": hostil, "copias": 1, "coste": "{1}", "mv": 1,
+                    "tipo": "Artifact", "rol": "motor"}],
+        # el mapa solo incrusta las cartas que aparecen en alguna sinergia
+        "sinergias": [{"id": "x", "nombre": "Prueba", "bloque": "Motor",
+                       "tipo": "sinergia", "fuerza": 2, "turno": "medio",
+                       "piezas": [hostil], "resumen": "r", "pasos": ["p"],
+                       "evidencia": {hostil: "ev"}}],
+        "orden": [], "reglas_oro": [], "no_resueltas": [],
+    }
+    for modulo in (guia, chuleta, mapa):
+        html = modulo.render(doc)
+        assert hostil not in html, f"{modulo.__name__} deja el cierre sin escapar"
+        assert "\\u003c/script>" in html, f"{modulo.__name__} no escapa el documento"
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")
