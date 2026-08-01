@@ -50,12 +50,13 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 | Pieza | Qué es | Su papel aquí |
 |---|---|---|
 | `reglas.json` | 37 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
+| Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
 | `lexico.json` | 23 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
 | `scryfall.py` | Cliente de la API de Scryfall, con caché en disco | **La fuente de verdad.** Todo lo que se afirma sale de aquí, nunca de la memoria de un modelo. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
 | El servidor MCP | `server.py` | **El enchufe con Claude.** Expone las herramientas para que el modelo pueda llamarlas. |
-| Las herramientas | Ocho funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
+| Las herramientas | Nueve funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
 | La skill | `skill/SKILL.md` | Lo que Claude *debe saber*: qué verificar antes de afirmar nada, qué documento pide cada situación, cómo redactar. |
 | El CLI | `cli.py` | Los mismos tres documentos sin pasar por Claude. |
 | La web | `docs/` | Todo lo anterior en el navegador, sin instalar nada. |
@@ -152,7 +153,7 @@ el proyecto te sirve.
 3. **Cierra Claude Desktop del todo y vuelve a abrirlo.** No basta con cerrar la ventana.
 
 4. Comprueba que ha cargado: en el icono de conectores debe aparecer `mtg-forja` con sus
-   ocho herramientas. Si no sale, mira [Si algo falla](#si-algo-falla).
+   nueve herramientas. Si no sale, mira [Si algo falla](#si-algo-falla).
 
 5. Instala además la skill de [`skill/SKILL.md`](skill/SKILL.md) para que Claude sepa
    **cómo** usar las herramientas: qué verificar, cómo redactar los pasos y cuándo
@@ -327,6 +328,7 @@ o imprimir la chuleta directamente desde el navegador.
 | `resolver_mazo` | Resuelve la lista contra Scryfall y devuelve el oráculo real. |
 | `radiografia_del_mazo` | Los hechos objetivos: a quién alcanza cada efecto, qué tipos menciona, qué zonas toca, y si el mazo tiene fuentes de color para lo que él mismo exige. |
 | `detectar_sinergias` | Busca patrones de interacción y devuelve candidatas **con la frase de oráculo que disparó cada una**. |
+| `combos_conocidos` | Combos ya catalogados por [Commander Spellbook](https://commanderspellbook.com), con sus pasos. **Única fuente que no es oráculo verificado**: hay que contrastarla. |
 | `listar_reglas` | Enseña los patrones que conoce el motor. |
 | `render_guia` / `render_chuleta` / `render_mapa` | Generan cada HTML a partir del documento. |
 | `analizar` | Atajo: hace todo de una pasada con los textos automáticos. |
@@ -581,5 +583,12 @@ Gathering es propiedad de Wizards of the Coast. Este es un proyecto de aficionad
 ánimo de lucro, amparado por la Fan Content Policy de Wizards, y no está patrocinado ni
 respaldado por Wizards ni por Scryfall.
 
+Los combos catalogados de `combos_conocidos` vienen de
+[**Commander Spellbook**](https://commanderspellbook.com), curados por su comunidad.
+No están afiliados a este proyecto. Si construyes sobre esto, cítalos.
+
 Si usas la API de Scryfall en tu propio despliegue, respeta su
-[ritmo de peticiones](https://scryfall.com/docs/api) (una cada 50-100 ms).
+[ritmo de peticiones](https://scryfall.com/docs/api) (una cada 50-100 ms). Con
+Commander Spellbook, `combos.py` hace **una sola petición por mazo** y la cachea en
+disco; su `robots.txt` desaconseja rastrear el backend, así que no lo conviertas en un
+bucle. Ninguna de las dos requiere clave.

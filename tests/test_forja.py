@@ -139,6 +139,39 @@ def test_cli_falla_si_no_resuelve_nada(tmp_path):
     assert not salida.exists(), "no debe dejar HTML vacíos por el camino"
 
 
+def test_combos_no_rompen_el_analisis_si_falla_la_api(monkeypatch, tmp_path):
+    """Commander Spellbook es una fuente externa: si no responde, se sigue sin ella."""
+    from mtg_forja import combos
+
+    monkeypatch.setattr(combos, "CACHE_COMBOS", tmp_path / "combos")
+    monkeypatch.delenv("MTG_FORJA_COMBOS_FIXTURE", raising=False)
+
+    def caida(*a, **k):
+        raise TimeoutError("la API no contesta")
+
+    monkeypatch.setattr(combos.urllib.request, "urlopen", caida)
+    r = combos.buscar(scryfall.resolver(LISTA, "Prueba"))
+
+    assert r["completos"] == [] and r["casi_completos"] == []
+    assert "aviso" in r, "tiene que decir por qué viene vacío"
+
+
+def test_combos_resume_lo_que_importa(monkeypatch):
+    """Del combo se guardan las cartas, qué produce y los pasos redactados."""
+    from mtg_forja import combos
+
+    fixture = RAIZ / "ejemplos" / "fixture-combos.json"
+    monkeypatch.setenv("MTG_FORJA_COMBOS_FIXTURE", str(fixture))
+    r = combos.buscar(scryfall.resolver(LISTA, "Prueba"))
+
+    assert "Commander Spellbook" in r["fuente"]
+    # el aviso de que no es oráculo verificado no puede desaparecer por descuido
+    assert "oráculo" in r["atencion"]
+    assert r["casi_completos"], "el fixture trae combos casi completos"
+    uno = r["casi_completos"][0]
+    assert uno["cartas"] and uno["produce"] and uno["pasos"]
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")

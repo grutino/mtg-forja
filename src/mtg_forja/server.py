@@ -23,6 +23,7 @@ except ImportError:  # SDK de MCP 1.x
     from mcp.server.fastmcp import FastMCP as _Servidor
 
 from . import __version__
+from . import combos
 from . import hechos
 from . import lexico
 from . import reglas as motor
@@ -106,6 +107,30 @@ def detectar_sinergias(lista: str, nombre: str = "Mazo") -> str:
     mazo = scryfall.resolver(lista, nombre)
     sinergias = lexico.completo(mazo)
     return _json(motor.documento(mazo, sinergias, titulo=nombre))
+
+
+@mcp.tool()
+def combos_conocidos(lista: str, nombre: str = "Mazo") -> str:
+    """Combos ya catalogados que hay en el mazo, según Commander Spellbook.
+
+    Devuelve los combos **completos** (todas las piezas están en el mazo) y los
+    **casi completos** (falta una carta, que se indica), cada uno con las cartas
+    implicadas, qué produce y los pasos redactados.
+
+    ⚠️ **Esto no es texto de oráculo verificado.** Es una base curada por una
+    comunidad, y es la única herramienta de este servidor cuyos datos no salen de
+    Scryfall. Antes de meter cualquiera de estos combos en un documento:
+
+    1. Comprueba con `resolver_mazo` o `radiografia_del_mazo` que las cartas hacen
+       de verdad lo que el combo dice.
+    2. Si el oráculo real no sostiene los pasos, descarta el combo.
+    3. Cuando lo uses, cita Commander Spellbook como fuente.
+
+    Complementa al motor de patrones: aquí salen combos con nombre propio que
+    nadie ha escrito en `reglas.json`, y que el léxico de recursos no puede
+    deducir porque requieren razonar sobre reglas del juego.
+    """
+    return _json(combos.buscar(scryfall.resolver(lista, nombre)))
 
 
 @mcp.tool()

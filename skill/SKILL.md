@@ -55,6 +55,8 @@ motor, el análisis será correcto y vacío.
    tabla de arriba.
 1. **Resolver.** `detectar_sinergias(lista)` devuelve las cartas con su oráculo, la
    curva y las sinergias candidatas que ha encontrado el motor de reglas.
+   Opcionalmente, `combos_conocidos(lista)` trae combos ya catalogados por Commander
+   Spellbook, con sus pasos redactados. **Léete el aviso de abajo antes de usarlo.**
 2. **Juzgar.** Las candidatas son un borrador mecánico, no el análisis. Tu trabajo:
    - **Descartar** las que técnicamente casan pero no importan en la práctica.
    - **Reordenar** por lo que de verdad decide partidas, no por la puntuación del motor.
@@ -74,6 +76,25 @@ motor, el análisis será correcto y vacío.
 
 Si solo quieren una respuesta rápida en el chat, quédate en el paso 2 y responde.
 No generes archivos que nadie ha pedido.
+
+## La única fuente que no es oráculo
+
+`combos_conocidos` es la excepción a toda la regla de arriba: sus datos vienen de
+**Commander Spellbook**, una base curada por su comunidad, no de Scryfall. Es valiosa
+—trae combos con nombre propio y sus pasos, que ningún motor deduce— pero no está
+verificada contra el texto de la carta.
+
+Antes de meter uno de esos combos en un documento:
+
+1. **Contrasta.** Comprueba con `resolver_mazo` o `radiografia_del_mazo` que las cartas
+   hacen de verdad lo que el combo dice. Presta atención a si el mazo lleva de verdad
+   todas las piezas, y a si el combo asume reglas de Commander que aquí no aplican.
+2. **Descarta sin pena** si el oráculo real no sostiene los pasos. Un combo mal copiado
+   es peor que ningún combo.
+3. **Cita la fuente** cuando lo uses: «según Commander Spellbook».
+
+Y no lo uses como muleta: la mayoría de mazos no llevan combos catalogados, y el
+análisis bueno sigue saliendo de leer las cartas.
 
 ## Qué documento pide cada situación
 
