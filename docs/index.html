@@ -110,9 +110,12 @@ h3.r{color:var(--brasa)}
 .pill.r{color:var(--brasa)}
 .ev{font-size:11px;color:#8B8175;font-style:italic;margin-top:6px;padding-left:8px;
  border-left:1px solid var(--lin)}
-.volver{position:absolute;top:16px;right:20px;pointer-events:auto}
+.volver{display:flex;gap:8px;flex-wrap:wrap;pointer-events:auto}
 @media (max-width:860px){html,body{height:auto}#app.on{flex-direction:column;height:auto}
- #lienzo{height:70vh}#panel{width:100%;flex:1 1 auto;border-left:0;border-top:1px solid var(--lin)}}
+ /* flex:0 0 auto para que la altura mande: con flex:1 la base es 0 y, al ser el
+    padre de altura automática, el lienzo se colapsaba a unos 150px. */
+ #lienzo{flex:0 0 auto;height:70vh;min-height:420px}
+ #panel{width:100%;flex:1 1 auto;border-left:0;border-top:1px solid var(--lin)}}
 </style>
 </head>
 <body>
@@ -148,11 +151,11 @@ h3.r{color:var(--brasa)}
     <div class="barra">
       <div><h2 id="titulo">Mazo <em>· mapa de sinergias</em></h2><p id="subtitulo"></p></div>
       <div class="chips" id="chips"></div>
-    </div>
-    <div class="volver">
-      <button id="ver-guia">Guía</button>
-      <button id="ver-chuleta">Chuleta</button>
-      <button id="otro">Otro mazo</button>
+      <div class="volver">
+        <button id="ver-guia">Guía</button>
+        <button id="ver-chuleta">Chuleta</button>
+        <button id="otro">Otro mazo</button>
+      </div>
     </div>
     <div class="pie">Arrastra las cartas · rueda para acercar</div>
     <div class="leyenda"><span><i></i>sinergia</span><span><i class="r"></i>conflicto</span></div>
