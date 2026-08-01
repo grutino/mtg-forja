@@ -149,7 +149,11 @@ h3.r{color:var(--brasa)}
       <div><h2 id="titulo">Mazo <em>· mapa de sinergias</em></h2><p id="subtitulo"></p></div>
       <div class="chips" id="chips"></div>
     </div>
-    <div class="volver"><button id="otro">Otro mazo</button></div>
+    <div class="volver">
+      <button id="ver-guia">Guía</button>
+      <button id="ver-chuleta">Chuleta</button>
+      <button id="otro">Otro mazo</button>
+    </div>
     <div class="pie">Arrastra las cartas · rueda para acercar</div>
     <div class="leyenda"><span><i></i>sinergia</span><span><i class="r"></i>conflicto</span></div>
   </div>
@@ -157,6 +161,9 @@ h3.r{color:var(--brasa)}
 </div>
 
 <script src="motor.js"></script>
+<script src="comun.js"></script>
+<script src="guia.js"></script>
+<script src="chuleta.js"></script>
 <script>
 const EJEMPLO = `Deck
 4 Cleansing Wildfire
@@ -186,6 +193,55 @@ $("#otro").onclick = () => {
   $("#estado").textContent = "";
 };
 
+/* Guía y chuleta: se arma exactamente el mismo archivo autónomo que genera la
+   línea de comandos —el documento en JSON más los renderizadores compartidos—,
+   así que lo que sale aquí y lo que sale del CLI es el mismo archivo. */
+const FUENTES = {};
+const fuente = (n) => (FUENTES[n] = FUENTES[n] || fetch(n).then((r) => {
+  if (!r.ok) throw new Error("No se ha podido cargar " + n);
+  return r.text();
+}));
+["comun.js", "guia.js", "chuleta.js"].forEach(fuente);  // precarga: el clic no espera
+
+async function abrirDocumento(tipo) {
+  const doc = window.DOCUMENTO;
+  if (!doc) return;
+  const boton = $(tipo === "guia" ? "#ver-guia" : "#ver-chuleta");
+  // La ventana se abre dentro del gesto del usuario, antes de cualquier await,
+  // para que no la bloquee el navegador.
+  const win = window.open("", "_blank");
+  boton.disabled = true;
+  try {
+    const [comun, js] = await Promise.all([fuente("comun.js"), fuente(tipo + ".js")]);
+    const api = tipo === "guia" ? "ForjaGuia" : "ForjaChuleta";
+    const cola = tipo === "guia" ? " — guía de sinergias" : " — chuleta";
+    const titulo = ForjaComun.e((doc.titulo || "Mazo") + cola);
+    const datos = JSON.stringify(doc).replace(/</g, "\\u003c");
+    const html = `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${titulo}</title></head><body>
+<script>const DOC=${datos};<\/script>
+<script>${comun}<\/script>
+<script>${js}<\/script>
+<script>${api}.montar(DOC);<\/script>
+</body></html>`;
+    if (win) { win.document.write(html); win.document.close(); }
+    else {  // el navegador ha bloqueado la ventana: lo descargamos
+      const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+      const a = document.createElement("a");
+      a.href = url; a.download = tipo + ".html"; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+    }
+  } catch (err) {
+    if (win) win.close();
+    alert("No se ha podido generar: " + (err.message || err));
+  } finally {
+    boton.disabled = false;
+  }
+}
+$("#ver-guia").onclick = () => abrirDocumento("guia");
+$("#ver-chuleta").onclick = () => abrirDocumento("chuleta");
+
 $("#analizar").onclick = async () => {
   const texto = $("#lista").value.trim();
   const estado = $("#estado");
@@ -205,6 +261,7 @@ $("#analizar").onclick = async () => {
       return;
     }
     const doc = Forja.documento(mazo, sinergias);
+    window.DOCUMENTO = doc;
     window.DATOS = Forja.datosGrafo(doc);
     $("#titulo").innerHTML = "Mazo <em>· mapa de sinergias</em>";
     $("#subtitulo").textContent =

@@ -20,4 +20,4 @@ build-backend = "hatchling.build"
 packages = ["src/mtg_forja"]
 
 [tool.hatch.build]
-include = ["src/mtg_forja/**/*.py", "src/mtg_forja/reglas.json", "src/mtg_forja/render/grafo.js"]
+include = ["src/mtg_forja/**/*.py", "src/mtg_forja/reglas.json", "src/mtg_forja/render/*.js"]
