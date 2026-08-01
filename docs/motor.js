@@ -162,6 +162,7 @@
         mv: bruto.cmc || 0,
         tipo: plano.tipo,
         oraculo: plano.oraculo,
+        produce_mana: bruto.produced_mana || [],
       };
       carta.rol = rol(carta);
       carta.es_tierra = /Land/i.test(carta.tipo);
@@ -290,7 +291,7 @@
       curva: mazo.curva,
       cartas: mazo.principal.map((c) => ({
         nombre: c.nombre, copias: c.copias, coste: c.coste, mv: c.mv,
-        tipo: c.tipo, rol: c.rol, estrategia: "",
+        tipo: c.tipo, rol: c.rol, produce_mana: c.produce_mana || [], estrategia: "",
       })),
       sinergias, orden: [], reglas_oro: [], no_resueltas: mazo.no_resueltas,
     };
@@ -300,6 +301,9 @@
     const idx = Object.fromEntries(doc.cartas.map((c) => [c.nombre, c]));
     const usadas = new Set();
     doc.sinergias.forEach((s) => s.piezas.forEach((p) => usadas.add(p)));
+    // Todas las cartas entran, tengan sinergia o no: una carta suelta también
+    // dice algo del mazo, y antes desaparecía sin más.
+    doc.cartas.forEach((c) => usadas.add(c.nombre));
 
     const cartas = {};
     for (const nombre of [...usadas].sort()) {
@@ -313,6 +317,7 @@
       cartas[nombre] = {
         copias: c.copias || 1, coste: c.coste || "", tipo: c.tipo || "",
         rol: c.rol || "motor", corto, estrategia: c.estrategia || "", evidencia,
+        mv: c.mv || 0, produce_mana: c.produce_mana || [],
       };
     }
 
@@ -325,7 +330,55 @@
         });
       }
     }
+    enlaces.push(...enlacesDeMana(cartas));
     return { cartas, enlaces, roles: COLOR_ROL };
+  }
+
+  /* Fontanería del mazo: qué fuente permite lanzar qué hechizo. No es una
+     sinergia, pero sin esto las tierras salían sueltas aunque sean justo lo que
+     deja jugar el resto. Puerto fiel de _enlaces_de_mana en mapa.py. */
+  const COLORES = ["W", "U", "B", "R", "G"];
+  const NOMBRE_COLOR = { W: "blanco", U: "azul", B: "negro", R: "rojo", G: "verde" };
+  const POR_FUENTE = 2, CARO = 5;
+
+  function simbolos(coste) {
+    const fuera = {};
+    for (const m of String(coste || "").matchAll(/\{([^}]+)\}/g)) {
+      for (const c of COLORES) if (m[1].toUpperCase().includes(c)) fuera[c] = (fuera[c] || 0) + 1;
+    }
+    return fuera;
+  }
+
+  function enlacesDeMana(cartas) {
+    const fuentesDe = (color) => Object.entries(cartas)
+      .filter(([, c]) => (c.produce_mana || []).includes(color))
+      // las tierras primero: son la base de maná de verdad. Una carta que produce
+      // los cinco colores por su cara trasera dice mucho menos que una dual.
+      .sort((x, y) => ((x[1].tipo || "").includes("Land") ? 0 : 1) - ((y[1].tipo || "").includes("Land") ? 0 : 1)
+                      || (y[1].copias || 1) - (x[1].copias || 1) || cmp(x[0], y[0]))
+      .map(([n]) => n);
+
+    const fuera = [];
+    for (const [nombre, c] of Object.entries(cartas)) {
+      if ((c.tipo || "").includes("Land")) continue;
+      const pide = simbolos(c.coste);
+      const colores = Object.keys(pide).sort();
+      if (colores.length) {
+        const color = colores.reduce((a, b) => (pide[b] > pide[a] ? b : a));
+        const n = pide[color];
+        for (const f of fuentesDe(color).slice(0, POR_FUENTE)) {
+          fuera.push({ a: f, b: nombre, f: 1, m: 1, r: 0,
+            t: `Maná ${NOMBRE_COLOR[color]}`,
+            d: `${nombre} pide ${n} símbolo${n > 1 ? "s" : ""} de maná ${NOMBRE_COLOR[color]}, y ${f} lo produce.` });
+        }
+      } else if ((c.mv || 0) >= CARO) {
+        for (const f of fuentesDe("C").slice(0, POR_FUENTE)) {
+          fuera.push({ a: f, b: nombre, f: 1, m: 1, r: 0, t: "Maná incoloro",
+            d: `${nombre} cuesta ${Math.trunc(c.mv || 0)} de maná, y ${f} aporta el genérico que hace falta para levantarlo.` });
+        }
+      }
+    }
+    return fuera;
   }
 
   /* ---- Motor deductivo: puerto fiel de src/mtg_forja/lexico.py ----------------

@@ -1,112 +1,167 @@
 [
-  {
-    "name": "Cleansing Wildfire",
-    "mana_cost": "{1}{R}",
-    "cmc": 2,
-    "type_line": "Sorcery",
-    "oracle_text": "Destroy target land. Its controller may search their library for a basic land card, put it onto the battlefield tapped, then shuffle. Draw a card.",
-    "colors": ["R"],
-    "color_identity": ["R"],
-    "rarity": "common"
-  },
-  {
-    "name": "Cascading Cataracts",
-    "mana_cost": "",
-    "cmc": 0,
-    "type_line": "Land",
-    "oracle_text": "Cascading Cataracts is indestructible.\n{T}: Add {C}.\n{5}, {T}: Add five mana in any combination of colors.",
-    "colors": [],
-    "color_identity": [],
-    "rarity": "rare"
-  },
-  {
-    "name": "Rustvale Bridge",
-    "mana_cost": "",
-    "cmc": 0,
-    "type_line": "Artifact Land",
-    "oracle_text": "Rustvale Bridge enters the battlefield tapped.\nRustvale Bridge is indestructible.\n{T}: Add {R} or {W}.",
-    "colors": [],
-    "color_identity": ["R", "W"],
-    "rarity": "common"
-  },
-  {
-    "name": "Valakut Awakening",
-    "mana_cost": "{2}{R}",
-    "cmc": 3,
-    "type_line": "Instant // Land",
-    "oracle_text": "Put any number of cards from your hand on the bottom of your library, then draw that many cards plus one.\n//\nValakut Stoneforge enters the battlefield tapped.\n{T}: Add {R}.",
-    "colors": ["R"],
-    "color_identity": ["R"],
-    "rarity": "rare"
-  },
-  {
-    "name": "Approach of the Second Sun",
-    "mana_cost": "{6}{W}",
-    "cmc": 7,
-    "type_line": "Sorcery",
-    "oracle_text": "If this spell was cast from your hand and you've cast another spell named Approach of the Second Sun this game, you win the game. Otherwise, put Approach of the Second Sun into its owner's library seventh from the top and you gain 7 life.",
-    "colors": ["W"],
-    "color_identity": ["W"],
-    "rarity": "rare"
-  },
-  {
-    "name": "Karn, the Great Creator",
-    "mana_cost": "{4}",
-    "cmc": 4,
-    "type_line": "Legendary Planeswalker — Karn",
-    "oracle_text": "Activated abilities of artifacts your opponents control can't be activated.\n+1: Until your next turn, up to one target noncreature artifact becomes an artifact creature with power and toughness each equal to its mana value.\n−2: You may reveal an artifact card you own from outside the game or choose a face-up artifact card you own in exile. Put that card into your hand.",
-    "colors": [],
-    "color_identity": [],
-    "rarity": "rare"
-  },
-  {
-    "name": "Sunfall",
-    "mana_cost": "{3}{W}{W}",
-    "cmc": 5,
-    "type_line": "Sorcery",
-    "oracle_text": "Exile all creatures. Incubate X, where X is the number of creatures exiled this way.",
-    "colors": ["W"],
-    "color_identity": ["W"],
-    "rarity": "rare"
-  },
-  {
-    "name": "Soul Partition",
-    "mana_cost": "{1}{W}",
-    "cmc": 2,
-    "type_line": "Instant",
-    "oracle_text": "Exile target nonland permanent. For as long as that card remains exiled, its owner may play it. A spell cast by an opponent this way costs {2} more to cast.",
-    "colors": ["W"],
-    "color_identity": ["W"],
-    "rarity": "rare"
-  },
-  {
-    "name": "Restless Bivouac",
-    "mana_cost": "",
-    "cmc": 0,
-    "type_line": "Land",
-    "oracle_text": "Restless Bivouac enters the battlefield tapped.\n{T}: Add {R} or {W}.\n{2}{R}{W}: Restless Bivouac becomes a 2/2 red and white Ox creature with vigilance until end of turn. It's still a land.",
-    "colors": [],
-    "color_identity": ["R", "W"],
-    "rarity": "rare"
-  },
-  {
-    "name": "Plains",
-    "mana_cost": "",
-    "cmc": 0,
-    "type_line": "Basic Land — Plains",
-    "oracle_text": "({T}: Add {W}.)",
-    "colors": [],
-    "color_identity": ["W"],
-    "rarity": "common"
-  },
-  {
-    "name": "Mountain",
-    "mana_cost": "",
-    "cmc": 0,
-    "type_line": "Basic Land — Mountain",
-    "oracle_text": "({T}: Add {R}.)",
-    "colors": [],
-    "color_identity": ["R"],
-    "rarity": "common"
-  }
+ {
+  "name": "Cleansing Wildfire",
+  "mana_cost": "{1}{R}",
+  "cmc": 2,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy target land. Its controller may search their library for a basic land card, put it onto the battlefield tapped, then shuffle. Draw a card.",
+  "colors": [
+   "R"
+  ],
+  "color_identity": [
+   "R"
+  ],
+  "rarity": "common"
+ },
+ {
+  "name": "Cascading Cataracts",
+  "mana_cost": "",
+  "cmc": 0,
+  "type_line": "Land",
+  "oracle_text": "Cascading Cataracts is indestructible.\n{T}: Add {C}.\n{5}, {T}: Add five mana in any combination of colors.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "rare",
+  "produced_mana": [
+   "B",
+   "C",
+   "G",
+   "R",
+   "U",
+   "W"
+  ]
+ },
+ {
+  "name": "Rustvale Bridge",
+  "mana_cost": "",
+  "cmc": 0,
+  "type_line": "Artifact Land",
+  "oracle_text": "Rustvale Bridge enters the battlefield tapped.\nRustvale Bridge is indestructible.\n{T}: Add {R} or {W}.",
+  "colors": [],
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "rarity": "common",
+  "produced_mana": [
+   "R",
+   "W"
+  ]
+ },
+ {
+  "name": "Valakut Awakening",
+  "mana_cost": "{2}{R}",
+  "cmc": 3,
+  "type_line": "Instant // Land",
+  "oracle_text": "Put any number of cards from your hand on the bottom of your library, then draw that many cards plus one.\n//\nValakut Stoneforge enters the battlefield tapped.\n{T}: Add {R}.",
+  "colors": [
+   "R"
+  ],
+  "color_identity": [
+   "R"
+  ],
+  "rarity": "rare",
+  "produced_mana": [
+   "R"
+  ]
+ },
+ {
+  "name": "Approach of the Second Sun",
+  "mana_cost": "{6}{W}",
+  "cmc": 7,
+  "type_line": "Sorcery",
+  "oracle_text": "If this spell was cast from your hand and you've cast another spell named Approach of the Second Sun this game, you win the game. Otherwise, put Approach of the Second Sun into its owner's library seventh from the top and you gain 7 life.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare"
+ },
+ {
+  "name": "Karn, the Great Creator",
+  "mana_cost": "{4}",
+  "cmc": 4,
+  "type_line": "Legendary Planeswalker — Karn",
+  "oracle_text": "Activated abilities of artifacts your opponents control can't be activated.\n+1: Until your next turn, up to one target noncreature artifact becomes an artifact creature with power and toughness each equal to its mana value.\n−2: You may reveal an artifact card you own from outside the game or choose a face-up artifact card you own in exile. Put that card into your hand.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "rare"
+ },
+ {
+  "name": "Sunfall",
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile all creatures. Incubate X, where X is the number of creatures exiled this way.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare"
+ },
+ {
+  "name": "Soul Partition",
+  "mana_cost": "{1}{W}",
+  "cmc": 2,
+  "type_line": "Instant",
+  "oracle_text": "Exile target nonland permanent. For as long as that card remains exiled, its owner may play it. A spell cast by an opponent this way costs {2} more to cast.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare"
+ },
+ {
+  "name": "Restless Bivouac",
+  "mana_cost": "",
+  "cmc": 0,
+  "type_line": "Land",
+  "oracle_text": "Restless Bivouac enters the battlefield tapped.\n{T}: Add {R} or {W}.\n{2}{R}{W}: Restless Bivouac becomes a 2/2 red and white Ox creature with vigilance until end of turn. It's still a land.",
+  "colors": [],
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "rarity": "rare",
+  "produced_mana": [
+   "R",
+   "W"
+  ]
+ },
+ {
+  "name": "Plains",
+  "mana_cost": "",
+  "cmc": 0,
+  "type_line": "Basic Land — Plains",
+  "oracle_text": "({T}: Add {W}.)",
+  "colors": [],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "common",
+  "produced_mana": [
+   "W"
+  ]
+ },
+ {
+  "name": "Mountain",
+  "mana_cost": "",
+  "cmc": 0,
+  "type_line": "Basic Land — Mountain",
+  "oracle_text": "({T}: Add {R}.)",
+  "colors": [],
+  "color_identity": [
+   "R"
+  ],
+  "rarity": "common",
+  "produced_mana": [
+   "R"
+  ]
+ }
 ]

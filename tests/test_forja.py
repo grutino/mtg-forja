@@ -190,6 +190,24 @@ def test_el_pip_incoloro_no_choca_con_la_ficha_de_carta():
     assert 'class="pip c"' not in js and ".pip.inc{" in js
 
 
+def test_el_mapa_incluye_las_cartas_sueltas_y_la_base_de_mana():
+    """Dos cosas que el mapa se dejaba: las cartas sin sinergia y la fontanería."""
+    mazo = scryfall.resolver(LISTA, "Prueba")
+    doc = motor.documento(mazo, lexico.completo(mazo), titulo="Prueba")
+    datos = mapa._datos(doc)
+
+    # (1) toda carta del mazo principal es un nodo, tenga sinergia o no
+    for c in doc["cartas"]:
+        assert c["nombre"] in datos["cartas"], f"{c['nombre']} no sale en el mapa"
+
+    # (2) las fuentes de maná se atan a los hechizos que las necesitan
+    de_mana = [e for e in datos["enlaces"] if e.get("m")]
+    assert de_mana, "ninguna carta quedó atada a su base de maná"
+    for e in de_mana:
+        assert e["f"] == 1, "el enlace de maná no puede competir con una sinergia"
+        assert datos["cartas"][e["a"]]["produce_mana"], "el extremo 'a' debe producir maná"
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")

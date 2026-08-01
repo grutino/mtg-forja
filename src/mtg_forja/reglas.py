@@ -192,6 +192,7 @@ def documento(mazo: Mazo, sinergias: list[Sinergia], titulo: str = "", subtitulo
                 "mv": c.mv,
                 "tipo": c.tipo,
                 "rol": c.rol,
+                "produce_mana": c.produce_mana,
                 "estrategia": "",
             }
             for c in principal
