@@ -1,4 +1,9 @@
 const IMG=(n,v)=>`https://api.scryfall.com/cards/named?fuzzy=${encodeURIComponent(n).replace(/%20/g,'+')}&format=image&version=${v}&face=front`;
+/* Escapa los datos que se meten en innerHTML. Misma política que guia.py y
+   chuleta.py: los nombres y el texto de oráculo se escapan; el resumen y la
+   estrategia van en crudo a propósito, porque pueden traer énfasis escrito. */
+const E=t=>String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
 const CARDS=DATOS.cartas, LINKS=DATOS.enlaces, ROL=DATOS.roles;
 const keys=Object.keys(CARDS);
 const svg=document.getElementById('svg'), NS="http://www.w3.org/2000/svg";
@@ -128,7 +133,7 @@ function vacio(){
    ${top.map(k=>`<button class="conn" data-k="${encodeURIComponent(k)}">
      <img loading="lazy" src="${IMG(k,'small')}" alt="">
      <span><span class="pill">${vecinos[k].length} conexiones</span>
-     <span class="qn">${k}</span></span></button>`).join('')}`;
+     <span class="qn">${E(k)}</span></span></button>`).join('')}`;
   enlazar()}
 function enlazar(){panel.querySelectorAll('.conn').forEach(b=>
   b.onclick=()=>sel(decodeURIComponent(b.dataset.k)))}
@@ -140,15 +145,15 @@ function sel(k){
   const fila=l=>{const o=l.a===k?l.b:l.a;
     return `<button class="conn" data-k="${encodeURIComponent(o)}">
       <img loading="lazy" src="${IMG(o,'small')}" alt="">
-      <span><span class="pill${l.r?' r':''}">${l.t}${l.r?'':' · '+'★'.repeat(l.f)}</span>
-      <span class="qn">${o}</span><span class="qd">${l.d}</span></span></button>`};
+      <span><span class="pill${l.r?' r':''}">${E(l.t)}${l.r?'':' · '+'★'.repeat(l.f)}</span>
+      <span class="qn">${E(o)}</span><span class="qd">${l.d}</span></span></button>`};
   const buenas=conns.filter(l=>!l.r),malas=conns.filter(l=>l.r);
   panel.innerHTML=`<img class="carta-img" src="${IMG(k,'normal')}" alt="">
     <p class="rolcap" style="color:${(ROL[C.rol]||{}).c}">${(ROL[C.rol]||{}).n||''}</p>
-    <h2>${k}</h2>
-    <p class="meta">${C.copias} copias · ${C.coste||C.tipo} · ${conns.length} conexiones</p>
+    <h2>${E(k)}</h2>
+    <p class="meta">${C.copias} copias · ${E(C.coste||C.tipo)} · ${conns.length} conexiones</p>
     ${C.estrategia?`<p class="bloq">${C.estrategia}</p>`:''}
-    ${C.evidencia?`<p class="ev">${C.evidencia}</p>`:''}
+    ${C.evidencia?`<p class="ev">${E(C.evidencia)}</p>`:''}
     ${buenas.length?'<h3>Combina con</h3>'+buenas.map(fila).join(''):''}
     ${malas.length?'<h3 class="r">Se estorba con</h3>'+malas.map(fila).join(''):''}`;
   panel.scrollTop=0;enlazar()}

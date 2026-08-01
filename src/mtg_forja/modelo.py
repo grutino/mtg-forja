@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import re
+from csv import reader as csv_lector
 from dataclasses import dataclass, field, asdict
 from typing import Any
 
@@ -36,6 +37,9 @@ class Carta:
     identidad: list[str] = field(default_factory=list)
     rarezas: str = ""
     scryfall_uri: str = ""
+    # Colores que la carta sabe producir. Sin esto no se puede comprobar si el
+    # mazo es capaz de lanzar sus propias cartas.
+    produce_mana: list[str] = field(default_factory=list)
     resuelta: bool = True
 
     @property
@@ -127,17 +131,63 @@ class Mazo:
         }
 
 
+MARCAS = re.compile(r"\*[A-Za-z]{1,2}\*")        # *F* / *E*, foil y grabada de Moxfield
+CATEGORIA = re.compile(r"\[([^\]]*)\]")           # [Burn], [Maybeboard{noPrice}] de Archidekt
+FUERA_DEL_MAZO = ("maybeboard", "sideboard", "considering")
+
+
+def _csv(texto: str) -> list[tuple[int, str, bool]] | None:
+    """Exportación de ManaBox y similares: cabecera con Name y Quantity."""
+    lineas = [l for l in texto.splitlines() if l.strip()]
+    if not lineas or "," not in lineas[0]:
+        return None
+    cabecera = [c.strip().strip('"').lower() for c in lineas[0].split(",")]
+    if "name" not in cabecera:
+        return None
+    i_nombre = cabecera.index("name")
+    i_cant = next((cabecera.index(c) for c in ("quantity", "count", "qty") if c in cabecera), None)
+    i_seccion = next((cabecera.index(c) for c in ("section", "board") if c in cabecera), None)
+
+    salida: list[tuple[int, str, bool]] = []
+    for linea in lineas[1:]:
+        campos = next(csv_lector([linea]), None)
+        if not campos or len(campos) <= i_nombre:
+            continue
+        nombre = campos[i_nombre].strip().split("//")[0].strip()
+        if not nombre:
+            continue
+        try:
+            copias = int(campos[i_cant]) if i_cant is not None and campos[i_cant] else 1
+        except ValueError:
+            copias = 1
+        banq = bool(i_seccion is not None and len(campos) > i_seccion
+                    and campos[i_seccion].strip().lower() in FUERA_DEL_MAZO)
+        salida.append((copias, nombre, banq))
+    return salida or None
+
+
 def parsear_lista(texto: str) -> list[tuple[int, str, bool]]:
     """Convierte una lista de mazo en tuplas (copias, nombre, es_banquillo).
 
-    Acepta el formato de exportación de MTG Arena, el de Moxfield y listas
-    sueltas de texto. Las cabeceras "Deck" y "Sideboard" cambian de sección.
+    Acepta las exportaciones de MTG Arena, Moxfield (con marcas *F*), Archidekt
+    (con categorías entre corchetes), MTGO, el CSV de ManaBox y listas sueltas. Las cabeceras "Deck" y "Sideboard" cambian de sección.
     """
+    en_csv = _csv(texto)
+    if en_csv is not None:
+        return en_csv
+
     salida: list[tuple[int, str, bool]] = []
     banquillo = False
     for cruda in texto.splitlines():
         linea = cruda.strip()
         if not linea or linea.startswith(("#", "//")):
+            continue
+        # Archidekt cuelga la categoría de cada carta entre corchetes; Moxfield
+        # marca la edición foil con *F*. Ni una cosa ni la otra son el nombre.
+        etiquetas = " ".join(CATEGORIA.findall(linea)).lower()
+        fuera = any(p in etiquetas for p in FUERA_DEL_MAZO)
+        linea = MARCAS.sub(" ", CATEGORIA.sub(" ", linea)).strip()
+        if not linea:
             continue
         clave = linea.lower().rstrip(":")
         if clave in CABECERAS:
@@ -151,5 +201,5 @@ def parsear_lista(texto: str) -> list[tuple[int, str, bool]]:
             continue
         # Cartas de doble cara: Scryfall resuelve por la cara frontal.
         nombre = nombre.split("//")[0].strip()
-        salida.append((int(m.group("n") or 1), nombre, banquillo))
+        salida.append((int(m.group("n") or 1), nombre, banquillo or fuera))
     return salida

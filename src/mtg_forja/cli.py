@@ -6,6 +6,7 @@ import json
 import sys
 from pathlib import Path
 
+from . import lexico
 from . import reglas as motor
 from . import scryfall
 from .render import chuleta as r_chuleta
@@ -30,7 +31,15 @@ def main(argv: list[str] | None = None) -> int:
         print("No se ha reconocido ninguna carta en la lista.", file=sys.stderr)
         return 1
 
-    sinergias = motor.detectar(mazo)
+    # Sin red, Scryfall no resuelve nada y los tres documentos saldrían vacíos.
+    # Salir en silencio con código 0 haría creer que ha ido bien.
+    if not any(c.resuelta for c in mazo.cartas):
+        print("No se ha podido resolver ninguna carta contra Scryfall. Revisa la "
+              "conexión a internet, o la grafía de los nombres si la lista es rara.",
+              file=sys.stderr)
+        return 1
+
+    sinergias = lexico.completo(mazo)
     doc = motor.documento(mazo, sinergias, titulo=args.nombre)
 
     destino = Path(args.salida)

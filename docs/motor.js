@@ -4,6 +4,10 @@
 (function (global) {
   "use strict";
 
+  /* Comparación por punto de código, como la de Python. localeCompare colaciona
+     según el idioma del navegador y ordenaría las tildes distinto que el CLI. */
+  const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+
   const API = "https://api.scryfall.com/cards/collection";
   const LOTE = 75;
   const CABECERAS = new Set([
@@ -19,12 +23,49 @@
     tierra: { n: "Tierra", c: "#7E8C5C" },
   };
 
+  const MARCAS = /\*[A-Za-z]{1,2}\*/g;       // *F* / *E* de Moxfield
+  const CATEGORIA = /\[([^\]]*)\]/g;          // [Burn] / [Maybeboard{noPrice}] de Archidekt
+  const FUERA_DEL_MAZO = ["maybeboard", "sideboard", "considering"];
+
+  /** Exportación de ManaBox y similares: cabecera con Name y Quantity. */
+  function csv(texto) {
+    const lineas = texto.split(/\r?\n/).filter((l) => l.trim());
+    if (!lineas.length || !lineas[0].includes(",")) return null;
+    const cab = lineas[0].split(",").map((c) => c.trim().replace(/^"|"$/g, "").toLowerCase());
+    const iN = cab.indexOf("name");
+    if (iN === -1) return null;
+    const iC = ["quantity", "count", "qty"].map((c) => cab.indexOf(c)).find((i) => i !== -1);
+    const iS = ["section", "board"].map((c) => cab.indexOf(c)).find((i) => i !== -1);
+    const campos = (l) => (l.match(/("([^"]*)")|([^,]*)/g) || [])
+      .filter((_, i) => i % 2 === 0).map((c) => c.replace(/^"|"$/g, "").trim());
+    const salida = [];
+    for (const l of lineas.slice(1)) {
+      const f = campos(l);
+      const nombre = (f[iN] || "").split("//")[0].trim();
+      if (!nombre) continue;
+      const n = iC !== undefined ? parseInt(f[iC], 10) : 1;
+      salida.push({
+        copias: Number.isFinite(n) && n > 0 ? n : 1,
+        nombre,
+        banquillo: iS !== undefined && FUERA_DEL_MAZO.includes((f[iS] || "").toLowerCase()),
+      });
+    }
+    return salida.length ? salida : null;
+  }
+
   function parsear(texto) {
+    const enCsv = csv(texto);
+    if (enCsv) return enCsv;
+
     const salida = [];
     let banquillo = false;
     for (const cruda of texto.split(/\r?\n/)) {
-      const linea = cruda.trim();
+      let linea = cruda.trim();
       if (!linea || linea.startsWith("#") || linea.startsWith("//")) continue;
+      const etiquetas = (linea.match(CATEGORIA) || []).join(" ").toLowerCase();
+      const fuera = FUERA_DEL_MAZO.some((p) => etiquetas.includes(p));
+      linea = linea.replace(CATEGORIA, " ").replace(MARCAS, " ").trim();
+      if (!linea) continue;
       const clave = linea.toLowerCase().replace(/:$/, "");
       if (CABECERAS.has(clave)) {
         banquillo = ["sideboard", "banquillo", "reserva"].includes(clave);
@@ -34,7 +75,7 @@
       if (!m) continue;
       const nombre = m[2].split("//")[0].trim();
       if (!nombre) continue;
-      salida.push({ copias: parseInt(m[1] || "1", 10), nombre, banquillo });
+      salida.push({ copias: parseInt(m[1] || "1", 10), nombre, banquillo: banquillo || fuera });
     }
     return salida;
   }
@@ -215,7 +256,7 @@
         const pool = libres.length ? libres : porRol[pieza.rol];
         pool.sort((x, y) => y.carta.copias - x.carta.copias ||
                             x.carta.mv - y.carta.mv ||
-                            x.carta.nombre.localeCompare(y.carta.nombre));
+                            cmp(x.carta.nombre, y.carta.nombre));
         elegidas.push({ rol: pieza.rol, ...pool[0] });
         usadas.add(pool[0].carta.nombre);
       }
@@ -235,7 +276,10 @@
       });
     }
     const orden = { sinergia: 0, aviso: 1, conflicto: 2 };
-    salida.sort((a, b) => (orden[a.tipo] ?? 3) - (orden[b.tipo] ?? 3) || b.fuerza - a.fuerza);
+    // Las tres claves y el criterio de cadena son los de reglas.py: sin el
+    // desempate por bloque, la web ordenaba las sinergias distinto que el CLI.
+    salida.sort((a, b) => (orden[a.tipo] ?? 3) - (orden[b.tipo] ?? 3) ||
+                          b.fuerza - a.fuerza || cmp(a.bloque, b.bloque));
     return salida;
   }
 
@@ -284,5 +328,129 @@
     return { cartas, enlaces, roles: COLOR_ROL };
   }
 
-  global.Forja = { parsear, resolver, reglas, detectar, documento, datosGrafo };
-})(window);
+  /* ---- Motor deductivo: puerto fiel de src/mtg_forja/lexico.py ----------------
+     Las reglas con nombre solo encuentran lo que alguien escribió. Esto deduce
+     sinergias cruzando quién produce un recurso con quién lo premia, y conflictos
+     cruzando quién lo rompe con quién depende de él. Cualquier cambio aquí tiene
+     que ir también en lexico.py: la prueba de paridad compara las dos salidas. */
+
+  const TOPE_SINERGIAS = 10, TOPE_CONFLICTOS = 6, POR_CONCEPTO = 3, POR_CARTA = 4;
+  const RECORDATORIO = /\([^)]*\)/g;
+  let _lexico = null;
+
+  async function lexico() {
+    if (_lexico) return _lexico;
+    const r = await fetch("lexico.json");
+    if (!r.ok) throw new Error("No se ha podido cargar el léxico de recursos");
+    _lexico = (await r.json()).conceptos;
+    return _lexico;
+  }
+
+  function textoReglas(oraculo, nombre) {
+    let t = String(oraculo || "").replace(RECORDATORIO, " ");
+    const formas = [...new Set([nombre, String(nombre || "").split(",")[0].trim()])]
+      .filter(Boolean).sort((a, b) => b.length - a.length);
+    for (const f of formas) {
+      t = t.replace(new RegExp("\\b" + f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "g"),
+                    " esta carta ");
+    }
+    return t.split(/\s+/).filter(Boolean).join(" ");
+  }
+
+  function fraseDe(texto, indice, largo) {
+    const ini = texto.lastIndexOf(".", indice) + 1;
+    let fin = texto.indexOf(".", indice + largo);
+    fin = fin === -1 ? texto.length : fin + 1;
+    return texto.slice(ini, fin).split(/\s+/).filter(Boolean).join(" ").slice(0, 240);
+  }
+
+  function encajaConcepto(carta, bloque, oraculo) {
+    if (!bloque) return "";
+    const re = (p, s) => new RegExp(p, "is").test(s);
+    if (bloque.tipo && !re(bloque.tipo, carta.tipo)) return "";
+    if (bloque.no_tipo && re(bloque.no_tipo, carta.tipo)) return "";
+    if (bloque.mv_min !== undefined && carta.mv < bloque.mv_min) return "";
+    if (bloque.mv_max !== undefined && carta.mv > bloque.mv_max) return "";
+    const patrones = bloque.oracle || [];
+    if (!patrones.length) {
+      return (bloque.tipo || bloque.mv_min !== undefined || bloque.mv_max !== undefined)
+        ? carta.tipo : "";
+    }
+    for (const p of patrones) {
+      const m = new RegExp(p, "is").exec(oraculo);
+      if (m) return fraseDe(oraculo, m.index, m[0].length);
+    }
+    return "";
+  }
+
+  const BLOQUE_LEX = { sinergia: "Motor", conflicto: "Conflictos" };
+
+  function detectarLexico(mazo, conceptos) {
+    const limpio = {};
+    for (const c of mazo.principal) limpio[c.nombre] = textoReglas(c.oraculo, c.nombre);
+
+    const salida = [];
+    for (const c of conceptos) {
+      const reparto = { produce: [], premia: [], rompe: [] };
+      for (const papel of ["produce", "premia", "rompe"]) {
+        for (const carta of mazo.principal) {
+          const ev = encajaConcepto(carta, c[papel], limpio[carta.nombre]);
+          if (ev) reparto[papel].push([carta, ev]);
+        }
+      }
+      const parejas = [];
+      for (const [a, eva] of reparto.produce)
+        for (const [b, evb] of reparto.premia) parejas.push([a, eva, b, evb, "sinergia", "produce", "premia"]);
+      for (const [a, eva] of reparto.rompe)
+        for (const [b, evb] of reparto.premia) parejas.push([a, eva, b, evb, "conflicto", "rompe", "premia"]);
+
+      for (const [a, eva, b, evb, tipo, blA, blB] of parejas) {
+        if (a.nombre === b.nombre) continue;
+        const ev = {}; ev[a.nombre] = eva; ev[b.nombre] = evb;
+        salida.push({
+          id: `${c.id}::${tipo}::${a.nombre}::${b.nombre}`,
+          nombre: `${a.nombre} y ${b.nombre}`,
+          bloque: BLOQUE_LEX[tipo] || "Motor",
+          tipo, turno: "", piezas: [a.nombre, b.nombre], pasos: [], evidencia: ev,
+          fuerza: Math.min(4, (c.fuerza || 2) + (Math.min(a.copias, b.copias) >= 3 ? 1 : 0)),
+          resumen: `{a} ${(c[blA] || {}).texto || "aporta"} y {b} ${(c[blB] || {}).texto || "lo aprovecha"}.`,
+        });
+      }
+    }
+
+    salida.sort((x, y) => (x.tipo === "sinergia" ? 0 : 1) - (y.tipo === "sinergia" ? 0 : 1) ||
+                          y.fuerza - x.fuerza || cmp(x.id, y.id));
+    return podar(salida);
+  }
+
+  function podar(lista) {
+    const vistas = new Set(), veces = {}, porConcepto = {};
+    const cupo = { sinergia: TOPE_SINERGIAS, conflicto: TOPE_CONFLICTOS };
+    const fuera = [];
+    for (const s of lista) {
+      const par = [...s.piezas].sort(cmp).join(" ");
+      const clave = s.id.split("::")[0] + " " + s.tipo;
+      if (vistas.has(par) || (cupo[s.tipo] || 0) <= 0) continue;
+      if ((porConcepto[clave] || 0) >= POR_CONCEPTO) continue;
+      if (s.piezas.some((n) => (veces[n] || 0) >= POR_CARTA)) continue;
+      vistas.add(par);
+      cupo[s.tipo] -= 1;
+      porConcepto[clave] = (porConcepto[clave] || 0) + 1;
+      for (const n of s.piezas) veces[n] = (veces[n] || 0) + 1;
+      fuera.push(s);
+    }
+    return fuera;
+  }
+
+  /** El análisis entero: primero lo escrito, después lo deducido. */
+  function completo(mazo, listaReglas, conceptos) {
+    const nombradas = detectar(mazo, listaReglas);
+    const cubiertas = new Set(nombradas.map((s) => [...s.piezas].sort(cmp).join(" ")));
+    const deducidas = detectarLexico(mazo, conceptos)
+      .filter((s) => !cubiertas.has([...s.piezas].sort(cmp).join(" ")));
+    return nombradas.concat(deducidas);
+  }
+
+  global.Forja = { parsear, resolver, reglas, lexico, detectar, detectarLexico,
+                   completo, documento, datosGrafo, textoReglas };
+})(typeof window !== "undefined" ? window : globalThis);

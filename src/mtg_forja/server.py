@@ -23,6 +23,8 @@ except ImportError:  # SDK de MCP 1.x
     from mcp.server.fastmcp import FastMCP as _Servidor
 
 from . import __version__
+from . import hechos
+from . import lexico
 from . import reglas as motor
 from . import scryfall
 from .render import chuleta as r_chuleta
@@ -61,12 +63,35 @@ def _escribir(nombre: str, html: str, ruta: str | None) -> str:
 def resolver_mazo(lista: str, nombre: str = "Mazo") -> str:
     """Resuelve una lista de mazo contra Scryfall y devuelve el texto de oráculo real.
 
-    Acepta el formato de exportación de MTG Arena, el de Moxfield o una lista
-    suelta ("4 Lightning Helix" por línea). Úsalo SIEMPRE antes de afirmar nada
+    Acepta las exportaciones de MTG Arena, Moxfield, Archidekt, MTGO, el CSV de
+    ManaBox o una lista suelta ("4 Lightning Helix" por línea). Úsalo SIEMPRE antes de afirmar nada
     sobre lo que hace una carta: no cites de memoria.
     """
     mazo = scryfall.resolver(lista, nombre)
     return _json(mazo.dict())
+
+
+@mcp.tool()
+def radiografia_del_mazo(lista: str, nombre: str = "Mazo") -> str:
+    """Los hechos objetivos del mazo, para razonar sobre datos y no de memoria.
+
+    Úsala ANTES de escribir el análisis, junto con `detectar_sinergias`. Devuelve,
+    para cada carta, el oráculo real y unas señales comprobables:
+
+    * `alcance` — si el efecto es simétrico, asimétrico, solo tuyo o solo del rival.
+      Es lo que distingue «barre la mesa» de «apaga lo suyo pero no lo tuyo».
+    * `tipos_que_menciona` — para ver qué NO alcanza un efecto: un barrido de
+      criaturas deja vivos los planeswalkers.
+    * `zonas_que_toca` y `velocidad` — para razonar sobre secuencias y respuestas.
+
+    Y a nivel de mazo: curva, reparto por tipo, copias únicas, y si hay fuentes
+    de color suficientes para lo que el propio mazo exige.
+
+    Estas son las piezas con las que se hace un análisis bueno de un mazo que
+    nadie ha visto antes. El motor de patrones solo encuentra lo que ya estaba
+    escrito; aquí tienes los hechos para ver el resto tú.
+    """
+    return _json(hechos.radiografia(scryfall.resolver(lista, nombre)))
 
 
 @mcp.tool()
@@ -79,7 +104,7 @@ def detectar_sinergias(lista: str, nombre: str = "Mazo") -> str:
     propio criterio, descarta las que no apliquen y añade las que el motor no vea.
     """
     mazo = scryfall.resolver(lista, nombre)
-    sinergias = motor.detectar(mazo)
+    sinergias = lexico.completo(mazo)
     return _json(motor.documento(mazo, sinergias, titulo=nombre))
 
 
@@ -130,7 +155,7 @@ def analizar(lista: str, nombre: str = "Mazo", ruta: str = "") -> str:
     encadena `detectar_sinergias` → reescribes el documento → los tres `render_*`.
     """
     mazo = scryfall.resolver(lista, nombre)
-    doc = motor.documento(mazo, motor.detectar(mazo), titulo=nombre)
+    doc = motor.documento(mazo, lexico.completo(mazo), titulo=nombre)
     base = Path(ruta) if ruta else SALIDA
     return _json({
         "sinergias_encontradas": len(doc["sinergias"]),

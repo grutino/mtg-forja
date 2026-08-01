@@ -256,8 +256,8 @@ $("#analizar").onclick = async () => {
     const mazo = await Forja.resolver(texto);
     if (!mazo.cartas.length) throw new Error("No se ha reconocido ninguna carta");
     estado.textContent = "Buscando patrones…";
-    const reglas = await Forja.reglas();
-    const sinergias = Forja.detectar(mazo, reglas);
+    const [reglas, conceptos] = await Promise.all([Forja.reglas(), Forja.lexico()]);
+    const sinergias = Forja.completo(mazo, reglas, conceptos);
     if (!sinergias.length) {
       estado.textContent = "Sin sinergias detectadas en este mazo";
       estado.classList.add("mal");

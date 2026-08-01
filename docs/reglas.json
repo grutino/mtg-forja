@@ -523,6 +523,375 @@
         "No la sacrifiques mientras sigas subiendo la curva.",
         "Si el coste es vida, cuéntala junto con el resto de costes de vida del mazo."
       ]
+    },
+    {
+      "id": "cantrip-baraja-fetch",
+      "nombre": "Cantrip con tierra de búsqueda",
+      "bloque": "Motor",
+      "fuerza": 4,
+      "turno": "pronto",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "on top of your library"
+        },
+        {
+          "rol": "b",
+          "tipo": "Land",
+          "oracle": "Search your library for an? [^.]{0,40}(Plains|Island|Swamp|Mountain|Forest|land) card",
+          "oracle2": "then shuffle"
+        }
+      ],
+      "resumen": "{a} deja arriba lo que no quieres; {b} lo baraja y robas cartas nuevas.",
+      "pasos": [
+        "Lanza {a} en el turno del rival, no en el tuyo.",
+        "Guarda lo bueno y devuelve arriba lo que sobra.",
+        "Rompe {b} para barajar y no volver a robarlo."
+      ]
+    },
+    {
+      "id": "fetch-dual",
+      "nombre": "Base de maná con búsqueda y duales",
+      "bloque": "Maná",
+      "fuerza": 2,
+      "turno": "pronto",
+      "piezas": [
+        {
+          "rol": "a",
+          "tipo": "Land",
+          "oracle": "Search your library for an? [^.]{0,40}(Plains|Island|Swamp|Mountain|Forest|land) card",
+          "oracle2": "then shuffle"
+        },
+        {
+          "rol": "b",
+          "tipo": "Land —.*(Plains|Island|Swamp|Mountain|Forest).*(Plains|Island|Swamp|Mountain|Forest)",
+          "no_tipo": "Basic"
+        }
+      ],
+      "resumen": "{a} busca {b}, que cuenta como dos tipos de tierra: es lo que sostiene los colores del mazo.",
+      "pasos": [
+        "Decide qué color necesitas antes de romper {a}.",
+        "Busca {b} salvo que temas la destrucción de tierras.",
+        "Recuerda que cada búsqueda cuesta 1 vida."
+      ]
+    },
+    {
+      "id": "delve-cementerio",
+      "nombre": "Amenaza pagada con el cementerio",
+      "bloque": "Amenazas",
+      "fuerza": 4,
+      "turno": "medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "Delve"
+        },
+        {
+          "rol": "b",
+          "tipo": "Instant|Sorcery",
+          "mv_max": 2,
+          "copias_min": 3
+        }
+      ],
+      "resumen": "Cada {b} que gastas alimenta el cementerio y abarata {a}: la amenaza sale por una fracción de su coste.",
+      "pasos": [
+        "Gasta {b} sin miedo en los primeros turnos.",
+        "Cuenta las cartas del cementerio antes de lanzar {a}.",
+        "Ojo: exiliar el cementerio apaga esto."
+      ]
+    },
+    {
+      "id": "escape-alimentado",
+      "nombre": "Escape alimentado por tus tierras",
+      "bloque": "Motor",
+      "fuerza": 2,
+      "turno": "tarde",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "Escape—"
+        },
+        {
+          "rol": "b",
+          "tipo": "Land",
+          "oracle": "Sacrifice this land"
+        }
+      ],
+      "resumen": "Cada {b} que rompes llena el cementerio y acerca el escape de {a}.",
+      "pasos": [
+        "Rompe {b} pronto aunque no necesites el color.",
+        "Cuenta el cementerio antes de contar con {a}.",
+        "{a} vuelve una y otra vez en la partida larga."
+      ]
+    },
+    {
+      "id": "flashback-prestado",
+      "nombre": "Repetir tu mejor hechizo barato",
+      "bloque": "Motor",
+      "fuerza": 3,
+      "turno": "medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "in your graveyard gains flashback"
+        },
+        {
+          "rol": "b",
+          "tipo": "Instant|Sorcery",
+          "mv_max": 2
+        }
+      ],
+      "resumen": "{a} devuelve {b} desde el cementerio: cuerpo con flash y hechizo repetido en la misma carta.",
+      "pasos": [
+        "No bajes {a} sin algo que merezca repetir.",
+        "Entra con flash en el turno del rival.",
+        "Relanza {b} pagando su coste de maná."
+      ]
+    },
+    {
+      "id": "entomb-reanimar",
+      "nombre": "Poner en el cementerio para reanimar",
+      "bloque": "Motor",
+      "fuerza": 5,
+      "turno": "temprano",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "Search your library for",
+          "oracle2": "into your graveyard"
+        },
+        {
+          "rol": "b",
+          "oracle": "creature card from a graveyard onto the battlefield"
+        }
+      ],
+      "resumen": "{a} coloca la criatura y {b} la trae a la mesa: el mazo se salta todo el coste de maná.",
+      "pasos": [
+        "Busca con {a} la criatura que gane la partida sola.",
+        "Lanza {b} el mismo turno si puedes.",
+        "Sin {b} en la mano, {a} no hace nada por sí solo."
+      ]
+    },
+    {
+      "id": "reanimar-gordo",
+      "nombre": "Traer a la mesa lo que no podrías lanzar",
+      "bloque": "Amenazas",
+      "fuerza": 5,
+      "turno": "temprano",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "creature card from a graveyard onto the battlefield"
+        },
+        {
+          "rol": "b",
+          "tipo": "Creature",
+          "mv_min": 6
+        }
+      ],
+      "resumen": "{a} pone {b} en juego por dos manás cuando lanzarlo costaría muchísimo más.",
+      "pasos": [
+        "Mete {b} en el cementerio primero.",
+        "Lanza {a} apuntando a {b}.",
+        "Cuenta la vida que pagas si {b} es muy caro."
+      ]
+    },
+    {
+      "id": "hellbent-mano-vacia",
+      "nombre": "Vaciar la mano para mejorar el tutor",
+      "bloque": "Motor",
+      "fuerza": 4,
+      "turno": "medio",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "Discard your hand"
+        },
+        {
+          "rol": "b",
+          "oracle": "If you have no cards in hand"
+        }
+      ],
+      "resumen": "{a} deja la mano vacía, que es justo la condición que mejora a {b}.",
+      "pasos": [
+        "Encadena todo lo que puedas antes.",
+        "Activa {a} con {b} ya en la pila.",
+        "Sin la mano vacía, {b} rinde mucho menos."
+      ]
+    },
+    {
+      "id": "surveil-delirio",
+      "nombre": "Llenar el cementerio para el delirio",
+      "bloque": "Motor",
+      "fuerza": 3,
+      "turno": "pronto",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "surveil|mill"
+        },
+        {
+          "rol": "b",
+          "oracle": "Delirium"
+        }
+      ],
+      "resumen": "{a} llena el cementerio de tipos distintos, que es lo que enciende a {b}.",
+      "pasos": [
+        "Cuenta los tipos de carta del cementerio, no la cantidad.",
+        "Con {a}, manda al cementerio el tipo que te falte.",
+        "Cuatro tipos distintos encienden {b}."
+      ]
+    },
+    {
+      "id": "pitch-azul",
+      "nombre": "Contrahechizo gratis con carta azul",
+      "bloque": "Respuesta",
+      "fuerza": 4,
+      "turno": "reacción",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "exile a blue card from your hand rather than pay"
+        },
+        {
+          "rol": "b",
+          "coste": "\\{U\\}",
+          "copias_min": 3
+        }
+      ],
+      "resumen": "{a} se lanza sin maná exiliando {b}: es lo que te deja interactuar en el turno uno del rival.",
+      "pasos": [
+        "Cuenta tus cartas azules antes de exiliar una.",
+        "Exilia {b} y paga el coste alternativo.",
+        "Cada uno te cuesta dos cartas: no lo gastes en cualquier cosa."
+      ]
+    },
+    {
+      "id": "daze-isla",
+      "nombre": "Contrahechizo gratis devolviendo una Isla",
+      "bloque": "Respuesta",
+      "fuerza": 3,
+      "turno": "reacción",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "return an Island you control to its owner's hand rather than pay"
+        },
+        {
+          "rol": "b",
+          "tipo": "Island"
+        }
+      ],
+      "resumen": "{a} devuelve {b} a tu mano en vez de pagar maná: gratis en tempo, caro en tierras.",
+      "pasos": [
+        "Úsalo pronto, cuando un maná extra le duela al rival.",
+        "Devuelve {b} y vuelve a jugarla el turno siguiente.",
+        "Tarde en la partida el rival paga el {1} sin despeinarse."
+      ]
+    },
+    {
+      "id": "tierra-agresiva-propia",
+      "nombre": "Destruyes tierras y las tuyas también lo son",
+      "bloque": "Maná",
+      "fuerza": 3,
+      "turno": "ojo",
+      "tipo": "conflicto",
+      "piezas": [
+        {
+          "rol": "a",
+          "tipo": "Land",
+          "oracle": "Destroy target nonbasic land"
+        },
+        {
+          "rol": "b",
+          "tipo": "Land",
+          "no_tipo": "Basic",
+          "copias_min": 3
+        }
+      ],
+      "resumen": "{a} ataca tierras no básicas, y {b} son tuyas: el plan también te cuesta a ti si te quedas sin básicas.",
+      "pasos": [
+        "Cuenta tus básicas antes de apostarlo todo a {a}.",
+        "No rompas {b} si aún no has fijado los colores.",
+        "Contra mazos de tierras básicas, {a} vale mucho menos."
+      ]
+    },
+    {
+      "id": "castigo-robo",
+      "nombre": "Castigar el robo del rival",
+      "bloque": "Amenazas",
+      "fuerza": 3,
+      "turno": "pronto",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "whenever an opponent draws a card"
+        },
+        {
+          "rol": "b",
+          "tipo": "Instant|Sorcery",
+          "oracle": "draw .{0,40}card"
+        }
+      ],
+      "resumen": "{a} castiga cada robo del rival. Ojo: {b} es tuyo y no lo dispara.",
+      "pasos": [
+        "Baja {a} con flash en el turno del rival.",
+        "Cada robo suyo, además del primero, le hace daño.",
+        "No confundas: tu propio {b} no lo activa."
+      ]
+    },
+    {
+      "id": "luna-propias-no-basicas",
+      "nombre": "La luna también apaga tus tierras",
+      "bloque": "Maná",
+      "fuerza": 4,
+      "turno": "ojo",
+      "tipo": "conflicto",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "Nonbasic lands are"
+        },
+        {
+          "rol": "b",
+          "tipo": "Land",
+          "no_tipo": "Basic",
+          "copias_min": 4
+        }
+      ],
+      "resumen": "{a} convierte todas las no básicas, y {b} son tuyas: te cortas tus propios colores.",
+      "pasos": [
+        "Comprueba cuántas básicas llevas antes de bajar {a}.",
+        "Con {b} en mesa, puede que te quedes sin el color que necesitas.",
+        "Es una carta de banquillo contra mazos de muchas duales, no un motor propio."
+      ]
+    },
+    {
+      "id": "caliz-propios-baratos",
+      "nombre": "El cáliz también contrarresta lo tuyo",
+      "bloque": "Respuesta",
+      "fuerza": 3,
+      "turno": "ojo",
+      "tipo": "conflicto",
+      "piezas": [
+        {
+          "rol": "a",
+          "oracle": "counter that spell",
+          "oracle2": "charge counters"
+        },
+        {
+          "rol": "b",
+          "tipo": "Instant|Sorcery",
+          "mv_max": 1,
+          "copias_min": 4
+        }
+      ],
+      "resumen": "{a} contrarresta todo lo del valor elegido, incluidos tus {b}.",
+      "pasos": [
+        "Elige el valor mirando tu propia curva, no solo la del rival.",
+        "Con muchos {b} de valor uno, no lo pongas ahí.",
+        "A veces la jugada es ponerlo en cero contra artefactos."
+      ]
     }
   ]
 }

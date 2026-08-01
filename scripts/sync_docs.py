@@ -11,6 +11,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 COPIAS = [
     ("src/mtg_forja/reglas.json", "docs/reglas.json"),
+    ("src/mtg_forja/lexico.json", "docs/lexico.json"),
     ("src/mtg_forja/render/grafo.js", "docs/grafo.js"),
     ("src/mtg_forja/render/comun.js", "docs/comun.js"),
     ("src/mtg_forja/render/guia.js", "docs/guia.js"),

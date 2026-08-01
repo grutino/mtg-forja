@@ -49,12 +49,13 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 
 | Pieza | Qué es | Su papel aquí |
 |---|---|---|
-| `reglas.json` | 22 patrones genéricos de interacción | **El conocimiento.** No sabe de cartas concretas: describe formas. Es donde crece el proyecto. |
+| `reglas.json` | 37 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
+| `lexico.json` | 23 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
 | `scryfall.py` | Cliente de la API de Scryfall, con caché en disco | **La fuente de verdad.** Todo lo que se afirma sale de aquí, nunca de la memoria de un modelo. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
 | El servidor MCP | `server.py` | **El enchufe con Claude.** Expone las herramientas para que el modelo pueda llamarlas. |
-| Las herramientas | Siete funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
+| Las herramientas | Ocho funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
 | La skill | `skill/SKILL.md` | Lo que Claude *debe saber*: qué verificar antes de afirmar nada, qué documento pide cada situación, cómo redactar. |
 | El CLI | `cli.py` | Los mismos tres documentos sin pasar por Claude. |
 | La web | `docs/` | Todo lo anterior en el navegador, sin instalar nada. |
@@ -151,7 +152,7 @@ el proyecto te sirve.
 3. **Cierra Claude Desktop del todo y vuelve a abrirlo.** No basta con cerrar la ventana.
 
 4. Comprueba que ha cargado: en el icono de conectores debe aparecer `mtg-forja` con sus
-   siete herramientas. Si no sale, mira [Si algo falla](#si-algo-falla).
+   ocho herramientas. Si no sale, mira [Si algo falla](#si-algo-falla).
 
 5. Instala además la skill de [`skill/SKILL.md`](skill/SKILL.md) para que Claude sepa
    **cómo** usar las herramientas: qué verificar, cómo redactar los pasos y cuándo
@@ -267,7 +268,7 @@ Una vez instalado el conector, pídeselo en lenguaje natural y pégale la lista:
 
 Claude resolverá las cartas contra Scryfall, buscará los patrones de interacción y
 generará los HTML en la carpeta que pusiste en `MTG_FORJA_SALIDA`. Vale el formato de
-exportación de MTG Arena, el de Moxfield o una carta por línea.
+exportación de MTG Arena, Moxfield, Archidekt, MTGO, el CSV de ManaBox, o una carta por línea.
 
 Cosas que puedes pedirle, ya que las herramientas están separadas a propósito:
 
@@ -324,6 +325,7 @@ o imprimir la chuleta directamente desde el navegador.
 | Herramienta | Qué hace |
 |---|---|
 | `resolver_mazo` | Resuelve la lista contra Scryfall y devuelve el oráculo real. |
+| `radiografia_del_mazo` | Los hechos objetivos: a quién alcanza cada efecto, qué tipos menciona, qué zonas toca, y si el mazo tiene fuentes de color para lo que él mismo exige. |
 | `detectar_sinergias` | Busca patrones de interacción y devuelve candidatas **con la frase de oráculo que disparó cada una**. |
 | `listar_reglas` | Enseña los patrones que conoce el motor. |
 | `render_guia` / `render_chuleta` / `render_mapa` | Generan cada HTML a partir del documento. |
@@ -360,6 +362,47 @@ Campos disponibles en cada pieza: `oracle`, `oracle2`, `oracle3`, `no_oracle`, `
 
 **Añadir una regla es añadir un objeto a esa lista.** Nada más. Se usa igual desde
 Python y desde el navegador, porque las dos mitades leen el mismo archivo.
+
+### Hasta dónde llega cada camino
+
+Conviene decirlo claro, porque determina qué esperar:
+
+| Camino | Alcance | Profundidad |
+|---|---|---|
+| Reglas escritas (`reglas.json`) | solo los arquetipos que alguien escribió | **alta** — ve asimetrías y casos raros |
+| Léxico de recursos (`lexico.json`) | **cualquier mazo** | baja — solo flujos de recursos |
+| Modelo vía MCP | **cualquier mazo** | **alta** — es como se hizo el análisis original |
+
+Las reglas escritas no salieron de un motor: salieron de un modelo leyendo el oráculo de
+cada carta y razonando, y luego alguien congeló esas conclusiones. Por eso ningún motor
+de patrones las reproduce. Comprobado: sobre el mazo que originó el proyecto, el léxico
+redescubre **1 de las 18** parejas escritas a mano.
+
+Lo que ningún motor puede ver, y sí ve un modelo con el oráculo delante:
+
+- «apaga los artefactos del rival, **pero no los tuyos**» — requiere entender la asimetría
+- «el barrido no alcanza a tus planeswalkers» — requiere inferir qué queda **fuera**
+- «esa tierra solo es criatura cuando la activas, así que sobrevive» — estados temporales
+- «barajar descoloca la carta que pusiste arriba» — posición en la biblioteca
+
+Por eso la herramienta `radiografia_del_mazo` existe: le da al modelo esos hechos —alcance,
+tipos que menciona, zonas que toca— para que pueda razonar en vez de adivinar.
+
+**Si quieres el análisis bueno de un mazo que nadie ha visto, usa el camino MCP.** El CLI
+y la web no tienen un modelo detrás; ahí el léxico sirve de suelo, para que un mazo
+desconocido nunca devuelva una página casi vacía.
+
+### Dos límites que conviene conocer
+
+**El motor solo encuentra lo que se le ha enseñado.** Si analizas un mazo y salen dos
+sinergias, casi nunca es un fallo de resolución: es que el paquete no cubre ese
+arquetipo todavía. Para comprobarlo, mira `cartas_sin_resolver` en la salida — si viene
+vacío, las cartas se leyeron bien y lo que falta son patrones. Escribir la regla que
+falta es el trabajo, y es el trabajo que hace crecer esto.
+
+**El banquillo no entra en la detección.** Las cartas de reserva se resuelven contra
+Scryfall y aparecen en el documento, pero las reglas solo cruzan el mazo principal. Una
+sinergia que dependa de una carta del banquillo no se detecta.
 
 Después de tocar `reglas.json` o cualquiera de los renderizadores `.js`, sincroniza la web:
 
@@ -501,7 +544,7 @@ En los ajustes del repositorio, **Pages → Source: Deploy from a branch → `ma
 
 ```
 src/mtg_forja/
-  modelo.py        cartas, mazo, parseo de listas (Arena, Moxfield, texto suelto)
+  modelo.py        cartas, mazo, parseo de listas (Arena, Moxfield, Archidekt, ManaBox…)
   scryfall.py      resolución con caché en disco y modo sin red
   reglas.json      el paquete de patrones — aquí es donde se crece
   reglas.py        motor de detección

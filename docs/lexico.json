@@ -1,0 +1,510 @@
+{
+  "version": 1,
+  "nota": "Léxico de recursos. A diferencia de reglas.json, aquí no se describen parejas de cartas sino RECURSOS: qué produce una carta, qué premia, y qué rompe. Las sinergias no se escriben, se deducen cruzando productores con premiadores; los conflictos, cruzando lo que rompe un recurso con lo que depende de él. Añadir un concepto cubre de golpe todas las parejas que lo compartan, así que esto escala con el número de mecánicas de Magic y no con el número de mazos.",
+  "conceptos": [
+    {
+      "id": "cementerio",
+      "nombre": "el cementerio",
+      "fuerza": 3,
+      "produce": {
+        "oracle": [
+          "put(s)? .{0,50}into (your|a|their) graveyard",
+          "\\bmills?\\b",
+          "\\bsurveils?\\b",
+          "discard(s)? (a|your|two|three|that|any)",
+          "Sacrifice (a|an|this|another)",
+          "\\bDredge\\b"
+        ],
+        "texto": "llena tu cementerio"
+      },
+      "premia": {
+        "oracle": [
+          "cards? in (your|a) graveyard",
+          "\\bDelve\\b",
+          "\\bEscape\\b",
+          "\\bFlashback\\b",
+          "\\bDelirium\\b",
+          "\\bThreshold\\b",
+          "from (your|a) graveyard",
+          "\\bUnearth\\b",
+          "\\bDisturb\\b",
+          "card types among cards in your graveyard"
+        ],
+        "texto": "se alimenta del cementerio"
+      },
+      "rompe": {
+        "oracle": [
+          "exile(s)? .{0,40}graveyard",
+          "graveyards?.{0,30}exile",
+          "would be put into a graveyard.{0,60}exile",
+          "Players can't cast spells from graveyards"
+        ],
+        "texto": "vacía los cementerios"
+      }
+    },
+    {
+      "id": "mano-vacia",
+      "nombre": "la mano vacía",
+      "fuerza": 4,
+      "produce": {
+        "oracle": [
+          "Discard your hand"
+        ],
+        "texto": "te deja la mano vacía"
+      },
+      "premia": {
+        "oracle": [
+          "no cards in hand",
+          "\\bHellbent\\b"
+        ],
+        "texto": "mejora con la mano vacía"
+      }
+    },
+    {
+      "id": "artefactos",
+      "nombre": "los artefactos",
+      "fuerza": 3,
+      "produce": {
+        "tipo": "Artifact",
+        "oracle": [
+          "create(s)? .{0,40}(Treasure|artifact|Clue|Food) token"
+        ],
+        "texto": "pone artefactos en juego"
+      },
+      "premia": {
+        "oracle": [
+          "artifacts? you control",
+          "\\bMetalcraft\\b",
+          "Affinity for artifacts",
+          "for each artifact",
+          "artifact you control"
+        ],
+        "texto": "cuenta tus artefactos"
+      },
+      "rompe": {
+        "oracle": [
+          "Destroy all artifacts",
+          "artifacts?.{0,30}(can't|don't) untap"
+        ],
+        "texto": "barre los artefactos"
+      }
+    },
+    {
+      "id": "criaturas",
+      "nombre": "las criaturas en la mesa",
+      "fuerza": 2,
+      "produce": {
+        "tipo": "Creature",
+        "oracle": [
+          "create(s)? .{0,60}creature token"
+        ],
+        "texto": "pone criaturas en la mesa"
+      },
+      "premia": {
+        "oracle": [
+          "creatures you control",
+          "for each creature you control",
+          "number of creatures"
+        ],
+        "texto": "escala con tus criaturas"
+      },
+      "rompe": {
+        "oracle": [
+          "Destroy all creatures",
+          "all creatures get -",
+          "each creature gets -",
+          "Exile all creatures",
+          "creatures get -\\d+/-\\d+"
+        ],
+        "texto": "barre las criaturas"
+      }
+    },
+    {
+      "id": "criatura-muere",
+      "nombre": "las criaturas que mueren",
+      "fuerza": 4,
+      "produce": {
+        "oracle": [
+          "Sacrifice (a|another) creature",
+          "Sacrifice this creature"
+        ],
+        "texto": "sacrifica criaturas a voluntad"
+      },
+      "premia": {
+        "oracle": [
+          "creature you control dies",
+          "another creature dies",
+          "a creature dies",
+          "creature dies"
+        ],
+        "texto": "se dispara cuando muere una criatura"
+      }
+    },
+    {
+      "id": "vida-como-recurso",
+      "nombre": "la vida como recurso",
+      "fuerza": 3,
+      "produce": {
+        "oracle": [
+          "you gain \\d+ life",
+          "gains? \\d+ life",
+          "\\bLifelink\\b"
+        ],
+        "texto": "te devuelve vida"
+      },
+      "premia": {
+        "oracle": [
+          "[Pp]ay \\d+ life",
+          "[Pp]ay life equal to",
+          "you lose \\d+ life",
+          "lose(s)? life equal to"
+        ],
+        "texto": "paga vida para funcionar"
+      }
+    },
+    {
+      "id": "ganar-vida-disparo",
+      "nombre": "ganar vida como disparador",
+      "fuerza": 4,
+      "produce": {
+        "oracle": [
+          "you gain \\d+ life",
+          "\\bLifelink\\b"
+        ],
+        "texto": "gana vida"
+      },
+      "premia": {
+        "oracle": [
+          "whenever you gain life",
+          "you gained life this turn",
+          "if you gained life"
+        ],
+        "texto": "se dispara cada vez que ganas vida"
+      }
+    },
+    {
+      "id": "robar-cartas",
+      "nombre": "robar cartas",
+      "fuerza": 2,
+      "produce": {
+        "oracle": [
+          "[Dd]raw(s)? (a|two|three|four|X|\\w+) cards?"
+        ],
+        "texto": "te hace robar"
+      },
+      "premia": {
+        "oracle": [
+          "whenever you draw",
+          "if you.{0,15}drawn",
+          "the second card you draw",
+          "you've drawn"
+        ],
+        "texto": "premia cada robo tuyo"
+      }
+    },
+    {
+      "id": "robo-del-rival",
+      "nombre": "el robo del rival",
+      "fuerza": 4,
+      "premia": {
+        "oracle": [
+          "whenever an opponent draws",
+          "opponent draws a card"
+        ],
+        "texto": "castiga cada robo del rival"
+      },
+      "rompe": {
+        "oracle": [
+          "can't draw more than one card",
+          "opponents can't draw",
+          "skip .{0,20}draw step"
+        ],
+        "texto": "impide que el rival robe"
+      }
+    },
+    {
+      "id": "hechizos-no-criatura",
+      "nombre": "lanzar hechizos que no son criatura",
+      "fuerza": 3,
+      "produce": {
+        "tipo": "Instant|Sorcery",
+        "texto": "es un hechizo que no es criatura"
+      },
+      "premia": {
+        "oracle": [
+          "whenever you cast (an|a) (instant|noncreature|sorcery)",
+          "\\bProwess\\b",
+          "\\bStorm\\b",
+          "\\bMagecraft\\b",
+          "instant or sorcery spell"
+        ],
+        "texto": "se dispara con cada hechizo que lanzas"
+      }
+    },
+    {
+      "id": "hechizos-baratos",
+      "nombre": "los hechizos de coste bajo",
+      "fuerza": 4,
+      "premia": {
+        "mv_max": 1,
+        "no_tipo": "Land",
+        "texto": "cuesta uno o menos"
+      },
+      "rompe": {
+        "oracle": [
+          "counter that spell",
+          "cost(s)? \\{?\\d\\}? more to cast",
+          "would cost less than",
+          "spells cost \\{?\\d"
+        ],
+        "texto": "grava o contrarresta los hechizos baratos"
+      }
+    },
+    {
+      "id": "tierras-no-basicas",
+      "nombre": "las tierras no básicas",
+      "fuerza": 4,
+      "premia": {
+        "tipo": "Land",
+        "no_tipo": "Basic",
+        "texto": "es una tierra no básica"
+      },
+      "rompe": {
+        "oracle": [
+          "Nonbasic lands are",
+          "Destroy target nonbasic land",
+          "nonbasic land.{0,40}sacrifice"
+        ],
+        "texto": "castiga las tierras no básicas"
+      }
+    },
+    {
+      "id": "tierras-extra",
+      "nombre": "poner tierras de más",
+      "fuerza": 3,
+      "produce": {
+        "oracle": [
+          "play an additional land",
+          "put(s)? .{0,40}land card.{0,30}onto the battlefield",
+          "Search your library for .{0,40}land"
+        ],
+        "texto": "pone tierras de más en juego"
+      },
+      "premia": {
+        "oracle": [
+          "\\bLandfall\\b",
+          "whenever a land enters",
+          "land enters the battlefield under your control"
+        ],
+        "texto": "se dispara cuando entra una tierra"
+      }
+    },
+    {
+      "id": "orden-biblioteca",
+      "nombre": "el orden de tu biblioteca",
+      "fuerza": 4,
+      "produce": {
+        "oracle": [
+          "on top of your library",
+          "\\bScry\\b",
+          "look at the top card of your library"
+        ],
+        "texto": "elige qué ves arriba"
+      },
+      "premia": {
+        "oracle": [
+          "play with the top card of your library revealed",
+          "may cast .{0,40}from the top of your library",
+          "\\bMiracle\\b",
+          "reveal the top card of your library and",
+          "top card of your library, (you may )?cast"
+        ],
+        "texto": "juega con la carta de arriba"
+      },
+      "rompe": {
+        "oracle": [
+          "then shuffle",
+          "[Ss]huffle your library"
+        ],
+        "texto": "baraja y descoloca lo de arriba"
+      }
+    },
+    {
+      "id": "contadores-mas-uno",
+      "nombre": "los contadores +1/+1",
+      "fuerza": 4,
+      "produce": {
+        "oracle": [
+          "\\+1/\\+1 counter"
+        ],
+        "texto": "reparte contadores +1/+1"
+      },
+      "premia": {
+        "oracle": [
+          "one or more \\+1/\\+1 counters would be put",
+          "that many plus",
+          "with one or more \\+1/\\+1 counters"
+        ],
+        "texto": "multiplica los contadores +1/+1"
+      }
+    },
+    {
+      "id": "mana-explosivo",
+      "nombre": "el maná de golpe",
+      "fuerza": 3,
+      "produce": {
+        "oracle": [
+          "Add \\{[^}]+\\}\\{",
+          "Add three mana",
+          "Add \\w+ mana"
+        ],
+        "texto": "produce maná de golpe"
+      },
+      "premia": {
+        "mv_min": 6,
+        "no_tipo": "Land",
+        "texto": "cuesta muchísimo maná"
+      }
+    },
+    {
+      "id": "sin-mana",
+      "nombre": "saltarse el coste de maná",
+      "fuerza": 5,
+      "produce": {
+        "oracle": [
+          "rather than pay this spell's mana cost",
+          "without paying its mana cost",
+          "onto the battlefield from your hand"
+        ],
+        "texto": "se salta el coste de maná"
+      },
+      "premia": {
+        "mv_min": 7,
+        "texto": "es imposible de lanzar por su coste"
+      }
+    },
+    {
+      "id": "reanimacion",
+      "nombre": "la reanimación",
+      "fuerza": 5,
+      "produce": {
+        "oracle": [
+          "creature card from (a|your) graveyard onto the battlefield",
+          "[Rr]eturn target creature card from"
+        ],
+        "texto": "trae criaturas del cementerio"
+      },
+      "premia": {
+        "tipo": "Creature",
+        "mv_min": 6,
+        "texto": "es una criatura enorme"
+      }
+    },
+    {
+      "id": "desenganche",
+      "nombre": "desenderezar permanentes",
+      "fuerza": 4,
+      "produce": {
+        "oracle": [
+          "[Uu]ntap (target|all|each)",
+          "untap up to"
+        ],
+        "texto": "desendereza permanentes"
+      },
+      "premia": {
+        "oracle": [
+          "\\{T\\}[,:]"
+        ],
+        "texto": "se activa girándose"
+      }
+    },
+    {
+      "id": "prevenir-perder",
+      "nombre": "no perder la partida",
+      "fuerza": 5,
+      "produce": {
+        "oracle": [
+          "you (can't|don't) lose the game",
+          "life total can't change",
+          "damage that would reduce your life total"
+        ],
+        "texto": "te impide perder"
+      },
+      "premia": {
+        "oracle": [
+          "lose(s)? \\d+ life",
+          "lose(s)? life equal to",
+          "pay(s)? \\d+ life",
+          "pay(s)? life equal to",
+          "lose the game",
+          "your life total"
+        ],
+        "texto": "te acerca peligrosamente a cero"
+      }
+    },
+    {
+      "id": "entra-en-juego",
+      "nombre": "las entradas al campo de batalla",
+      "fuerza": 3,
+      "produce": {
+        "oracle": [
+          "[Rr]eturn .{0,40}to (its|their) owner's hand",
+          "[Ff]licker",
+          "exile .{0,30}then return (it|that card)"
+        ],
+        "texto": "vuelve a meter permanentes en juego"
+      },
+      "premia": {
+        "oracle": [
+          "[Ww]hen (this|.{0,25}) enters",
+          "enters the battlefield,"
+        ],
+        "texto": "tiene un disparo al entrar"
+      },
+      "rompe": {
+        "oracle": [
+          "enters? tapped and",
+          "abilities of creatures.{0,20}entering.{0,20}don't trigger",
+          "creature abilities.{0,30}don't trigger"
+        ],
+        "texto": "apaga los disparos de entrada"
+      }
+    },
+    {
+      "id": "buscar-carta",
+      "nombre": "buscar la carta que necesitas",
+      "fuerza": 3,
+      "produce": {
+        "oracle": [
+          "Search your library for"
+        ],
+        "texto": "busca la carta exacta"
+      },
+      "premia": {
+        "oracle": [
+          "you win the game",
+          "\\bCombo\\b"
+        ],
+        "texto": "es la pieza única que buscas"
+      }
+    },
+    {
+      "id": "banquillo-deseo",
+      "nombre": "el banquillo como caja de herramientas",
+      "fuerza": 3,
+      "produce": {
+        "oracle": [
+          "from outside the game",
+          "you own from outside"
+        ],
+        "texto": "trae cartas de fuera de la partida"
+      },
+      "premia": {
+        "oracle": [
+          "you win the game"
+        ],
+        "texto": "gana la partida por sí sola"
+      }
+    }
+  ]
+}

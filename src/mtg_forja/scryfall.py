@@ -157,6 +157,7 @@ def resolver(lista: str, nombre_mazo: str = "Mazo") -> Mazo:
                 identidad=bruto.get("color_identity", []),
                 rarezas=bruto.get("rarity", ""),
                 scryfall_uri=bruto.get("scryfall_uri", ""),
+                produce_mana=bruto.get("produced_mana", []) or [],
             )
         clave = (_clave(carta.nombre), banq)
         if clave in vistos:
