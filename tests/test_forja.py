@@ -172,6 +172,24 @@ def test_combos_resume_lo_que_importa(monkeypatch):
     assert uno["cartas"] and uno["produce"] and uno["pasos"]
 
 
+def test_el_pip_incoloro_no_choca_con_la_ficha_de_carta():
+    """La guía usa `.c` para la ficha de carta, de 118px de ancho.
+
+    Cuando el pip de maná genérico se llamaba `.pip.c`, esa regla ganaba por ir
+    después con la misma especificidad y el círculo salía como un óvalo.
+    """
+    from mtg_forja.render import comun
+
+    marca = comun.pips("{4}")
+    assert 'class="pip c"' not in marca, "vuelve a chocar con la ficha de carta"
+    assert 'class="pip inc"' in marca
+    assert ".pip.inc{" in comun.PIPS
+
+    # y la mitad de JavaScript tiene que decir exactamente lo mismo
+    js = (RAIZ / "src" / "mtg_forja" / "render" / "comun.js").read_text(encoding="utf-8")
+    assert 'class="pip c"' not in js and ".pip.inc{" in js
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")

@@ -14,13 +14,16 @@
 }
 `;
 
+/* El pip incoloro se llama `inc`, no `c`: la guía usa `.c` para la ficha de
+   carta (118px de ancho) y, al definirse después con la misma especificidad,
+   ganaba y convertía el círculo del maná genérico en un óvalo. */
   const PIPS = `
 .pip{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;
  border-radius:50%;font-family:var(--cond);font-size:9.5px;font-weight:700;line-height:1;
  border:1px solid rgba(0,0,0,.3);flex:0 0 auto}
 .pip.w{background:#F5F1E4;color:#57503f}.pip.u{background:#8FBEDC;color:#22333d}
 .pip.b{background:#3B3238;color:#e7dfe2}.pip.r{background:#C4472A;color:#fff8f0}
-.pip.g{background:#7E9B6A;color:#1f2a19}.pip.c{background:#C3BAA8;color:#3d382f}
+.pip.g{background:#7E9B6A;color:#1f2a19}.pip.inc{background:#C3BAA8;color:#3d382f}
 `;
 
   const CSS_CURVA = `
@@ -71,9 +74,9 @@
       if (s.length === 1 && "WUBRG".includes(s)) {
         fuera.push(`<i class="pip ${s.toLowerCase()}">${s}</i>`);
       } else if (/^\d+$/.test(s) || s === "X") {
-        fuera.push(`<i class="pip c">${s}</i>`);
+        fuera.push(`<i class="pip inc">${s}</i>`);
       } else {
-        fuera.push(`<i class="pip c">${s[0]}</i>`);
+        fuera.push(`<i class="pip inc">${s[0]}</i>`);
       }
     }
     return fuera.join("");
