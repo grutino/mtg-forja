@@ -77,7 +77,7 @@ function tick(){
       const d=Math.sqrt(d2),min=a.r+b.r+26;let f=9000/d2;
       if(d<min)f+=(min-d)*.55;
       const fx=dx/d*f,fy=dy/d*f;a.vx-=fx;a.vy-=fy;b.vx+=fx;b.vy+=fy}}
-  LINKS.forEach(l=>{const a=nodes[l.a],b=nodes[l.b];if(!a||!b)return;
+  LINKS.forEach(l=>{const a=nodes[l.a],b=nodes[l.b];if(!a||!b||l.oculto)return;
     const L=l.f>=3?128:l.f===2?168:205;
     let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,f=(d-L)*.012;
     a.vx+=dx/d*f;a.vy+=dy/d*f;b.vx-=dx/d*f;b.vy-=dy/d*f});
@@ -124,6 +124,46 @@ Object.keys(ROL).forEach(r=>{
     b.classList.toggle('act',filtros.has(r));
     b.setAttribute('aria-pressed',String(filtros.has(r)));aplicar()};
   chips.appendChild(b)});
+/* Ajustes de densidad. El motor calcula todas las sinergias reales; aquí se
+   decide cuántas se enseñan, que es cosa del mazo y no del algoritmo. Los
+   conflictos nunca se ocultan: avisar es el trabajo principal del mapa. */
+const barra=document.querySelector('.barra');
+let cajaAjustes=document.getElementById('ajustes');
+if(!cajaAjustes){cajaAjustes=document.createElement('div');cajaAjustes.id='ajustes';barra.appendChild(cajaAjustes)}
+const maxPorCarta=Math.max(1,...keys.map(k=>vecinos[k].filter(l=>!l.r).length));
+cajaAjustes.innerHTML=`
+ <button class="chip" id="ajustes-abrir" aria-expanded="false">Ajustes</button>
+ <div class="ajustes-caja" hidden>
+   <label>Conexiones por carta <output id="v-grado">${maxPorCarta}</output>
+     <input type="range" id="grado" min="1" max="${maxPorCarta}" value="${maxPorCarta}"></label>
+   <label>Fuerza mínima <output id="v-fuerza">1</output>
+     <input type="range" id="fuerza" min="1" max="4" value="1"></label>
+   <label class="lin"><input type="checkbox" id="solo-conflictos"> Solo conflictos</label>
+   <p class="nota-ajustes">Los conflictos se muestran siempre.</p>
+ </div>`;
+const abrir=cajaAjustes.querySelector('#ajustes-abrir'),caja=cajaAjustes.querySelector('.ajustes-caja');
+abrir.onclick=()=>{const v=caja.hasAttribute('hidden');
+  v?caja.removeAttribute('hidden'):caja.setAttribute('hidden','');
+  abrir.setAttribute('aria-expanded',String(v));abrir.classList.toggle('act',v)};
+function densidad(){
+  const grado=+cajaAjustes.querySelector('#grado').value;
+  const minF=+cajaAjustes.querySelector('#fuerza').value;
+  const solo=cajaAjustes.querySelector('#solo-conflictos').checked;
+  cajaAjustes.querySelector('#v-grado').textContent=grado;
+  cajaAjustes.querySelector('#v-fuerza').textContent=minF;
+  const usados={};keys.forEach(k=>usados[k]=0);
+  // Los más fuertes primero, para que al recortar sobrevivan las conexiones que importan.
+  const orden=LINKS.map((l,i)=>[l,i]).sort((a,b)=>(b[0].r?1:0)-(a[0].r?1:0)||b[0].f-a[0].f);
+  LINKS.forEach(l=>l.oculto=true);
+  for(const [l,i] of orden){
+    if(l.r){l.oculto=false;continue}          // un conflicto no se oculta nunca
+    if(solo||l.f<minF)continue;
+    if(usados[l.a]>=grado||usados[l.b]>=grado)continue;
+    l.oculto=false;usados[l.a]++;usados[l.b]++}
+  LINKS.forEach((l,i)=>{elL[i].classList.toggle('oculto',!!l.oculto);
+    if(l.oculto)elE[i].style.display='none'});
+  alpha=Math.max(alpha,.5);aplicar();if(!activo)vacio()}
+cajaAjustes.querySelectorAll('input').forEach(i=>i.oninput=densidad);
 let activo=null;
 function aplicar(){
   keys.forEach(k=>{const g=elN[k];g.classList.remove('sel','off');
@@ -131,7 +171,7 @@ function aplicar(){
       else if(!vecinos[activo].some(l=>l.a===k||l.b===k))g.classList.add('off')}
     else if(filtros.size&&!filtros.has(CARDS[k].rol))g.classList.add('off')});
   LINKS.forEach((l,i)=>{const el=elL[i],t=elE[i];el.classList.remove('on','off');
-    const rel=activo&&(l.a===activo||l.b===activo);
+    const rel=activo&&!l.oculto&&(l.a===activo||l.b===activo);
     if(activo){rel?el.classList.add('on'):el.classList.add('off');t.style.display=rel?'':'none'}
     else{t.style.display='none';
       if(filtros.size&&CARDS[l.a]&&CARDS[l.b]&&
@@ -140,7 +180,7 @@ function aplicar(){
 svg.addEventListener('click',()=>{activo=null;aplicar();vacio()});
 const panel=document.getElementById('panel');
 function vacio(){
-  const peso=k=>vecinos[k].length;
+  const peso=k=>vecinos[k].filter(l=>!l.oculto).length;
   const top=keys.slice().filter(k=>peso(k)>0).sort((a,b)=>peso(b)-peso(a)).slice(0,6);
   panel.innerHTML=`<h3 style="margin-top:0">Cómo se lee</h3>
    <p class="bloq">Cada círculo es una carta y su tamaño depende de las <b>copias</b> que llevas.
@@ -162,7 +202,7 @@ function sel(k){
   if(!CARDS[k])return;
   activo=k;aplicar();
   const C=CARDS[k];
-  const conns=vecinos[k].slice().sort((a,b)=>(a.r?1:0)-(b.r?1:0)||b.f-a.f);
+  const conns=vecinos[k].filter(l=>!l.oculto).sort((a,b)=>(a.r?1:0)-(b.r?1:0)||b.f-a.f);
   const fila=l=>{const o=l.a===k?l.b:l.a;
     return `<button class="conn" data-k="${encodeURIComponent(o)}">
       <img loading="lazy" src="${IMG(o,'small')}" alt="">
@@ -178,6 +218,7 @@ function sel(k){
     ${buenas.length?'<h3>Combina con</h3>'+buenas.map(fila).join(''):''}
     ${malas.length?'<h3 class="r">Se estorba con</h3>'+malas.map(fila).join(''):''}`;
   panel.scrollTop=0;enlazar()}
+densidad();
 vacio();
 }
 

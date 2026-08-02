@@ -34,6 +34,22 @@ svg{width:100%;height:100%;display:block;cursor:grab}svg.arrastrando{cursor:grab
  background:transparent;color:var(--humo);border:1px solid var(--lin);border-radius:999px;
  padding:5px 11px;cursor:pointer}
 .chip:hover{color:var(--pap);border-color:#5C5245}
+/* Panel de ajustes del mapa: densidad de la red. Cuelga de .barra, que tiene
+   pointer-events:none, así que hay que reactivarlos aquí. */
+#ajustes{position:relative;pointer-events:auto}
+.ajustes-caja{position:absolute;right:0;top:34px;width:232px;background:var(--fondo);
+ border:1px solid var(--lin);border-radius:8px;padding:12px 13px;z-index:5;
+ box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.ajustes-caja[hidden]{display:none}
+.ajustes-caja label{display:block;font-family:var(--c);font-size:10px;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--humo);margin-bottom:11px}
+.ajustes-caja label.lin{display:flex;align-items:center;gap:7px;text-transform:none;
+ letter-spacing:.04em;font-size:11.5px;color:var(--pap)}
+.ajustes-caja output{color:var(--laton);font-weight:700;margin-left:4px}
+.ajustes-caja input[type=range]{width:100%;margin-top:6px;accent-color:var(--laton)}
+.ajustes-caja input[type=checkbox]{accent-color:var(--laton);margin:0}
+.nota-ajustes{font-size:10.5px;line-height:1.35;color:var(--humo);margin:2px 0 0}
+.enlace.oculto{display:none}
 .chip.act{color:var(--ceniza);background:var(--laton);border-color:var(--laton)}
 .pie{position:absolute;left:20px;bottom:14px;font-family:var(--c);font-size:10px;letter-spacing:.1em;
  text-transform:uppercase;color:#544B41;pointer-events:none}
