@@ -1,12 +1,25 @@
+/* MTG Forja — grafo de fuerzas del mapa de sinergias.
+
+   Todo vive dentro de `montar(DATOS)` y no en el ámbito global. Antes eran
+   declaraciones sueltas con `const`, y la web —que reinyectaba este archivo en
+   cada análisis— reventaba con «Identifier already declared»: el script moría y
+   se quedaba en pantalla el grafo del mazo anterior. */
+(function (global) {
+"use strict";
 const IMG=(n,v)=>`https://api.scryfall.com/cards/named?fuzzy=${encodeURIComponent(n).replace(/%20/g,'+')}&format=image&version=${v}&face=front`;
-/* Escapa los datos que se meten en innerHTML. Misma política que guia.py y
-   chuleta.py: los nombres y el texto de oráculo se escapan; el resumen y la
+/* Escapa los datos que se meten en innerHTML. Misma política que guia.js y
+   chuleta.js: los nombres y el texto de oráculo se escapan; el resumen y la
    estrategia van en crudo a propósito, porque pueden traer énfasis escrito. */
 const E=t=>String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;')
   .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+let raf=null;
+
+function montar(DATOS){
+if(raf)cancelAnimationFrame(raf);
 const CARDS=DATOS.cartas, LINKS=DATOS.enlaces, ROL=DATOS.roles;
 const keys=Object.keys(CARDS);
 const svg=document.getElementById('svg'), NS="http://www.w3.org/2000/svg";
+svg.innerHTML='';  // sin esto, el segundo análisis dibujaba encima del primero
 const nodes={},vecinos={};
 keys.forEach(k=>vecinos[k]=[]);
 LINKS.forEach((l,i)=>{l.i=i;if(vecinos[l.a])vecinos[l.a].push(l);if(vecinos[l.b])vecinos[l.b].push(l)});
@@ -56,7 +69,7 @@ keys.forEach(k=>{
 let alpha=1;
 function tick(){
   W=svg.clientWidth;H=svg.clientHeight;
-  if(alpha<=0){pintar();requestAnimationFrame(tick);return}
+  if(alpha<=0){pintar();raf=requestAnimationFrame(tick);return}
   const cx=W/2,cy=H/2;
   for(let i=0;i<keys.length;i++){const a=nodes[keys[i]];
     for(let j=i+1;j<keys.length;j++){const b=nodes[keys[j]];
@@ -76,7 +89,7 @@ function tick(){
     n.x=Math.max(m,Math.min(W-m,n.x));n.y=Math.max(m+76,Math.min(H-m-16,n.y))});
   alpha*=.982;
   if(alpha<.02){alpha=0;keys.forEach(k=>{nodes[k].vx=0;nodes[k].vy=0})}
-  pintar();requestAnimationFrame(tick)}
+  pintar();raf=requestAnimationFrame(tick)}
 function pintar(){
   LINKS.forEach((l,i)=>{const a=nodes[l.a],b=nodes[l.b],el=elL[i];if(!a||!b)return;
     el.setAttribute('x1',a.x);el.setAttribute('y1',a.y);
@@ -84,7 +97,7 @@ function pintar(){
     const t=elE[i];
     if(t.style.display!=='none'){t.setAttribute('x',(a.x+b.x)/2);t.setAttribute('y',(a.y+b.y)/2-6)}});
   keys.forEach(k=>elN[k].setAttribute('transform',`translate(${nodes[k].x},${nodes[k].y})`))}
-requestAnimationFrame(tick);
+raf=requestAnimationFrame(tick);
 function arrastre(ev,n){ev.preventDefault();svg.classList.add('arrastrando');n.fijo=true;
   const mover=e=>{const p=pt(e);n.x=p.x;n.y=p.y;alpha=Math.max(alpha,.55)};
   const soltar=()=>{n.fijo=false;svg.classList.remove('arrastrando');
@@ -99,25 +112,30 @@ svg.addEventListener('wheel',e=>{e.preventDefault();
   const z2=Math.max(.5,Math.min(2.2,zoom*(e.deltaY<0?1.12:.89)));
   px=mx-(mx-px)*(z2/zoom);py=my-(my-py)*(z2/zoom);zoom=z2;
   gRoot.setAttribute('transform',`translate(${px},${py}) scale(${zoom})`)},{passive:false});
-let filtro=null;const chips=document.getElementById('chips');
+/* Los filtros son acumulables: cada chip se enciende y apaga por su cuenta y
+   se muestra lo que encaje en CUALQUIERA de los activos. Sin ninguno, todo. */
+const filtros=new Set();const chips=document.getElementById('chips');
+chips.innerHTML='';
 Object.keys(ROL).forEach(r=>{
   if(!keys.some(k=>CARDS[k].rol===r))return;
   const b=document.createElement('button');b.className='chip';b.textContent=ROL[r].n;
-  b.onclick=()=>{filtro=filtro===r?null:r;
-    [...chips.children].forEach(c=>c.classList.remove('act'));
-    if(filtro)b.classList.add('act');aplicar()};
+  b.setAttribute('aria-pressed','false');
+  b.onclick=()=>{filtros.has(r)?filtros.delete(r):filtros.add(r);
+    b.classList.toggle('act',filtros.has(r));
+    b.setAttribute('aria-pressed',String(filtros.has(r)));aplicar()};
   chips.appendChild(b)});
 let activo=null;
 function aplicar(){
   keys.forEach(k=>{const g=elN[k];g.classList.remove('sel','off');
     if(activo){if(k===activo)g.classList.add('sel');
       else if(!vecinos[activo].some(l=>l.a===k||l.b===k))g.classList.add('off')}
-    else if(filtro&&CARDS[k].rol!==filtro)g.classList.add('off')});
+    else if(filtros.size&&!filtros.has(CARDS[k].rol))g.classList.add('off')});
   LINKS.forEach((l,i)=>{const el=elL[i],t=elE[i];el.classList.remove('on','off');
     const rel=activo&&(l.a===activo||l.b===activo);
     if(activo){rel?el.classList.add('on'):el.classList.add('off');t.style.display=rel?'':'none'}
     else{t.style.display='none';
-      if(filtro&&CARDS[l.a]&&CARDS[l.b]&&CARDS[l.a].rol!==filtro&&CARDS[l.b].rol!==filtro)
+      if(filtros.size&&CARDS[l.a]&&CARDS[l.b]&&
+         !filtros.has(CARDS[l.a].rol)&&!filtros.has(CARDS[l.b].rol))
         el.classList.add('off')}})}
 svg.addEventListener('click',()=>{activo=null;aplicar();vacio()});
 const panel=document.getElementById('panel');
@@ -128,8 +146,10 @@ function vacio(){
    <p class="bloq">Cada círculo es una carta y su tamaño depende de las <b>copias</b> que llevas.
    El grosor de la línea marca la fuerza de la sinergia; las
    <b style="color:var(--brasa)">líneas rojas discontinuas</b> son cartas que se estorban.</p>
+   <p class="bloq">Los <b style="color:#6E8F55">puntos verdes</b> no son sinergias: marcan qué
+   fuente de maná permite lanzar cada hechizo.</p>
    <p class="bloq">Pulsa cualquier carta para ver sus conexiones. Puedes arrastrarlas, hacer zoom
-   con la rueda y filtrar por función.</p>
+   con la rueda, y encender varios filtros a la vez.</p>
    <h3>Los nudos del mazo</h3>
    ${top.map(k=>`<button class="conn" data-k="${encodeURIComponent(k)}">
      <img loading="lazy" src="${IMG(k,'small')}" alt="">
@@ -160,3 +180,9 @@ function sel(k){
     ${manas.length?'<h3>Maná</h3>'+manas.map(fila).join(''):''}`;
   panel.scrollTop=0;enlazar()}
 vacio();
+}
+
+global.ForjaGrafo={montar};
+// El HTML autónomo que genera mapa.py trae DATOS ya definido y se pinta solo.
+if(typeof DATOS!=='undefined')montar(DATOS);
+})(typeof window!=='undefined'?window:globalThis);

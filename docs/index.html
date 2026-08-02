@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MTG Forja — mapa de sinergias de tu mazo</title>
 <meta name="description" content="Pega la lista de tu mazo de Magic y obtén un mapa navegable de sus sinergias, comprobadas contra el texto de oráculo real de Scryfall.">
+<link rel="stylesheet" href="grafo.css">
 <style>
 :root{--ceniza:#15120F;--fondo:#1E1A16;--pap:#EFEADF;--brasa:#C1462A;--laton:#D8B15E;
  --humo:#8B8175;--lin:#3A332B;
@@ -43,79 +44,10 @@ button:disabled{opacity:.5;cursor:default}
  color:var(--humo);min-height:18px}
 #estado.mal{color:var(--brasa)}
 
-/* ---------- RESULTADO ---------- */
-#app{display:none;height:100vh}
+/* Los estilos del grafo y su panel viven en grafo.css, compartidos con el
+   HTML autónomo que genera mapa.py. */
+#app{display:none}
 #app.on{display:flex}
-#lienzo{flex:1;position:relative;min-width:0}
-svg{width:100%;height:100%;display:block;cursor:grab}svg.arrastrando{cursor:grabbing}
-.enlace{stroke:#5C5245;stroke-width:1.4;transition:stroke .2s,stroke-width .2s,opacity .2s}
-.enlace.riesgo{stroke:#7C3320;stroke-dasharray:5 4}
-.enlace.fuerte{stroke-width:2.6}
-.enlace.on{stroke:var(--laton);stroke-width:3}.enlace.riesgo.on{stroke:var(--brasa)}
-.enlace.off{opacity:.10}
-.etq{font-family:var(--c);font-size:10px;fill:var(--laton);letter-spacing:.06em;
- text-transform:uppercase;pointer-events:none}
-.etq.riesgo{fill:var(--brasa)}
-.nodo{cursor:pointer}
-.nodo .aro{fill:var(--fondo);stroke-width:2.5;transition:stroke-width .15s}
-.nodo:hover .aro{stroke-width:4}.nodo.sel .aro{stroke-width:5}.nodo.off{opacity:.16}
-.nodo .nom{font-family:var(--c);font-size:11px;font-weight:700;fill:#D9CFBE;text-anchor:middle;
- letter-spacing:.03em;pointer-events:none}
-.nodo .cnt{font-family:var(--c);font-size:11px;font-weight:700;fill:#fff;text-anchor:middle;
- pointer-events:none}
-.cntbg{fill:var(--brasa)}
-.barra{position:absolute;top:0;left:0;right:0;padding:16px 20px;display:flex;gap:16px;
- align-items:flex-start;justify-content:space-between;pointer-events:none;flex-wrap:wrap}
-.barra h2{font-size:19px;margin:0;line-height:1.05;letter-spacing:-.01em}
-.barra h2 em{font-style:normal;color:var(--laton)}
-.barra p{margin:3px 0 0;font-family:var(--c);font-size:10.5px;text-transform:uppercase;
- letter-spacing:.14em;color:var(--humo)}
-.chips{display:flex;gap:6px;flex-wrap:wrap;pointer-events:auto}
-.chip{font-family:var(--c);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
- background:transparent;color:var(--humo);border:1px solid var(--lin);border-radius:999px;
- padding:5px 11px;cursor:pointer}
-.chip:hover{color:var(--pap);border-color:#5C5245}
-.chip.act{color:var(--ceniza);background:var(--laton);border-color:var(--laton)}
-.pie{position:absolute;left:20px;bottom:14px;font-family:var(--c);font-size:10px;letter-spacing:.1em;
- text-transform:uppercase;color:#544B41;pointer-events:none}
-.leyenda{position:absolute;right:20px;bottom:14px;display:flex;gap:14px;font-family:var(--c);
- font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--humo);pointer-events:none}
-.leyenda i{display:inline-block;width:16px;height:0;border-top:2px solid var(--laton);
- vertical-align:3px;margin-right:5px}
-.leyenda i.r{border-top:2px dashed var(--brasa)}
-#panel{width:340px;flex:0 0 340px;background:var(--fondo);border-left:1px solid var(--lin);
- overflow-y:auto;padding:20px}
-.carta-img{width:100%;aspect-ratio:488/680;border-radius:10px;object-fit:cover;background:#2A241D;
- display:block}
-.rolcap{font-family:var(--c);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
- margin:14px 0 2px}
-#panel h2{font-size:20px;margin:0 0 2px;line-height:1.1;letter-spacing:-.01em}
-.meta{font-family:var(--c);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
- color:var(--humo);margin:0 0 12px}
-.bloq{font-size:13.5px;line-height:1.45;color:#CFC5B4;margin:0 0 12px}
-.bloq b{color:var(--pap)}
-h3{font-family:var(--c);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
- color:var(--laton);margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--lin)}
-h3.r{color:var(--brasa)}
-.conn{display:flex;gap:10px;align-items:flex-start;padding:8px;margin:0 -8px;border-radius:6px;
- cursor:pointer;background:none;border:0;width:calc(100% + 16px);text-align:left;color:inherit;
- font:inherit;text-transform:none;letter-spacing:0}
-.conn:hover{background:rgba(216,177,94,.09)}
-.conn img{width:34px;aspect-ratio:488/680;object-fit:cover;border-radius:3px;background:#2A241D;
- flex:0 0 auto}
-.conn .qn{font-size:13px;font-weight:700;line-height:1.2}
-.conn .qd{font-size:12px;line-height:1.35;color:#A79C8C;margin-top:2px}
-.pill{font-family:var(--c);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
- color:var(--laton);display:block;margin-bottom:1px}
-.pill.r{color:var(--brasa)}
-.ev{font-size:11px;color:#8B8175;font-style:italic;margin-top:6px;padding-left:8px;
- border-left:1px solid var(--lin)}
-.volver{display:flex;gap:8px;flex-wrap:wrap;pointer-events:auto}
-@media (max-width:860px){html,body{height:auto}#app.on{flex-direction:column;height:auto}
- /* flex:0 0 auto para que la altura mande: con flex:1 la base es 0 y, al ser el
-    padre de altura automática, el lienzo se colapsaba a unos 150px. */
- #lienzo{flex:0 0 auto;height:70vh;min-height:420px}
- #panel{width:100%;flex:1 1 auto;border-left:0;border-top:1px solid var(--lin)}}
 </style>
 </head>
 <body>
@@ -158,7 +90,7 @@ h3.r{color:var(--brasa)}
       </div>
     </div>
     <div class="pie">Arrastra las cartas · rueda para acercar</div>
-    <div class="leyenda"><span><i></i>sinergia</span><span><i class="r"></i>conflicto</span></div>
+    <div class="leyenda"><span><i></i>sinergia</span><span><i class="r"></i>conflicto</span><span><i class="m"></i>maná</span></div>
   </div>
   <aside id="panel"></aside>
 </div>
@@ -167,6 +99,7 @@ h3.r{color:var(--brasa)}
 <script src="comun.js"></script>
 <script src="guia.js"></script>
 <script src="chuleta.js"></script>
+<script src="grafo.js"></script>
 <script>
 const EJEMPLO = `Deck
 4 Cleansing Wildfire
@@ -272,9 +205,9 @@ $("#analizar").onclick = async () => {
       (mazo.no_resueltas.length ? ` · ${mazo.no_resueltas.length} sin resolver` : "");
     $("#inicio").style.display = "none";
     $("#app").classList.add("on");
-    const s = document.createElement("script");
-    s.src = "grafo.js";
-    document.body.appendChild(s);
+    // Antes se reinyectaba grafo.js en cada análisis y la segunda vez moría con
+    // «Identifier already declared», dejando en pantalla el grafo del mazo anterior.
+    ForjaGrafo.montar(window.DATOS);
   } catch (err) {
     estado.textContent = String(err.message || err);
     estado.classList.add("mal");
