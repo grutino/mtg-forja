@@ -17,14 +17,29 @@ línea de comandos** y como **web** que corre entera en el navegador.
 ## Qué genera
 
 Pegas una lista de mazo y salen tres documentos HTML autónomos. Estas capturas son
-salida real del mazo de ejemplo (45 cartas, 20 sinergias detectadas).
+salida real del mazo de ejemplo: 45 cartas y 28 sinergias detectadas.
 
 ### El mapa del mazo
 
 Un grafo de fuerzas navegable: cada círculo es una carta, su tamaño depende de cuántas
 copias llevas y el grosor de la línea marca la fuerza de la sinergia. Las **líneas rojas
 discontinuas** son cartas que se estorban entre sí. Puedes pulsar cualquier carta para
-aislar sus conexiones, arrastrarlas, hacer zoom y filtrar por función.
+aislar sus conexiones, arrastrarlas y hacer zoom.
+
+Salen **todas** las cartas del mazo, también las que no tienen ninguna relación detectada:
+una tierra suelta dice algo del mazo, y esconderla no.
+
+Los filtros por función son **acumulables** — enciende varios y verás lo que encaje en
+cualquiera de ellos. Y el botón **Ajustes** controla la densidad de la red:
+
+| Mando | Para qué |
+|---|---|
+| **Conexiones por carta** | Recorta la maraña dejando lo más fuerte de cada carta |
+| **Fuerza mínima** | Esconde las sinergias flojas |
+| **Solo conflictos** | Deja el mapa únicamente con los avisos |
+
+El motor sigue calculando todas las sinergias; esto solo decide cuáles se dibujan. **Los
+conflictos no se ocultan con ningún ajuste**, porque avisar es el trabajo principal del mapa.
 
 ![Mapa de sinergias del mazo](docs/capturas/mapa.png)
 
@@ -51,7 +66,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 |---|---|---|
 | `reglas.json` | 37 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
 | Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
-| `lexico.json` | 23 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
+| `lexico.json` | 24 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
 | `scryfall.py` | Cliente de la API de Scryfall, con caché en disco | **La fuente de verdad.** Todo lo que se afirma sale de aquí, nunca de la memoria de un modelo. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
@@ -365,6 +380,41 @@ Campos disponibles en cada pieza: `oracle`, `oracle2`, `oracle3`, `no_oracle`, `
 **Añadir una regla es añadir un objeto a esa lista.** Nada más. Se usa igual desde
 Python y desde el navegador, porque las dos mitades leen el mismo archivo.
 
+### La segunda capa: el léxico de recursos
+
+Escribir una regla por cada pareja de cartas que interactúa no escala a treinta mil
+naipes. Por eso hay un segundo motor que trabaja al revés: `src/mtg_forja/lexico.json`
+no describe parejas, describe **recursos**. De cada carta deduce qué produce, qué premia
+y qué rompe.
+
+```json
+{
+  "id": "cementerio",
+  "nombre": "el cementerio",
+  "fuerza": 3,
+  "produce": {"oracle": ["\\bmills?\\b", "discard(s)? (a|your|two)"],
+              "no_oracle": "exile(s)? .{0,40}graveyard",
+              "texto": "llena tu cementerio"},
+  "premia":  {"oracle": ["\\bDelve\\b", "cards? in your graveyard"],
+              "texto": "se alimenta del cementerio"},
+  "rompe":   {"oracle": ["exile(s)? .{0,40}graveyard"],
+              "texto": "vacía los cementerios"}
+}
+```
+
+Las sinergias no se escriben, **se deducen**: si A produce un recurso y B lo premia, hay
+sinergia; si A lo rompe y B depende de él, hay conflicto. Un concepto cubre de golpe todas
+las parejas que lo compartan, así que el esfuerzo crece con las mecánicas del juego y no
+con el número de mazos. Hoy son **24 conceptos** frente a 37 reglas escritas.
+
+Cada bloque acepta los mismos campos que una pieza de regla (`oracle`, `no_oracle`, `tipo`,
+`no_tipo`, `mv_min`, `mv_max`), y `texto` es lo que se lee en el resumen.
+
+Dos cosas que se aprendieron a base de falsos positivos, y que el motor ya hace por ti:
+ignora el **texto recordatorio** entre paréntesis (el de retrospectiva de Snapcaster Mage
+dice «exile it» y la carta pasaba por odio al cementerio) y quita el **nombre propio** de
+la carta antes de analizar (Lightning Storm casaba con la mecánica *Tormenta*).
+
 ### Hasta dónde llega cada camino
 
 Conviene decirlo claro, porque determina qué esperar:
@@ -406,7 +456,8 @@ falta es el trabajo, y es el trabajo que hace crecer esto.
 Scryfall y aparecen en el documento, pero las reglas solo cruzan el mazo principal. Una
 sinergia que dependa de una carta del banquillo no se detecta.
 
-Después de tocar `reglas.json` o cualquiera de los renderizadores `.js`, sincroniza la web:
+Después de tocar `reglas.json`, `lexico.json`, `grafo.css` o cualquiera de los
+renderizadores `.js`, sincroniza la web:
 
 ```bash
 python scripts/sync_docs.py
@@ -467,7 +518,7 @@ Ahora una prueba de verdad, contra Scryfall:
 mtg-forja ejemplos/prueba.txt -n "Prueba" -o /tmp/forja-prueba
 ```
 
-Debe imprimir un resumen del tipo `30 cartas · 12 sinergias` y dejar tres HTML en
+Debe imprimir un resumen del tipo `30 cartas · 14 sinergias` y dejar tres HTML en
 `/tmp/forja-prueba`. Ábrelos en el navegador.
 
 ### Paso 3 — Levantar la web en local
@@ -514,7 +565,7 @@ cuanto reinicies la aplicación.
 git clone https://github.com/grutino/mtg-forja && cd mtg-forja
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e . pytest
-pytest -q                                    # 6 pruebas, sin red
+pytest -q                                    # 16 pruebas, sin red
 python scripts/sync_docs.py                  # sincroniza reglas y renderizadores
 python -m http.server -d docs 8000           # web completa en localhost:8000
 ```
@@ -548,21 +599,28 @@ En los ajustes del repositorio, **Pages → Source: Deploy from a branch → `ma
 src/mtg_forja/
   modelo.py        cartas, mazo, parseo de listas (Arena, Moxfield, Archidekt, ManaBox…)
   scryfall.py      resolución con caché en disco y modo sin red
-  reglas.json      el paquete de patrones — aquí es donde se crece
-  reglas.py        motor de detección
+  reglas.json      patrones escritos a mano — parejas concretas de cartas
+  reglas.py        motor de detección de esos patrones
+  lexico.json      conceptos de recurso — aquí es donde se crece de verdad
+  lexico.py        motor deductivo: cruza productores con premiadores
+  hechos.py        radiografía objetiva del mazo (alcance, zonas, base de maná)
+  combos.py        cliente de Commander Spellbook, con caché y degradación limpia
   render/
     comun.js       paleta y utilidades compartidas
     guia.js        \
     chuleta.js      >  el diseño de los tres documentos, en una sola implementación
     grafo.js       /
+    grafo.css      estilos del mapa, compartidos con la web
     guia.py        \
     chuleta.py      >  cáscaras: incrustan el JS y el documento en un HTML autónomo
     mapa.py        /
-  server.py        servidor MCP
+  server.py        servidor MCP — las nueve herramientas
   cli.py           línea de comandos
-docs/              web de GitHub Pages (lee los mismos reglas.json y renderizadores)
+docs/              web de GitHub Pages (lee los mismos datos y renderizadores)
+docs/motor.js      gemelo en JavaScript de modelo + scryfall + reglas + lexico
 docs/capturas/     las imágenes de este README
 skill/SKILL.md     cómo debe usar Claude todo lo anterior
+tests/             16 pruebas, todas sin red
 ```
 
 **Los renderizadores no están duplicados.** El diseño de cada documento existe una sola
