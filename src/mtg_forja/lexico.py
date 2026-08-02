@@ -22,13 +22,13 @@ from .reglas import Sinergia
 RUTA = Path(__file__).with_name("lexico.json")
 _CACHE: list[dict[str, Any]] | None = None
 
-# Sin topes, un mazo de sesenta cartas produce ruido: lo interesante son las
-# conexiones fuertes, no todas. Los conflictos llevan cupo propio porque son
-# menos numerosos y se los comerían las sinergias, y son lo más valioso.
-TOPE_SINERGIAS = 10
-TOPE_CONFLICTOS = 6
-POR_CONCEPTO = 3
-POR_CARTA = 4
+# Los topes existen para que un mazo de sesenta cartas no salga hecho una maraña,
+# pero no deben esconder el motor del mazo. Una carta que premia cada hechizo que
+# lanzas SÍ tiene sinergia con los diez, y verlas todas es justo lo interesante:
+# por eso el límite es por carta y no por concepto.
+TOPE_SINERGIAS = 40
+TOPE_CONFLICTOS = 10
+POR_CARTA = 12
 
 
 def cargar(ruta: str | Path | None = None) -> list[dict[str, Any]]:
@@ -73,6 +73,8 @@ def _encaja(carta: Carta, bloque: dict[str, Any] | None, oraculo: str | None = N
     if "mv_min" in bloque and carta.mv < bloque["mv_min"]:
         return ""
     if "mv_max" in bloque and carta.mv > bloque["mv_max"]:
+        return ""
+    if "no_oracle" in bloque and re.search(bloque["no_oracle"], oraculo, re.I | re.S):
         return ""
     patrones = bloque.get("oracle") or []
     if not patrones:
@@ -139,7 +141,10 @@ def detectar(mazo: Mazo, conceptos: list[dict[str, Any]] | None = None) -> list[
                 evidencia={a.nombre: eva, b.nombre: evb},
             ))
 
-    salida.sort(key=lambda s: (0 if s.tipo == "sinergia" else 1, -s.fuerza, s.id))
+    # Los conflictos van primero a propósito: si una pareja sale a la vez como
+    # sinergia y como conflicto, gana el aviso. Antes ganaba la sinergia y el
+    # conflicto se descartaba por pareja repetida.
+    salida.sort(key=lambda s: (0 if s.tipo == "conflicto" else 1, -s.fuerza, s.id))
     return _podar(salida)
 
 
@@ -179,23 +184,21 @@ def _podar(sinergias: list[Sinergia]) -> list[Sinergia]:
     conexión más fuerte. Y una carta no puede acaparar la página entera.
     """
     vistas: set[tuple[str, ...]] = set()
-    veces: dict[str, int] = {}
-    por_concepto: dict[tuple[str, str], int] = {}
+    # El cupo por carta se cuenta APARTE para sinergias y conflictos. Si no, una
+    # carta muy conectada gastaba su cupo en sinergias y su conflicto —que es lo
+    # que de verdad hay que avisar— no llegaba a salir.
+    veces: dict[tuple[str, str], int] = {}
     cupo = {"sinergia": TOPE_SINERGIAS, "conflicto": TOPE_CONFLICTOS}
     fuera: list[Sinergia] = []
     for s in sinergias:
         par = tuple(sorted(s.piezas))
-        clave = (s.id.split("::")[0], s.tipo)
         if par in vistas or cupo.get(s.tipo, 0) <= 0:
             continue
-        if por_concepto.get(clave, 0) >= POR_CONCEPTO:
-            continue
-        if any(veces.get(n, 0) >= POR_CARTA for n in s.piezas):
+        if any(veces.get((n, s.tipo), 0) >= POR_CARTA for n in s.piezas):
             continue
         vistas.add(par)
         cupo[s.tipo] -= 1
-        por_concepto[clave] = por_concepto.get(clave, 0) + 1
         for n in s.piezas:
-            veces[n] = veces.get(n, 0) + 1
+            veces[(n, s.tipo)] = veces.get((n, s.tipo), 0) + 1
         fuera.append(s)
     return fuera

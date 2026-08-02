@@ -15,7 +15,8 @@
           "Sacrifice (a|an|this|another)",
           "\\bDredge\\b"
         ],
-        "texto": "llena tu cementerio"
+        "texto": "llena tu cementerio",
+        "no_oracle": "would be put into a graveyard.{0,60}exile|exile(s)? .{0,40}graveyard"
       },
       "premia": {
         "oracle": [
@@ -504,6 +505,33 @@
           "you win the game"
         ],
         "texto": "gana la partida por sí sola"
+      }
+    },
+    {
+      "id": "dano-de-hechizo",
+      "nombre": "el daño que hacen tus hechizos",
+      "fuerza": 3,
+      "produce": {
+        "tipo": "Instant|Sorcery",
+        "oracle": [
+          "deals \\d+ damage",
+          "deals X damage",
+          "deals damage",
+          "deals .{0,40}damage",
+          "damage to any target",
+          "damage to target"
+        ],
+        "texto": "hace daño al resolverse"
+      },
+      "premia": {
+        "oracle": [
+          "spell you control deals damage",
+          "whenever you deal damage",
+          "source you control would deal damage",
+          "dealt damage this turn",
+          "if a source you control(led)? dealt damage"
+        ],
+        "texto": "se dispara cuando un hechizo tuyo hace daño"
       }
     }
   ]

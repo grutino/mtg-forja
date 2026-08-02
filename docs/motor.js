@@ -339,7 +339,10 @@
      cruzando quién lo rompe con quién depende de él. Cualquier cambio aquí tiene
      que ir también en lexico.py: la prueba de paridad compara las dos salidas. */
 
-  const TOPE_SINERGIAS = 10, TOPE_CONFLICTOS = 6, POR_CONCEPTO = 3, POR_CARTA = 4;
+  /* Los topes evitan la maraña, pero no deben esconder el motor del mazo: una carta
+   que premia cada hechizo que lanzas SÍ tiene sinergia con los diez. El límite es
+   por carta, no por concepto, y se cuenta aparte para sinergias y conflictos. */
+const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
   const RECORDATORIO = /\([^)]*\)/g;
   let _lexico = null;
 
@@ -376,6 +379,7 @@
     if (bloque.no_tipo && re(bloque.no_tipo, carta.tipo)) return "";
     if (bloque.mv_min !== undefined && carta.mv < bloque.mv_min) return "";
     if (bloque.mv_max !== undefined && carta.mv > bloque.mv_max) return "";
+    if (bloque.no_oracle && re(bloque.no_oracle, oraculo)) return "";
     const patrones = bloque.oracle || [];
     if (!patrones.length) {
       return (bloque.tipo || bloque.mv_min !== undefined || bloque.mv_max !== undefined)
@@ -423,25 +427,24 @@
       }
     }
 
-    salida.sort((x, y) => (x.tipo === "sinergia" ? 0 : 1) - (y.tipo === "sinergia" ? 0 : 1) ||
+    /* Los conflictos primero, igual que lexico.py: si una pareja sale a la vez como
+       sinergia y como conflicto, gana el aviso. */
+    salida.sort((x, y) => (x.tipo === "conflicto" ? 0 : 1) - (y.tipo === "conflicto" ? 0 : 1) ||
                           y.fuerza - x.fuerza || cmp(x.id, y.id));
     return podar(salida);
   }
 
   function podar(lista) {
-    const vistas = new Set(), veces = {}, porConcepto = {};
+    const vistas = new Set(), veces = {};
     const cupo = { sinergia: TOPE_SINERGIAS, conflicto: TOPE_CONFLICTOS };
     const fuera = [];
     for (const s of lista) {
       const par = [...s.piezas].sort(cmp).join(" ");
-      const clave = s.id.split("::")[0] + " " + s.tipo;
       if (vistas.has(par) || (cupo[s.tipo] || 0) <= 0) continue;
-      if ((porConcepto[clave] || 0) >= POR_CONCEPTO) continue;
-      if (s.piezas.some((n) => (veces[n] || 0) >= POR_CARTA)) continue;
+      if (s.piezas.some((n) => (veces[n + "|" + s.tipo] || 0) >= POR_CARTA)) continue;
       vistas.add(par);
       cupo[s.tipo] -= 1;
-      porConcepto[clave] = (porConcepto[clave] || 0) + 1;
-      for (const n of s.piezas) veces[n] = (veces[n] || 0) + 1;
+      for (const n of s.piezas) veces[n + "|" + s.tipo] = (veces[n + "|" + s.tipo] || 0) + 1;
       fuera.push(s);
     }
     return fuera;

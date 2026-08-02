@@ -224,3 +224,39 @@ def test_renderizadores():
         html = modulo.render(doc)
         assert html.startswith("<!DOCTYPE html>")
         assert "Prueba" in html
+
+def test_una_carta_eje_se_conecta_con_todos_sus_companeros():
+    """Si una carta premia CADA hechizo que lanzas, tiene que salir con todos.
+
+    El tope por concepto dejaba solo tres parejas y escondía el motor del mazo:
+    en un mazo de quemar, Thermo-Alchemist aparecía con dos hechizos de seis.
+    """
+    from mtg_forja.modelo import Carta, Mazo
+
+    eje = Carta(nombre="Eje", copias=4, tipo="Creature — Wizard", mv=2,
+                oraculo="Whenever you cast an instant or sorcery spell, untap this creature.")
+    mazo = Mazo(nombre="Prueba")
+    mazo.cartas.append(eje)
+    for i in range(6):
+        mazo.cartas.append(Carta(nombre=f"Hechizo {i}", copias=4, tipo="Instant", mv=1,
+                                 oraculo="This spell deals 3 damage to any target."))
+
+    s = lexico.detectar(mazo)
+    con_el_eje = [x for x in s if "Eje" in x.piezas]
+    assert len(con_el_eje) == 6, f"solo salen {len(con_el_eje)} de 6 compañeros"
+
+
+def test_el_conflicto_gana_a_la_sinergia_en_la_misma_pareja():
+    """Odiar el cementerio no es llenarlo, y avisar importa más que halagar."""
+    from mtg_forja.modelo import Carta, Mazo
+
+    mazo = Mazo(nombre="Prueba")
+    mazo.cartas.append(Carta(nombre="Odio", copias=2, tipo="Enchantment", mv=2,
+        oraculo="If a card would be put into a graveyard from anywhere, exile it instead."))
+    mazo.cartas.append(Carta(nombre="Goloso", copias=4, tipo="Creature", mv=2,
+        oraculo="As long as there are two or more cards in your graveyard, this creature gets +1/+0."))
+
+    s = lexico.detectar(mazo)
+    par = [x for x in s if set(x.piezas) == {"Odio", "Goloso"}]
+    assert par, "la pareja no aparece"
+    assert par[0].tipo == "conflicto", "debería avisar del conflicto, no venderlo como sinergia"
