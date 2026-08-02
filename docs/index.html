@@ -46,6 +46,12 @@ button:disabled{opacity:.5;cursor:default}
 
 /* Los estilos del grafo y su panel viven en grafo.css, compartidos con el
    HTML autónomo que genera mapa.py. */
+/* Solo de la web: la barra del mapa lleva título propio y los botones de volver.
+   `.barra` tiene pointer-events:none para no tapar el grafo, así que `.volver`
+   tiene que reactivarlos o los botones no reciben clics. */
+.barra h2{font-size:19px;margin:0;line-height:1.05;letter-spacing:-.01em}
+.barra h2 em{font-style:normal;color:var(--laton)}
+.volver{display:flex;gap:8px;flex-wrap:wrap;pointer-events:auto}
 #app{display:none}
 #app.on{display:flex}
 </style>
@@ -90,7 +96,7 @@ button:disabled{opacity:.5;cursor:default}
       </div>
     </div>
     <div class="pie">Arrastra las cartas · rueda para acercar</div>
-    <div class="leyenda"><span><i></i>sinergia</span><span><i class="r"></i>conflicto</span><span><i class="m"></i>maná</span></div>
+    <div class="leyenda"><span><i></i>sinergia</span><span><i class="r"></i>conflicto</span></div>
   </div>
   <aside id="panel"></aside>
 </div>

@@ -190,23 +190,32 @@ def test_el_pip_incoloro_no_choca_con_la_ficha_de_carta():
     assert 'class="pip c"' not in js and ".pip.inc{" in js
 
 
-def test_el_mapa_incluye_las_cartas_sueltas_y_la_base_de_mana():
-    """Dos cosas que el mapa se dejaba: las cartas sin sinergia y la fontanería."""
+def test_el_mapa_muestra_todas_las_cartas_y_solo_enlaces_reales():
+    """Todas las cartas salen como nodo, pero solo se une lo que de verdad interactúa.
+
+    Los enlaces de maná se probaron y se retiraron: ataban casi todo con casi todo
+    y el grafo dejaba de leerse. Una tierra suelta dice más que una maraña.
+    """
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, lexico.completo(mazo), titulo="Prueba")
     datos = mapa._datos(doc)
 
-    # (1) toda carta del mazo principal es un nodo, tenga sinergia o no
+    # toda carta del mazo principal es un nodo, tenga relaciones o no
     for c in doc["cartas"]:
         assert c["nombre"] in datos["cartas"], f"{c['nombre']} no sale en el mapa"
 
-    # (2) las fuentes de maná se atan a los hechizos que las necesitan
-    de_mana = [e for e in datos["enlaces"] if e.get("m")]
-    assert de_mana, "ninguna carta quedó atada a su base de maná"
-    for e in de_mana:
-        assert e["f"] == 1, "el enlace de maná no puede competir con una sinergia"
-        assert datos["cartas"][e["a"]]["produce_mana"], "el extremo 'a' debe producir maná"
+    # y no queda ni rastro de los enlaces de maná
+    assert not [e for e in datos["enlaces"] if e.get("m")], "vuelven los enlaces de maná"
 
+    # cada enlace nace de una sinergia o conflicto entre dos cartas del mazo
+    parejas = {tuple(sorted(s["piezas"][i:i + 2]))
+               for s in doc["sinergias"] for i in range(len(s["piezas"]) - 1)}
+    for e in datos["enlaces"]:
+        assert tuple(sorted((e["a"], e["b"]))) in parejas, f"enlace sin origen: {e}"
+
+    # y alguna carta queda suelta, que es justo lo que queríamos permitir
+    atadas = {e["a"] for e in datos["enlaces"]} | {e["b"] for e in datos["enlaces"]}
+    assert set(datos["cartas"]) - atadas, "el mazo de prueba debería tener cartas sueltas"
 
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")

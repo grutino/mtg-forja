@@ -34,7 +34,7 @@ const defs=document.createElementNS(NS,'defs');svg.appendChild(defs);
 const elL=[],elE=[],elN={};
 LINKS.forEach(l=>{
   const ln=document.createElementNS(NS,'line');
-  ln.setAttribute('class','enlace'+(l.m?' mana':(l.r?' riesgo':''))+(!l.m&&l.f>=3?' fuerte':''));
+  ln.setAttribute('class','enlace'+(l.r?' riesgo':'')+(l.f>=3?' fuerte':''));
   gL.appendChild(ln);elL.push(ln);
   const tx=document.createElementNS(NS,'text');
   tx.setAttribute('class','etq'+(l.r?' riesgo':''));tx.setAttribute('text-anchor','middle');
@@ -140,14 +140,14 @@ function aplicar(){
 svg.addEventListener('click',()=>{activo=null;aplicar();vacio()});
 const panel=document.getElementById('panel');
 function vacio(){
-  const peso=k=>vecinos[k].filter(l=>!l.m).length;
+  const peso=k=>vecinos[k].length;
   const top=keys.slice().filter(k=>peso(k)>0).sort((a,b)=>peso(b)-peso(a)).slice(0,6);
   panel.innerHTML=`<h3 style="margin-top:0">Cómo se lee</h3>
    <p class="bloq">Cada círculo es una carta y su tamaño depende de las <b>copias</b> que llevas.
    El grosor de la línea marca la fuerza de la sinergia; las
    <b style="color:var(--brasa)">líneas rojas discontinuas</b> son cartas que se estorban.</p>
-   <p class="bloq">Los <b style="color:#6E8F55">puntos verdes</b> no son sinergias: marcan qué
-   fuente de maná permite lanzar cada hechizo.</p>
+   <p class="bloq">Las cartas sin líneas no tienen sinergia ni conflicto detectados: salen
+   igualmente para que veas el mazo entero.</p>
    <p class="bloq">Pulsa cualquier carta para ver sus conexiones. Puedes arrastrarlas, hacer zoom
    con la rueda, y encender varios filtros a la vez.</p>
    <h3>Los nudos del mazo</h3>
@@ -168,7 +168,7 @@ function sel(k){
       <img loading="lazy" src="${IMG(o,'small')}" alt="">
       <span><span class="pill${l.r?' r':''}">${E(l.t)}${l.r?'':' · '+'★'.repeat(l.f)}</span>
       <span class="qn">${E(o)}</span><span class="qd">${l.d}</span></span></button>`};
-  const buenas=conns.filter(l=>!l.r&&!l.m),malas=conns.filter(l=>l.r),manas=conns.filter(l=>l.m);
+  const buenas=conns.filter(l=>!l.r),malas=conns.filter(l=>l.r);
   panel.innerHTML=`<img class="carta-img" src="${IMG(k,'normal')}" alt="">
     <p class="rolcap" style="color:${(ROL[C.rol]||{}).c}">${(ROL[C.rol]||{}).n||''}</p>
     <h2>${E(k)}</h2>
@@ -176,8 +176,7 @@ function sel(k){
     ${C.estrategia?`<p class="bloq">${C.estrategia}</p>`:''}
     ${C.evidencia?`<p class="ev">${E(C.evidencia)}</p>`:''}
     ${buenas.length?'<h3>Combina con</h3>'+buenas.map(fila).join(''):''}
-    ${malas.length?'<h3 class="r">Se estorba con</h3>'+malas.map(fila).join(''):''}
-    ${manas.length?'<h3>Maná</h3>'+manas.map(fila).join(''):''}`;
+    ${malas.length?'<h3 class="r">Se estorba con</h3>'+malas.map(fila).join(''):''}`;
   panel.scrollTop=0;enlazar()}
 vacio();
 }

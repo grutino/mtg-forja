@@ -1,6 +1,6 @@
 /* Estilos del grafo y su panel. Los comparten el HTML autónomo de mapa.py y la
-   web: estaban duplicados (50 de 57 selectores) y por eso los enlaces de maná
-   salían sin estilo en la web. sync_docs.py lo copia a docs/. */
+   web: estaban duplicados (50 de 57 selectores), y una regla que se añadía a una
+   copia no llegaba a la otra. sync_docs.py lo copia a docs/. */
 /* El alto lo manda este archivo, no cada consumidor: cuando lo fijaba
    index.html en su propio <style>, ganaba a la media query de aquí y en
    móvil el grafo quedaba en una franja de 150px. */
@@ -9,15 +9,9 @@
 svg{width:100%;height:100%;display:block;cursor:grab}svg.arrastrando{cursor:grabbing}
 .enlace{stroke:#5C5245;stroke-width:1.4;transition:stroke .2s,stroke-width .2s,opacity .2s}
 .enlace.riesgo{stroke:#7C3320;stroke-dasharray:5 4}
-.enlace.mana{stroke:#3F4A38;stroke-width:1;stroke-dasharray:2 3;opacity:.55}
-.enlace.mana.on{stroke:#7E8C5C;stroke-width:2;opacity:1}
 .enlace.fuerte{stroke-width:2.6}
 .enlace.on{stroke:var(--laton);stroke-width:3}.enlace.riesgo.on{stroke:var(--brasa)}
 .enlace.off{opacity:.10}
-/* El maná no es una sinergia: es la fontanería. Punteado verde y fino para que
-   se lea como otra cosa y no compita con las líneas de sinergia. */
-.enlace.mana{stroke:#6E8F55;stroke-width:1.2;stroke-dasharray:1.5 5;stroke-linecap:round;opacity:.75}
-.enlace.mana.on{stroke:#9CC27A;stroke-width:2.2;opacity:1}
 .etq{font-family:var(--c);font-size:10px;fill:var(--laton);letter-spacing:.06em;
  text-transform:uppercase;pointer-events:none}
 .etq.riesgo{fill:var(--brasa)}
