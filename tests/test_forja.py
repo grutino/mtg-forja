@@ -231,6 +231,23 @@ def test_cobertura_distingue_leer_de_entender():
     assert set(c["cartas_invisibles"]) <= nombres
 
 
+def test_rulings_degradan_sin_romper(monkeypatch, tmp_path):
+    """Los rulings son una consulta extra: si no hay red, el análisis sigue igual."""
+    monkeypatch.setattr(scryfall, "RULINGS", tmp_path / "rulings")
+
+    def caida(*a, **k):
+        raise TimeoutError("sin red")
+
+    monkeypatch.setattr(scryfall.urllib.request, "urlopen", caida)
+    carta = scryfall.resolver(LISTA, "Prueba").principal[0]
+    carta.rulings_uri = "https://api.scryfall.com/cards/x/rulings"
+
+    assert scryfall.rulings(carta) == []
+    # y sin URL ni siquiera lo intenta
+    carta.rulings_uri = ""
+    assert scryfall.rulings(carta) == []
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")

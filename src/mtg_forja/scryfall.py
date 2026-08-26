@@ -159,6 +159,7 @@ def resolver(lista: str, nombre_mazo: str = "Mazo") -> Mazo:
                 scryfall_uri=bruto.get("scryfall_uri", ""),
                 produce_mana=bruto.get("produced_mana", []) or [],
                 keywords=bruto.get("keywords", []) or [],
+                rulings_uri=bruto.get("rulings_uri", ""),
             )
         clave = (_clave(carta.nombre), banq)
         if clave in vistos:
@@ -167,3 +168,42 @@ def resolver(lista: str, nombre_mazo: str = "Mazo") -> Mazo:
             vistos[clave] = carta
             mazo.cartas.append(carta)
     return mazo
+
+
+RULINGS = CACHE / "rulings"
+
+
+def rulings(carta: Carta) -> list[str]:
+    """Los rulings oficiales de Wizards para una carta.
+
+    Es el contenido de Gatherer, servido por Scryfall. Explican interacciones que
+    ningún motor de patrones puede deducir —a quién alcanza un efecto, qué queda
+    fuera, en qué zona funciona— y por eso valen justo para lo que el léxico no
+    llega. Se cachean en disco: no cambian casi nunca.
+
+    Nunca lanza: sin red devuelve lista vacía y el análisis sigue.
+    """
+    if not carta.rulings_uri:
+        return []
+    f = RULINGS / f"{_slug(carta.nombre)}.json"
+    if f.exists():
+        try:
+            return json.loads(f.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            pass
+    try:
+        pet = urllib.request.Request(
+            carta.rulings_uri,
+            headers={"Accept": "application/json", "User-Agent": AGENTE})
+        with urllib.request.urlopen(pet, timeout=20) as r:
+            datos = json.loads(r.read().decode("utf-8")).get("data", [])
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+        return []
+    fuera = [" ".join(x.get("comment", "").split()) for x in datos if x.get("comment")]
+    try:
+        RULINGS.mkdir(parents=True, exist_ok=True)
+        f.write_text(json.dumps(fuera, ensure_ascii=False), encoding="utf-8")
+    except OSError:
+        pass
+    time.sleep(0.1)  # Scryfall pide 50-100 ms entre peticiones
+    return fuera

@@ -68,7 +68,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 | Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
 | `lexico.json` | 24 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
-| `scryfall.py` | Cliente de la API de Scryfall, con caché en disco | **La fuente de verdad.** Todo lo que se afirma sale de aquí, nunca de la memoria de un modelo. |
+| `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
 | El servidor MCP | `server.py` | **El enchufe con Claude.** Expone las herramientas para que el modelo pueda llamarlas. |
 | Las herramientas | Nueve funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
@@ -628,6 +628,28 @@ vez, en su `.js`. Python no lo reimplementa: incrusta ese archivo junto al docum
 JSON y deja que el navegador lo pinte. Por eso la web y la línea de comandos producen el
 mismo archivo, byte a byte, y no pueden separarse con el tiempo. `sync_docs.py` es lo que
 mantiene `docs/` al día.
+
+---
+
+### Por qué no hay más fuentes
+
+Se probaron, una por una, y estos son los resultados reales:
+
+| Fuente | Qué se encontró |
+|---|---|
+| **Gatherer** | Sin API propia, pero **su contenido ya llega por Scryfall**: los rulings oficiales. Es la fuente que más aporta y ya está integrada |
+| **EDHREC** | Su JSON funciona, pero está organizado por comandante y mide popularidad, no interacción |
+| **Moxfield** | Devuelve `403` a cualquier cliente automatizado |
+| **MTGGoldfish** | Sin API y con `Content-Signal: ai-train=no` |
+| **Draftsim** | Su `robots.txt` prohíbe explícitamente al agente `anthropic-ai` |
+| **TCGplayer** | La API pide clave de socio, y da precios |
+| **Cardmarket** | `410 Gone` |
+| **MTGSimilar** | Protección anti-bot |
+| **Archidekt · ManaBox · Untapped** | Almacenan mazos. Valen como formato de importación, y ya se soportan |
+
+La conclusión: para **entender interacciones** solo sirven el oráculo y los rulings,
+y los dos vienen de Scryfall. El resto son precios, popularidad o listas — útiles
+para otras preguntas, no para esta.
 
 ---
 

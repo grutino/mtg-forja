@@ -65,6 +65,13 @@ motor, el análisis será correcto y vacío.
    curva y las sinergias candidatas que ha encontrado el motor de reglas.
    Opcionalmente, `combos_conocidos(lista)` trae combos ya catalogados por Commander
    Spellbook, con sus pasos redactados. **Léete el aviso de abajo antes de usarlo.**
+1b. **Consultar los rulings antes de afirmar un límite.** `rulings_oficiales(lista)`
+   trae las aclaraciones de Wizards —el contenido de Gatherer— para las cartas del
+   mazo. Es fuente verificada, no comunidad. Consúltalas **siempre que vayas a decir
+   a quién alcanza un efecto, dónde funciona o cuándo se aplica**: ahí es donde se
+   cometen los errores. «Karn's first ability affects only artifacts on the
+   battlefield» está escrito por el fabricante; no hace falta que lo deduzcas.
+
 2. **Juzgar.** Las candidatas son un borrador mecánico, no el análisis. Tu trabajo:
    - **Descartar** las que técnicamente casan pero no importan en la práctica.
    - **Reordenar** por lo que de verdad decide partidas, no por la puntuación del motor.

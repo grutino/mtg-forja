@@ -43,6 +43,9 @@ class Carta:
     # Mecánicas con nombre según Scryfall. Es la señal objetiva de si una
     # colección trae algo que el léxico todavía no sabe leer.
     keywords: list[str] = field(default_factory=list)
+    # De dónde bajar los rulings oficiales de Wizards. Son el contenido de
+    # Gatherer y explican interacciones que ningún patrón puede deducir.
+    rulings_uri: str = ""
     resuelta: bool = True
 
     @property

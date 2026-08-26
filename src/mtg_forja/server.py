@@ -110,6 +110,42 @@ def detectar_sinergias(lista: str, nombre: str = "Mazo") -> str:
 
 
 @mcp.tool()
+def rulings_oficiales(lista: str, cartas: str = "") -> str:
+    """Las aclaraciones oficiales de Wizards sobre las cartas del mazo.
+
+    Es el contenido de Gatherer, servido por Scryfall, y **sí es fuente
+    verificada** — a diferencia de Commander Spellbook, esto lo escribe el propio
+    fabricante del juego.
+
+    Vale exactamente para lo que ningún motor de patrones alcanza, porque explica
+    los límites de un efecto en lenguaje de reglas:
+
+    * «Karn's first ability affects only artifacts on the battlefield» — la asimetría.
+    * «The second Approach of the Second Sun must be cast from your hand» — la
+      condición que hace que barajar te arruine el plan.
+
+    Pásale `cartas` con nombres separados por comas para pedir solo las que te
+    interesen; si lo dejas vacío trae las del mazo entero que tengan aclaraciones.
+    Úsala cuando vayas a afirmar algo sobre **cuándo, dónde o a quién** alcanza un
+    efecto: es la diferencia entre describir la carta y entenderla.
+    """
+    mazo = scryfall.resolver(lista, "Mazo")
+    pedidas = {n.strip().lower() for n in cartas.split(",") if n.strip()}
+    fuera = {}
+    for c in mazo.principal:
+        if pedidas and c.nombre.lower() not in pedidas:
+            continue
+        r = scryfall.rulings(c)
+        if r:
+            fuera[c.nombre] = r
+    return _json({
+        "fuente": "Rulings oficiales de Wizards of the Coast, vía Scryfall",
+        "cartas_con_aclaraciones": len(fuera),
+        "rulings": fuera,
+    })
+
+
+@mcp.tool()
 def cobertura_del_analisis(lista: str, nombre: str = "Mazo") -> str:
     """Cuánto de este mazo entiende el motor, y qué se le escapa.
 
