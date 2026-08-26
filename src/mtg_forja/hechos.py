@@ -44,6 +44,28 @@ def _pips(coste: str) -> Counter:
     return fuera
 
 
+def _exigencia(coste: str) -> tuple[Counter, list[list[str]]]:
+    """Separa lo que un coste EXIGE de lo que solo prefiere.
+
+    Un híbrido `{G/U}` no exige ni verde ni azul: se paga con cualquiera de los
+    dos. Contarlo como exigencia de ambos hacía avisar de falta de azul en un mazo
+    verde-negro que no lleva una sola carta azul. Los fireos (`{U/P}`) tampoco
+    exigen: se pagan con vida.
+    """
+    duros: Counter = Counter()
+    hibridos: list[list[str]] = []
+    for simbolo in re.findall(r"\{([^}]+)\}", coste or ""):
+        s = simbolo.upper()
+        colores = [c for c in COLORES if c in s]
+        if not colores:
+            continue
+        if "/" in s:
+            hibridos.append(colores)
+        else:
+            duros[colores[0]] += 1
+    return duros, hibridos
+
+
 def _alcance(oraculo: str) -> str:
     """A quién alcanza el efecto. Es lo que distingue una asimetría de un barrido."""
     tuyo = re.search(r"you control|your (creatures|permanents|library|graveyard|hand)", oraculo, re.I)
@@ -104,15 +126,20 @@ def mana(mazo: Mazo) -> dict[str, Any]:
 
     exigencia: Counter = Counter()
     exigentes: list[dict[str, Any]] = []
+    flexibles_hibridos: list[dict[str, Any]] = []
     for c in mazo.principal:
-        p = _pips(c.coste)
-        if not p:
-            continue
-        for color, n in p.items():
+        duros, hibridos = _exigencia(c.coste)
+        for color, n in duros.items():
             exigencia[color] = max(exigencia[color], n)
-        if max(p.values()) >= 2:
+        if duros and max(duros.values()) >= 2:
             exigentes.append({"carta": c.nombre, "copias": c.copias,
-                              "exige": {k: v for k, v in p.items() if v >= 2}})
+                              "exige": {k: v for k, v in duros.items() if v >= 2}})
+        for colores in hibridos:
+            # solo es un problema si NINGUNO de sus colores tiene fuentes
+            if not any(fuentes.get(x) for x in colores):
+                flexibles_hibridos.append(
+                    {"carta": c.nombre,
+                     "paga_con": [NOMBRE_COLOR[x] for x in colores]})
 
     aviso = []
     for color in sorted(set(list(fuentes) + list(exigencia))):
@@ -127,6 +154,7 @@ def mana(mazo: Mazo) -> dict[str, Any]:
         "tierras_de_busqueda": flexibles,
         "cartas_de_doble_simbolo": exigentes,
         "posible_problema_de_color": aviso,
+        "hibridos_sin_ninguna_fuente": flexibles_hibridos,
     }
 
 

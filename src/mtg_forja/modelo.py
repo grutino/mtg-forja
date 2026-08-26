@@ -16,6 +16,11 @@ LINEA = re.compile(
     re.VERBOSE,
 )
 
+# La sección "About" de MTG Arena trae "Name <nombre del mazo>" en una sola línea.
+# Sin esto se colaba como si fuera una carta. Pide que NO haya cantidad delante,
+# para no tragarse un "1 Nameless Inversion".
+META_ARENA = re.compile(r"^(name|layout)\s+\S", re.I)
+
 CABECERAS = {
     "deck", "mazo", "sideboard", "banquillo", "reserva", "commander",
     "companion", "maybeboard", "about", "name",
@@ -196,6 +201,8 @@ def parsear_lista(texto: str) -> list[tuple[int, str, bool]]:
         if not linea:
             continue
         clave = linea.lower().rstrip(":")
+        if META_ARENA.match(linea):
+            continue
         if clave in CABECERAS:
             banquillo = clave in {"sideboard", "banquillo", "reserva"}
             continue

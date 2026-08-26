@@ -248,6 +248,26 @@ def test_rulings_degradan_sin_romper(monkeypatch, tmp_path):
     assert scryfall.rulings(carta) == []
 
 
+def test_metadata_de_arena_no_es_una_carta():
+    """La sección About de Arena trae "Name <mazo>" y se colaba como carta."""
+    r = parsear_lista("About\nName Draft Deck\n\nDeck\n2 Attercop\n1 Nameless Inversion")
+    assert (2, "Attercop", False) in r
+    assert (1, "Nameless Inversion", False) in r, "no puede comerse una carta real"
+    assert not any("Draft Deck" in n for _, n, _ in r)
+
+
+def test_hibrido_no_exige_los_dos_colores():
+    """{G/U} se paga con verde O azul: no puede avisar de falta de azul."""
+    from mtg_forja import hechos
+
+    duros, hibridos = hechos._exigencia("{2}{G/U}")
+    assert not duros, "un híbrido no exige ningún color concreto"
+    assert hibridos == [["U", "G"]] or hibridos == [["G", "U"]]
+    # y uno normal sí exige
+    duros, hibridos = hechos._exigencia("{1}{B}{B}")
+    assert duros["B"] == 2 and not hibridos
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")

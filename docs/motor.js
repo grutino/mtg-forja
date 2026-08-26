@@ -14,6 +14,9 @@
     "deck", "mazo", "sideboard", "banquillo", "reserva",
     "commander", "companion", "maybeboard", "about", "name",
   ]);
+  // La sección "About" de Arena trae "Name <nombre del mazo>" en una línea suelta.
+  // Exige que no haya cantidad delante para no comerse un "1 Nameless Inversion".
+  const META_ARENA = /^(name|layout)\s+\S/i;
   const LINEA = /^\s*(?:(\d+)\s*[xX]?\s+)?([^([\n]+?)(?:\s*\([A-Za-z0-9_]{2,6}\)\s*[\w-]*)?\s*$/;
 
   const COLOR_ROL = {
@@ -67,6 +70,7 @@
       linea = linea.replace(CATEGORIA, " ").replace(MARCAS, " ").trim();
       if (!linea) continue;
       const clave = linea.toLowerCase().replace(/:$/, "");
+      if (META_ARENA.test(linea)) continue;
       if (CABECERAS.has(clave)) {
         banquillo = ["sideboard", "banquillo", "reserva"].includes(clave);
         continue;
