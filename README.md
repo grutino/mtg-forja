@@ -637,6 +637,7 @@ Se probaron, una por una, y estos son los resultados reales:
 
 | Fuente | Qué se encontró |
 |---|---|
+| **Commander Spellbook** | ✅ **Integrada.** Su endpoint `find-my-combos` acepta el mazo entero de una vez y devuelve combos con sus pasos redactados. Es la única fuente del proyecto que no es oráculo verificado, y por eso siempre se contrasta |
 | **Gatherer** | Sin API propia, pero **su contenido ya llega por Scryfall**: los rulings oficiales. Es la fuente que más aporta y ya está integrada |
 | **EDHREC** | Su JSON funciona, pero está organizado por comandante y mide popularidad, no interacción |
 | **Moxfield** | Devuelve `403` a cualquier cliente automatizado |
@@ -646,11 +647,17 @@ Se probaron, una por una, y estos son los resultados reales:
 | **Cardmarket** | `410 Gone` |
 | **MTGSimilar** | Protección anti-bot |
 | **Untapped.gg** | Su API devuelve `403` y su bucket JSON no tiene índice público. El sitio sí permite rastreo, pero lo que ofrece es metajuego de MTG Arena: tasas de victoria y popularidad |
+| **edh-combos.com** | La más abierta de todas —`robots.txt` vacío, sin restricciones— pero su propio pie lo dice: *«Combo data is based on the Commander Spellbook, and card images are provided by Scryfall»*. Es un buscador montado sobre las dos fuentes que ya usamos, así que rascarla sería pedir por HTML lo que ya pedimos por API a la fuente original |
 | **Archidekt · ManaBox** | Almacenan mazos. Valen como formato de importación, y ya se soportan |
 
-La conclusión: para **entender interacciones** solo sirven el oráculo y los rulings,
-y los dos vienen de Scryfall. El resto son precios, popularidad o listas — útiles
-para otras preguntas, no para esta.
+La conclusión, tras revisar once: **solo dos aportan algo**, y las dos están dentro.
+Scryfall pone el oráculo real y los rulings oficiales de Wizards; Commander Spellbook
+pone los combos ya catalogados. El resto son precios, popularidad, listas de mazos o
+—como edh-combos.com— reempaquetados de las anteriores.
+
+Ninguna se descartó por estar cerrada sin más: se descartaron porque no responden a
+esta pregunta. Entender por qué dos cartas interactúan exige leer lo que dicen, y eso
+solo lo dan el texto de la carta y las aclaraciones de quien escribe las reglas.
 
 ---
 
