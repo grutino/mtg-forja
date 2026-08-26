@@ -533,6 +533,63 @@
         ],
         "texto": "se dispara cuando un hechizo tuyo hace daño"
       }
+    },
+    {
+      "id": "criatura-fuerte",
+      "nombre": "controlar una criatura grande",
+      "fuerza": 4,
+      "produce": {
+        "tipo": "Creature",
+        "fuerza_min": 4,
+        "texto": "es la criatura de fuerza 4 o más que hace falta"
+      },
+      "premia": {
+        "oracle": [
+          "creature with power 4 or greater",
+          "\\bFerocious\\b",
+          "creature you control with power \\d+ or greater"
+        ],
+        "texto": "solo se dispara si controlas una criatura de fuerza 4 o más"
+      }
+    },
+    {
+      "id": "ciclar",
+      "nombre": "ciclar y descartar para buscar",
+      "fuerza": 2,
+      "produce": {
+        "oracle": [
+          "\\bCycling\\b",
+          "\\w+cycling\\b",
+          "Discard this card:"
+        ],
+        "texto": "se cicla, llenando el cementerio y filtrando"
+      },
+      "premia": {
+        "oracle": [
+          "cards? in (your|a) graveyard",
+          "\\bDelve\\b",
+          "\\bEscape\\b",
+          "\\bDelirium\\b",
+          "from (your|a) graveyard"
+        ],
+        "texto": "aprovecha lo que va al cementerio"
+      }
+    },
+    {
+      "id": "contadores-en-ataque",
+      "nombre": "crecer atacando",
+      "fuerza": 3,
+      "produce": {
+        "oracle": [
+          "put a \\+1/\\+1 counter on each creature you control",
+          "put a \\+1/\\+1 counter on target creature"
+        ],
+        "texto": "reparte contadores +1/+1"
+      },
+      "premia": {
+        "tipo": "Creature",
+        "texto": "es una criatura que los recibe"
+      }
     }
   ]
 }

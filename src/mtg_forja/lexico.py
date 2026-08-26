@@ -82,12 +82,22 @@ def _encaja(carta: Carta, bloque: dict[str, Any] | None, oraculo: str | None = N
         return ""
     if "mv_max" in bloque and carta.mv > bloque["mv_max"]:
         return ""
+    if "fuerza_min" in bloque:
+        try:
+            if float(carta.fuerza) < bloque["fuerza_min"]:
+                return ""
+        except (TypeError, ValueError):
+            # Fuerza variable ("*", "1+*"): no se puede afirmar el umbral.
+            return ""
     if "no_oracle" in bloque and re.search(bloque["no_oracle"], oraculo, re.I | re.S):
         return ""
     patrones = bloque.get("oracle") or []
     if not patrones:
         # Bloque puramente estructural (tipo o coste): la evidencia es la línea de tipo.
-        return carta.tipo if ("tipo" in bloque or "mv_min" in bloque or "mv_max" in bloque) else ""
+        estructural = any(k in bloque for k in ("tipo", "mv_min", "mv_max", "fuerza_min"))
+        if "fuerza_min" in bloque:
+            return f"{carta.tipo} · fuerza {carta.fuerza}"
+        return carta.tipo if estructural else ""
     for patron in patrones:
         m = re.search(patron, oraculo, re.I | re.S)
         if m:

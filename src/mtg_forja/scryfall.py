@@ -160,6 +160,7 @@ def resolver(lista: str, nombre_mazo: str = "Mazo") -> Mazo:
                 produce_mana=bruto.get("produced_mana", []) or [],
                 keywords=bruto.get("keywords", []) or [],
                 rulings_uri=bruto.get("rulings_uri", ""),
+                fuerza=str(bruto.get("power", "") or ""),
             )
         clave = (_clave(carta.nombre), banq)
         if clave in vistos:

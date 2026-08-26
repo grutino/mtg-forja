@@ -219,6 +219,11 @@
     if (pieza.coste && !re(pieza.coste, carta.coste || "")) return null;
     if (pieza.mv_min !== undefined && carta.mv < pieza.mv_min) return null;
     if (pieza.mv_max !== undefined && carta.mv > pieza.mv_max) return null;
+    if (pieza.fuerza_min !== undefined) {
+      const f = parseFloat(carta.fuerza);
+      // Fuerza variable ("*", "1+*"): no se puede afirmar el umbral.
+      if (!Number.isFinite(f) || f < pieza.fuerza_min) return null;
+    }
     if (pieza.copias_min !== undefined && carta.copias < pieza.copias_min) return null;
     if (pieza.copias_max !== undefined && carta.copias > pieza.copias_max) return null;
     let evidencia = "";
@@ -228,6 +233,9 @@
       if (!evidencia) evidencia = frase(carta.oraculo, pieza[clave]);
     }
     if (pieza.no_oracle && re(pieza.no_oracle, carta.oraculo)) return null;
+    if (pieza.fuerza_min !== undefined && !evidencia) {
+      return `${carta.tipo} · fuerza ${carta.fuerza}`;
+    }
     return evidencia || carta.oraculo.split(/\s+/).join(" ").slice(0, 200) || carta.tipo;
   }
 
@@ -383,9 +391,15 @@ const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
     if (bloque.no_tipo && re(bloque.no_tipo, carta.tipo)) return "";
     if (bloque.mv_min !== undefined && carta.mv < bloque.mv_min) return "";
     if (bloque.mv_max !== undefined && carta.mv > bloque.mv_max) return "";
+    if (bloque.fuerza_min !== undefined) {
+      const f = parseFloat(carta.fuerza);
+      // Fuerza variable ("*", "1+*"): no se puede afirmar el umbral.
+      if (!Number.isFinite(f) || f < bloque.fuerza_min) return "";
+    }
     if (bloque.no_oracle && re(bloque.no_oracle, oraculo)) return "";
     const patrones = bloque.oracle || [];
     if (!patrones.length) {
+      if (bloque.fuerza_min !== undefined) return `${carta.tipo} · fuerza ${carta.fuerza}`;
       return (bloque.tipo || bloque.mv_min !== undefined || bloque.mv_max !== undefined)
         ? carta.tipo : "";
     }

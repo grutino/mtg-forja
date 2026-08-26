@@ -268,6 +268,21 @@ def test_hibrido_no_exige_los_dos_colores():
     assert duros["B"] == 2 and not hibridos
 
 
+def test_umbral_de_fuerza():
+    """Mecánicas como Ferocious piden "una criatura de fuerza 4 o más"."""
+    from mtg_forja.modelo import Carta
+
+    bloque = {"tipo": "Creature", "fuerza_min": 4}
+    grande = Carta(nombre="G", tipo="Creature — Wolf", fuerza="5", oraculo="")
+    pequena = Carta(nombre="P", tipo="Creature — Spider", fuerza="2", oraculo="")
+    variable = Carta(nombre="V", tipo="Creature — Elf", fuerza="*", oraculo="")
+
+    assert lexico._encaja(grande, bloque), "una 5/5 sí enciende el umbral"
+    assert not lexico._encaja(pequena, bloque), "una 2/2 no puede encenderlo"
+    # fuerza variable: no se puede afirmar, así que no cuenta
+    assert not lexico._encaja(variable, bloque)
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")

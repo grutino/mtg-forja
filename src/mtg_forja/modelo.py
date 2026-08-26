@@ -51,6 +51,9 @@ class Carta:
     # De dónde bajar los rulings oficiales de Wizards. Son el contenido de
     # Gatherer y explican interacciones que ningún patrón puede deducir.
     rulings_uri: str = ""
+    # Fuerza tal cual la da Scryfall ("3", "*", "1+*"). Hay mecánicas que
+    # piden umbrales de fuerza y sin esto no se pueden expresar.
+    fuerza: str = ""
     resuelta: bool = True
 
     @property
