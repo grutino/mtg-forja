@@ -71,7 +71,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 | `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
 | El servidor MCP | `server.py` | **El enchufe con Claude.** Expone las herramientas para que el modelo pueda llamarlas. |
-| Las herramientas | Nueve funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
+| Las herramientas | Once funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
 | La skill | `skill/SKILL.md` | Lo que Claude *debe saber*: qué verificar antes de afirmar nada, qué documento pide cada situación, cómo redactar. |
 | El CLI | `cli.py` | Los mismos tres documentos sin pasar por Claude. |
 | La web | `docs/` | Todo lo anterior en el navegador, sin instalar nada. |
@@ -645,7 +645,8 @@ Se probaron, una por una, y estos son los resultados reales:
 | **TCGplayer** | La API pide clave de socio, y da precios |
 | **Cardmarket** | `410 Gone` |
 | **MTGSimilar** | Protección anti-bot |
-| **Archidekt · ManaBox · Untapped** | Almacenan mazos. Valen como formato de importación, y ya se soportan |
+| **Untapped.gg** | Su API devuelve `403` y su bucket JSON no tiene índice público. El sitio sí permite rastreo, pero lo que ofrece es metajuego de MTG Arena: tasas de victoria y popularidad |
+| **Archidekt · ManaBox** | Almacenan mazos. Valen como formato de importación, y ya se soportan |
 
 La conclusión: para **entender interacciones** solo sirven el oráculo y los rulings,
 y los dos vienen de Scryfall. El resto son precios, popularidad o listas — útiles
