@@ -110,6 +110,27 @@ def detectar_sinergias(lista: str, nombre: str = "Mazo") -> str:
 
 
 @mcp.tool()
+def cobertura_del_analisis(lista: str, nombre: str = "Mazo") -> str:
+    """Cuánto de este mazo entiende el motor, y qué se le escapa.
+
+    Úsala **siempre que el mazo traiga cartas de una colección reciente**, y en
+    general cuando el análisis salga escaso: distingue las dos causas posibles,
+    que se confunden con facilidad.
+
+    * Si `sin resolver` viene vacío, las cartas se leyeron bien contra Scryfall.
+      Eso funciona incluso con colecciones que aún no han salido.
+    * Si hay `mecanicas_sin_concepto` o `cartas_invisibles`, el motor **lee pero
+      no entiende**: nadie ha escrito todavía un concepto para esa mecánica, así
+      que sus sinergias no se van a deducir por muchas vueltas que le des.
+
+    Cuando eso pase, no te fíes del recuento de sinergias: coge `radiografia_del_mazo`,
+    lee el oráculo de las cartas invisibles y razona tú la interacción. Es
+    exactamente el caso para el que existe el camino MCP.
+    """
+    return _json(lexico.cobertura(scryfall.resolver(lista, nombre)))
+
+
+@mcp.tool()
 def combos_conocidos(lista: str, nombre: str = "Mazo") -> str:
     """Combos ya catalogados que hay en el mazo, según Commander Spellbook.
 

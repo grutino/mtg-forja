@@ -40,6 +40,9 @@ class Carta:
     # Colores que la carta sabe producir. Sin esto no se puede comprobar si el
     # mazo es capaz de lanzar sus propias cartas.
     produce_mana: list[str] = field(default_factory=list)
+    # Mecánicas con nombre según Scryfall. Es la señal objetiva de si una
+    # colección trae algo que el léxico todavía no sabe leer.
+    keywords: list[str] = field(default_factory=list)
     resuelta: bool = True
 
     @property

@@ -217,6 +217,20 @@ def test_el_mapa_muestra_todas_las_cartas_y_solo_enlaces_reales():
     atadas = {e["a"] for e in datos["enlaces"]} | {e["b"] for e in datos["enlaces"]}
     assert set(datos["cartas"]) - atadas, "el mazo de prueba debería tener cartas sueltas"
 
+def test_cobertura_distingue_leer_de_entender():
+    """Resolver una carta y entenderla son cosas distintas, y hay que poder verlo."""
+    mazo = scryfall.resolver(LISTA, "Prueba")
+    c = lexico.cobertura(mazo)
+
+    assert c["cartas_analizables"] > 0
+    assert 0 <= c["porcentaje"] <= 100
+    # una mecánica de combate no es un hueco del léxico
+    assert not ({"Flying", "Vigilance", "Trample"} & set(c["mecanicas_sin_concepto"]))
+    # toda carta invisible tiene que ser una carta real del mazo
+    nombres = {x.nombre for x in mazo.principal}
+    assert set(c["cartas_invisibles"]) <= nombres
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")

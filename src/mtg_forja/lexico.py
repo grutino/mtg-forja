@@ -30,6 +30,14 @@ TOPE_SINERGIAS = 40
 TOPE_CONFLICTOS = 10
 POR_CARTA = 12
 
+# Palabras de combate: describen cómo pelea una criatura, no un recurso que otra
+# carta pueda aprovechar. No tiene sentido pedir un concepto para ellas.
+EVERGREEN = {
+    "Flying", "Vigilance", "Menace", "Deathtouch", "Reach", "Trample", "Haste",
+    "First strike", "Double strike", "Defender", "Hexproof", "Shroud", "Ward",
+    "Indestructible", "Protection", "Flash", "Enchant", "Equip", "Crew",
+}
+
 
 def cargar(ruta: str | Path | None = None) -> list[dict[str, Any]]:
     global _CACHE
@@ -175,6 +183,60 @@ def completo(mazo: Mazo, reglas_: list[dict[str, Any]] | None = None,
     deducidas = [s for s in detectar(mazo, conceptos)
                  if tuple(sorted(s.piezas)) not in cubiertas]
     return nombradas + deducidas
+
+
+def cobertura(mazo: Mazo, conceptos: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    """Qué parte del mazo entiende el motor, y sobre todo qué NO entiende.
+
+    Resolver una carta contra Scryfall siempre funciona, incluso con colecciones
+    que aún no han salido. Entenderla es otra cosa: si el mazo trae una mecánica
+    nueva y nadie ha escrito un concepto para ella, el motor la lee y no ve nada.
+
+    Esta función no arregla eso — lo hace visible. Dice qué cartas quedan fuera
+    del análisis y qué mecánicas con nombre no toca ningún concepto, que es la
+    lista de lo que hay que escribir para cubrir la colección.
+    """
+    conceptos = conceptos if conceptos is not None else cargar()
+    reparto = _papeles(mazo, conceptos)
+
+    papeles: dict[str, list[str]] = {}
+    for c in conceptos:
+        for papel, aciertos in reparto[c["id"]].items():
+            for carta, _ in aciertos:
+                papeles.setdefault(carta.nombre, []).append(f"{c['id']}:{papel}")
+
+    # Las tierras básicas no dicen nada del plan: no cuentan como punto ciego.
+    interesantes = [c for c in mazo.principal if not c.es_basica]
+    ciegas = [c.nombre for c in interesantes if c.nombre not in papeles]
+
+    texto_conceptos = json.dumps(conceptos, ensure_ascii=False).lower()
+    mecanicas: dict[str, dict[str, Any]] = {}
+    for c in mazo.principal:
+        for k in c.keywords:
+            if k in EVERGREEN:      # palabras de combate: no definen sinergias
+                continue
+            m = mecanicas.setdefault(k, {"cartas": 0, "cubierta": k.lower() in texto_conceptos})
+            m["cartas"] += c.copias
+
+    sin_cubrir = sorted((k for k, v in mecanicas.items() if not v["cubierta"]),
+                        key=lambda k: -mecanicas[k]["cartas"])
+
+    leidas = len(interesantes) - len(ciegas)
+    return {
+        "cartas_analizables": len(interesantes),
+        "cartas_que_el_motor_lee": leidas,
+        "porcentaje": round(100 * leidas / len(interesantes)) if interesantes else 0,
+        "cartas_invisibles": ciegas,
+        "mecanicas_del_mazo": {k: v["cartas"] for k, v in
+                               sorted(mecanicas.items(), key=lambda kv: -kv[1]["cartas"])},
+        "mecanicas_sin_concepto": sin_cubrir,
+        "veredicto": (
+            "El motor no cubre este mazo: escribe conceptos para las mecánicas listadas, "
+            "o analízalo por MCP, donde el modelo lee el oráculo y razona."
+            if sin_cubrir or leidas < len(interesantes) * 0.7
+            else "El motor cubre las mecánicas de este mazo."
+        ),
+    }
 
 
 def _podar(sinergias: list[Sinergia]) -> list[Sinergia]:

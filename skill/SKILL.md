@@ -53,6 +53,14 @@ motor, el análisis será correcto y vacío.
    el propio mazo exige. **Empieza siempre por aquí**, y en especial con un mazo de un
    arquetipo que no reconozcas: es lo único que te deja ver las cuatro cosas de la
    tabla de arriba.
+0b. **Comprobar cobertura si el mazo trae cartas recientes.**
+   `cobertura_del_analisis(lista)` te dice si el motor **entiende** el mazo o solo
+   lo lee. Resolver contra Scryfall funciona siempre, incluso con colecciones que
+   aún no han salido; entenderlas es otra cosa. Si salen `mecanicas_sin_concepto`
+   o `cartas_invisibles`, **el recuento de sinergias no significa nada**: esas
+   cartas no van a aparecer por mucho que insistas. Lee su oráculo en la
+   radiografía y razona tú la interacción — para eso estás.
+
 1. **Resolver.** `detectar_sinergias(lista)` devuelve las cartas con su oráculo, la
    curva y las sinergias candidatas que ha encontrado el motor de reglas.
    Opcionalmente, `combos_conocidos(lista)` trae combos ya catalogados por Commander
