@@ -730,3 +730,25 @@ def test_el_vocabulario_de_etiquetas_es_usable():
     for imprescindible in ("drawback", "phasing", "pitch-spell"):
         assert imprescindible in v, imprescindible
     assert all(isinstance(n, int) and n >= 10 for n in v.values())
+
+
+def test_compartir_etiqueta_no_es_tener_sinergia(monkeypatch):
+    """Foil y Misdirection son las dos `pitch-spell`, y no combinan.
+
+    La etiqueta funcional de Scryfall las clasifica juntas, igual que agrupa a
+    Counterspell con Daze. Eso es una categoría, no una interacción: de hecho
+    compiten, porque las dos se pagan con cartas de la mano.
+
+    Lo que sí es una sinergia está al lado y es más concreto: Gush devuelve Islas
+    a tu mano y Foil necesita descartar una Isla de la mano para lanzarse gratis.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-stiflenought.json"))
+    lista = (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8")
+    s = lexico.completo(scryfall.resolver(lista, "Stiflenought"))
+
+    assert not any({"Foil", "Misdirection"} <= set(x.piezas) for x in s), \
+        "compartir etiqueta no puede convertirse en una línea del mapa"
+
+    devuelven = {p for x in s if x.id.split("::")[0] == "tierra-a-la-mano"
+                 for p in x.piezas if p != "Foil"}
+    assert devuelven == {"Gush", "Daze", "Thwart"}, devuelven

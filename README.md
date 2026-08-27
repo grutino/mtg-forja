@@ -66,7 +66,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 |---|---|---|
 | `reglas.json` | 37 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
 | Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
-| `lexico.json` | 34 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
+| `lexico.json` | 35 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
 | `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
@@ -553,6 +553,35 @@ Una advertencia que costó un bug: cuando una consulta falla, **eso no es una
 ausencia**. Tragarse un `429` y dar la etiqueta por vacía convierte un fallo de red
 en un dato, y el informe pasa a mentir con toda la confianza del mundo. Por eso
 salen aparte, en `etiquetas_sin_comprobar`.
+
+### Compartir etiqueta no es tener sinergia
+
+Es la trampa más fácil de esta fuente, y estuve a punto de caer en ella.
+
+`Foil` y `Misdirection` comparten `otag:pitch-spell`, así que parece que van
+juntas. No van: esa etiqueta las **clasifica**, igual que agrupa a `Counterspell`
+con `Daze`. De hecho compiten — las dos se pagan con cartas de la mano, el mismo
+recurso, y por eso el mazo lleva una Misdirection y no cuatro.
+
+Ninguna otra fuente las une tampoco: Misdirection tiene cuatro rulings y ninguno
+menciona nada parecido, y Commander Spellbook no devuelve nada.
+
+Lo que sí es una sinergia estaba al lado, y es de otra clase:
+
+    Gush → "return two Islands you control to their owner's hand"
+    Foil → "discard an Island card ... rather than pay this spell's mana cost"
+
+Gush te pone Islas en la mano; Foil necesita descartar una Isla de la mano para
+lanzarse gratis. **Gush paga literalmente el coste de Foil**, y eso también vale
+para Daze y Thwart, que devuelven Islas igual.
+
+La diferencia importa y da la regla general: una categoría agrupa cartas que se
+parecen; una sinergia es un **recurso que pasa de una carta a otra**. Convertir
+categorías en líneas es exactamente cómo Misdirection acabó con nueve conexiones
+que no significaban nada.
+
+Por eso las etiquetas se usan para **buscar dónde mirar**, nunca como sinergia
+directa. Señalaron el sitio correcto por el motivo equivocado, y eso ya es útil.
 
 ### Contrastar contra la fuente oficial
 

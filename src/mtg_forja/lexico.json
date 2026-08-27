@@ -743,6 +743,24 @@
         "texto": "cancela ese disparo antes de que te cueste nada"
       },
       "emparejar_tipo_objetivo": "premia"
+    },
+    {
+      "id": "tierra-a-la-mano",
+      "nombre": "la tierra que vuelve a tu mano y paga otro hechizo",
+      "fuerza": 4,
+      "produce": {
+        "oracle": [
+          "[Rr]eturn .{0,25}(land|Island|Mountain|Forest|Plains|Swamp)s? you control to (its|their) owner'?s hand"
+        ],
+        "texto": "te devuelve tierras a la mano"
+      },
+      "premia": {
+        "oracle": [
+          "[Dd]iscard (a|an) .{0,20}(land|Island|Mountain|Forest|Plains|Swamp) card.{0,70}rather than pay",
+          "rather than pay .{0,60}discard (a|an) .{0,20}(land|Island|Mountain|Forest|Plains|Swamp) card"
+        ],
+        "texto": "se lanza gratis descartando una tierra de la mano"
+      }
     }
   ]
 }
