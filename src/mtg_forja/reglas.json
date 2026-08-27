@@ -381,7 +381,8 @@
           "rol": "b",
           "tipo": "Land",
           "oracle": "add \\{C\\}",
-          "copias_min": 3
+          "copias_min": 3,
+          "no_oracle": "(^|\\n)\\{T\\}: Add one mana of any color|(^|\\n)\\{T\\}: Add \\{[WUBRG]\\}"
         }
       ],
       "resumen": "{a} pide dos símbolos del mismo color y {b} solo produce incoloro: encadenar varias es la forma más habitual de atascarse.",

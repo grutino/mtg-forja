@@ -114,36 +114,52 @@ def test_json_incrustado_no_corta_el_bloque_script():
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="hace falta node")
-def test_los_dos_motores_detectan_lo_mismo(tmp_path):
+def test_los_dos_motores_detectan_lo_mismo(tmp_path, monkeypatch):
     """reglas.py y motor.js son dos implementaciones del mismo motor.
 
     Si se separan, el mismo mazo produce documentos distintos según se analice
     desde la web o desde la línea de comandos. Nada más lo vigila.
     """
-    mazo = scryfall.resolver(LISTA, "Prueba")
-    principal = [c for c in mazo.cartas if not c.banquillo]
-    entrada = tmp_path / "mazo.json"
-    entrada.write_text(json.dumps({
-        "principal": [{"nombre": c.nombre, "copias": c.copias, "coste": c.coste,
-                       "mv": c.mv, "tipo": c.tipo, "oraculo": c.oraculo, "rol": c.rol,
-                       "es_tierra": c.es_tierra, "es_basica": c.es_basica}
-                      for c in principal],
-        "total": mazo.total, "tierras": mazo.tierras, "basicas": mazo.basicas,
-    }, ensure_ascii=False), encoding="utf-8")
+    # Los dos mazos de ejemplo: el de control y el de dragones. El segundo es el que
+    # ejercita volar, el segundo hechizo del turno y los umbrales de fuerza, que el
+    # de control no toca — con un solo mazo la prueba pasaba sin mirarlos.
+    for fixture, lista, etiqueta in (
+        ("fixture-pruebas.json", LISTA, "control"),
+        ("fixture-dragones.json",
+         (RAIZ / "ejemplos" / "dragones-boros.txt").read_text(encoding="utf-8"), "dragones"),
+    ):
+        monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / fixture))
+        mazo = scryfall.resolver(lista, etiqueta)
+        principal = [c for c in mazo.cartas if not c.banquillo]
+        entrada = tmp_path / f"mazo-{etiqueta}.json"
+        entrada.write_text(json.dumps({
+            # fuerza y keywords viajan también: sin ellas el gemelo de JS no puede
+            # evaluar los umbrales y la paridad daría un falso verde.
+            "principal": [{"nombre": c.nombre, "copias": c.copias, "coste": c.coste,
+                           "mv": c.mv, "tipo": c.tipo, "oraculo": c.oraculo, "rol": c.rol,
+                           "es_tierra": c.es_tierra, "es_basica": c.es_basica,
+                           "fuerza": c.fuerza, "keywords": c.keywords}
+                          for c in principal],
+            "total": mazo.total, "tierras": mazo.tierras, "basicas": mazo.basicas,
+        }, ensure_ascii=False), encoding="utf-8")
 
-    guion = (
-        "global.fetch=()=>{throw new Error('sin red')};"
-        f"require({str(RAIZ / 'docs' / 'motor.js')!r});"
-        "const fs=require('fs');"
-        f"const mazo=JSON.parse(fs.readFileSync({str(entrada)!r},'utf8'));"
-        f"const r=JSON.parse(fs.readFileSync({str(RAIZ / 'docs' / 'reglas.json')!r},'utf8')).reglas;"
-        f"const l=JSON.parse(fs.readFileSync({str(RAIZ / 'docs' / 'lexico.json')!r},'utf8')).conceptos;"
-        "console.log(JSON.stringify(Forja.completo(mazo,r,l).map(s=>s.id)));"
-    )
-    proc = subprocess.run(["node", "-e", guion], capture_output=True, text=True, check=True)
+        guion = (
+            "global.fetch=()=>{throw new Error('sin red')};"
+            f"require({str(RAIZ / 'docs' / 'motor.js')!r});"
+            "const fs=require('fs');"
+            f"const mazo=JSON.parse(fs.readFileSync({str(entrada)!r},'utf8'));"
+            f"const r=JSON.parse(fs.readFileSync({str(RAIZ / 'docs' / 'reglas.json')!r},'utf8')).reglas;"
+            f"const l=JSON.parse(fs.readFileSync({str(RAIZ / 'docs' / 'lexico.json')!r},'utf8')).conceptos;"
+            "console.log(JSON.stringify(Forja.completo(mazo,r,l).map(s=>s.id)));"
+        )
+        proc = subprocess.run(["node", "-e", guion], capture_output=True, text=True, check=True)
 
-    # `completo` cubre las dos mitades: las reglas escritas y lo que deduce el léxico.
-    assert [s.id for s in lexico.completo(mazo)] == json.loads(proc.stdout)
+        # `completo` cubre las dos mitades: las reglas escritas y lo que deduce el léxico.
+        py = [s.id for s in lexico.completo(mazo)]
+        js = json.loads(proc.stdout)
+        assert py == js, (f"los motores se separan en el mazo de {etiqueta}: "
+                          f"solo python {[x for x in py if x not in js][:3]} · "
+                          f"solo js {[x for x in js if x not in py][:3]}")
 
 
 def test_cli_falla_si_no_resuelve_nada(tmp_path):
@@ -447,3 +463,24 @@ def test_el_mazo_de_dragones_no_deja_suelta_su_carta_clave(monkeypatch):
         if x.tipo == "conflicto" and "Magmatic Hellkite" in x.piezas:
             chocan = tierras & set(x.piezas)
             assert not chocan, f"vuelve el aviso falso contra tus tierras: {chocan}"
+
+
+def test_no_avisa_de_mana_si_la_tierra_si_da_color(monkeypatch):
+    """«Solo produce incoloro» hay que comprobarlo, no suponerlo.
+
+    Maelstrom of the Spirit Dragon dice «Add {C}», pero también «{T}: Add one mana
+    of any color» sin coste extra, para pagar dragones. El motor avisaba contra los
+    tres dragones a los que esa tierra existe justo para lanzar.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-dragones.json"))
+    lista = (RAIZ / "ejemplos" / "dragones-boros.txt").read_text(encoding="utf-8")
+    s = motor.detectar(scryfall.resolver(lista, "Dragones"))
+    falsos = [x for x in s if x.id.split("::")[0] == "doble-simbolo-tierra-incolora"]
+    assert not falsos, f"vuelve el aviso falso de maná: {[x.piezas for x in falsos]}"
+
+    # pero el aviso legítimo no puede desaparecer: en el mazo de control la tierra
+    # cobra {5} por el color, así que en los primeros turnos es incolora de verdad
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-pruebas.json"))
+    s = motor.detectar(scryfall.resolver(LISTA, "Prueba"))
+    reales = [x for x in s if x.id.split("::")[0] == "doble-simbolo-tierra-incolora"]
+    assert reales, "el aviso de maná que sí es cierto se ha perdido"

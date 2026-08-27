@@ -496,6 +496,19 @@ es la que se ve de un vistazo en el mapa, y ahora sale también en el informe:
 Si una carta importante del mazo sale ahí, falta un concepto. Es la comprobación
 que conviene hacer con cualquier mazo de una colección recién salida.
 
+### Un aviso falso es peor que ningún aviso
+
+La regla «doble símbolo de color con tierras incoloras» decía *solo produce
+incoloro* pero nunca comprobaba lo de **solo**. `Maelstrom of the Spirit Dragon`
+dice «Add {C}», y también «{T}: Add one mana of any color» sin coste extra, para
+pagar dragones. El motor avisaba contra los tres dragones a los que esa tierra
+existe justo para lanzar.
+
+Salió a la luz al emitir todas las parejas: pasó de una línea roja a tres, y tres
+ya cantaban. Ahora la regla exige que la tierra no produzca color gratis. El aviso
+legítimo sigue: `Cascading Cataracts` cobra `{5}` por el color, así que en los
+primeros turnos es incolora de verdad.
+
 ### Una regla, todas las cartas que encajen
 
 Las reglas escritas a mano ya eran genéricas —«cualquier tierra indestructible», no
