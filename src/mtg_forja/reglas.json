@@ -765,26 +765,26 @@
       ]
     },
     {
-      "id": "daze-isla",
-      "nombre": "Contrahechizo gratis devolviendo una Isla",
+      "id": "isla-coste-alternativo",
+      "nombre": "Hechizo gratis a cambio de una Isla",
       "bloque": "Respuesta",
       "fuerza": 3,
       "turno": "reacción",
       "piezas": [
         {
           "rol": "a",
-          "oracle": "return an Island you control to its owner's hand rather than pay"
+          "oracle": "(return|discard) (an|two|three|\\w+) Islands?.{0,60}rather than pay"
         },
         {
           "rol": "b",
           "tipo": "Island"
         }
       ],
-      "resumen": "{a} devuelve {b} a tu mano en vez de pagar maná: gratis en tempo, caro en tierras.",
+      "resumen": "{a} se lanza sin pagar maná a cambio de {b}. Es gratis en tempo y caro en tierras, y explica por qué el mazo lleva tantas: {b} no está ahí solo para producir maná, es parte del coste.",
       "pasos": [
-        "Úsalo pronto, cuando un maná extra le duela al rival.",
-        "Devuelve {b} y vuelve a jugarla el turno siguiente.",
-        "Tarde en la partida el rival paga el {1} sin despeinarse."
+        "Cuenta las Islas que te quedan antes de comprometerte: son el coste real.",
+        "Paga con {b} y guarda el maná para otra cosa.",
+        "Cuantos más hechizos así lleves, más Islas necesitas para sostenerlos."
       ]
     },
     {

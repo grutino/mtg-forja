@@ -752,3 +752,19 @@ def test_compartir_etiqueta_no_es_tener_sinergia(monkeypatch):
     devuelven = {p for x in s if x.id.split("::")[0] == "tierra-a-la-mano"
                  for p in x.piezas if p != "Foil"}
     assert devuelven == {"Gush", "Daze", "Thwart"}, devuelven
+
+
+def test_todos_los_costes_pagados_con_islas_salen_con_la_isla(monkeypatch):
+    """La regla decía literalmente "return an Island": estaba escrita para Daze.
+
+    En ese mazo hay cuatro hechizos que se pagan con Islas y solo salía uno. Gush
+    devuelve dos, Thwart tres y Foil descarta una, y las tres formas fallaban por
+    el singular o por el verbo. Diecisiete Islas no están ahí por el maná.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-stiflenought.json"))
+    lista = (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8")
+    s = lexico.completo(scryfall.resolver(lista, "Stiflenought"))
+
+    con_isla = {p for x in s if x.id.split("::")[0] == "isla-coste-alternativo"
+                for p in x.piezas if p != "Island"}
+    assert con_isla == {"Daze", "Gush", "Thwart", "Foil"}, con_isla
