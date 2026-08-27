@@ -49,12 +49,31 @@ def test_resolucion_y_curva():
 
 def test_deteccion():
     mazo = scryfall.resolver(LISTA, "Prueba")
-    ids = {s.id for s in motor.detectar(mazo)}
+    # una regla puede emitir varias parejas, así que el id lleva las cartas detrás
+    ids = {s.id.split("::")[0] for s in motor.detectar(mazo)}
     # el motor debe encontrar el motor de rampa y las dos trampas del plan de victoria
     assert "tierra-indestructible-cantrip" in ids
     assert "barajar-rompe-posicion" in ids
     assert "fondo-biblioteca-acelera" in ids
     assert "victoria-unica-copia" in ids
+
+
+def test_una_regla_sale_con_todas_las_cartas_que_encajan():
+    """La regla decía "cualquier tierra indestructible", pero solo emitía una pareja.
+
+    En el mazo de ejemplo hay dos —Cascading Cataracts y Rustvale Bridge— y la
+    segunda, de la que van cuatro copias, se quedaba suelta en el mapa mientras
+    la primera se llevaba la única línea.
+    """
+    mazo = scryfall.resolver(LISTA, "Prueba")
+    con_la_regla = [s for s in motor.detectar(mazo)
+                    if s.id.split("::")[0] == "tierra-indestructible-cantrip"]
+    tierras = {p for s in con_la_regla for p in s.piezas if p != "Cleansing Wildfire"}
+    assert tierras == {"Cascading Cataracts", "Rustvale Bridge"}, tierras
+
+    # y el texto redactado nombra a la tierra de cada pareja, no siempre a la misma
+    for s in con_la_regla:
+        assert s.piezas[1] in s.resumen, f"el resumen no habla de {s.piezas[1]}"
 
 
 def test_evidencia_es_texto_de_oraculo():

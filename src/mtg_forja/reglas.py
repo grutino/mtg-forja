@@ -7,6 +7,7 @@ afirmación del análisis puede comprobarse contra la carta.
 """
 from __future__ import annotations
 
+import itertools
 import json
 import re
 from dataclasses import dataclass, field
@@ -14,6 +15,10 @@ from pathlib import Path
 from typing import Any
 
 from .modelo import Carta, Mazo
+
+# Tope de parejas por regla. Sin él, una regla laxa en un mazo grande llenaría
+# el mapa de líneas iguales y taparía todo lo demás.
+TOPE_POR_REGLA = 12
 
 RUTA_REGLAS = Path(__file__).with_name("reglas.json")
 
@@ -111,15 +116,6 @@ def _conteo_ok(mazo: Mazo, condiciones: list[dict[str, Any]]) -> bool:
     return True
 
 
-def _mejor(candidatas: list[tuple[Carta, str]], usadas: set[str]) -> tuple[Carta, str] | None:
-    """Elige la carta más representativa de un rol: más copias, luego más barata."""
-    libres = [c for c in candidatas if c[0].nombre not in usadas]
-    pool = libres or candidatas
-    if not pool:
-        return None
-    return sorted(pool, key=lambda c: (-c[0].copias, c[0].mv, c[0].nombre))[0]
-
-
 def detectar(mazo: Mazo, reglas: list[dict[str, Any]] | None = None) -> list[Sinergia]:
     reglas = reglas if reglas is not None else cargar_reglas()
     cartas = mazo.principal
@@ -144,33 +140,41 @@ def detectar(mazo: Mazo, reglas: list[dict[str, Any]] | None = None) -> list[Sin
         if not completa:
             continue
 
-        usadas: set[str] = set()
-        elegidas: dict[str, tuple[Carta, str]] = {}
-        for rol in [p["rol"] for p in regla["piezas"]]:
-            elegida = _mejor(por_rol[rol], usadas)
-            if elegida is None:
-                completa = False
-                break
-            elegidas[rol] = elegida
-            usadas.add(elegida[0].nombre)
-        if not completa or len({c[0].nombre for c in elegidas.values()}) < len(elegidas):
-            continue
+        # Una regla puede aplicarse a varias cartas a la vez. Emitir solo la pareja
+        # "mejor" escondía el resto: con Cleansing Wildfire, Cascading Cataracts se
+        # llevaba la única línea y Rustvale Bridge —cuatro copias, igual de
+        # indestructible— se quedaba suelto en el mapa. Se emiten todas.
+        roles = [p["rol"] for p in regla["piezas"]]
+        opciones = [sorted(por_rol[r], key=lambda c: (-c[0].copias, c[0].mv, c[0].nombre))
+                    for r in roles]
 
-        sust = {rol: c.nombre for rol, (c, _) in elegidas.items()}
-        salida.append(
-            Sinergia(
-                id=regla["id"],
-                nombre=regla["nombre"],
-                bloque=regla.get("bloque", "Otros"),
-                tipo=regla.get("tipo", "sinergia"),
-                fuerza=int(regla.get("fuerza", 2)),
-                turno=regla.get("turno", ""),
-                piezas=[c.nombre for c, _ in elegidas.values()],
-                resumen=regla.get("resumen", "").format(**sust),
-                pasos=[p.format(**sust) for p in regla.get("pasos", [])],
-                evidencia={c.nombre: ev for c, ev in elegidas.values()},
+        vistas: set[tuple[str, ...]] = set()
+        for combo in itertools.product(*opciones):
+            nombres = [c.nombre for c, _ in combo]
+            if len(set(nombres)) < len(nombres):
+                continue            # una carta no puede hacer dos papeles a la vez
+            clave = tuple(sorted(nombres))
+            if clave in vistas:
+                continue
+            vistas.add(clave)
+
+            sust = dict(zip(roles, nombres))
+            salida.append(
+                Sinergia(
+                    id="::".join([regla["id"], *nombres]),
+                    nombre=regla["nombre"],
+                    bloque=regla.get("bloque", "Otros"),
+                    tipo=regla.get("tipo", "sinergia"),
+                    fuerza=int(regla.get("fuerza", 2)),
+                    turno=regla.get("turno", ""),
+                    piezas=nombres,
+                    resumen=regla.get("resumen", "").format(**sust),
+                    pasos=[p.format(**sust) for p in regla.get("pasos", [])],
+                    evidencia={c.nombre: ev for c, ev in combo},
+                )
             )
-        )
+            if len(vistas) >= TOPE_POR_REGLA:
+                break
 
     orden = {"sinergia": 0, "aviso": 1, "conflicto": 2}
     salida.sort(key=lambda s: (orden.get(s.tipo, 3), -s.fuerza, s.bloque))

@@ -496,6 +496,23 @@ es la que se ve de un vistazo en el mapa, y ahora sale también en el informe:
 Si una carta importante del mazo sale ahí, falta un concepto. Es la comprobación
 que conviene hacer con cualquier mazo de una colección recién salida.
 
+### Una regla, todas las cartas que encajen
+
+Las reglas escritas a mano ya eran genéricas —«cualquier tierra indestructible», no
+una carta concreta— pero el motor emitía **una sola pareja por regla**: elegía la
+carta más representativa del papel y descartaba el resto.
+
+En el mazo de ejemplo hay dos tierras indestructibles. Cascading Cataracts se
+llevaba la única línea y Rustvale Bridge, de la que van cuatro copias, colgaba
+suelto en el mapa pese a hacer exactamente la misma jugada:
+
+> Apuntas `Cleansing Wildfire` a tu propia tierra indestructible. No se destruye,
+> pero el objetivo sigue siendo legal: buscas la básica y robas igualmente.
+
+Ahora una regla emite todas las combinaciones que encajen, con un tope de doce por
+regla para que una laxa no llene el mapa. Es el mismo arreglo que ya se hizo en el
+léxico cuando una carta eje aparecía con dos de sus seis compañeros.
+
 ### La trampa de las palabras clave
 
 El texto entre paréntesis de una carta —el recordatorio— se descarta antes de

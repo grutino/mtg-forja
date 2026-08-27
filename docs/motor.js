@@ -262,31 +262,49 @@
       }
       if (!completa) continue;
 
-      const usadas = new Set();
-      const elegidas = [];
-      for (const pieza of regla.piezas) {
-        const libres = porRol[pieza.rol].filter((a) => !usadas.has(a.carta.nombre));
-        const pool = libres.length ? libres : porRol[pieza.rol];
-        pool.sort((x, y) => y.carta.copias - x.carta.copias ||
-                            x.carta.mv - y.carta.mv ||
-                            cmp(x.carta.nombre, y.carta.nombre));
-        elegidas.push({ rol: pieza.rol, ...pool[0] });
-        usadas.add(pool[0].carta.nombre);
+      // Una regla puede aplicarse a varias cartas a la vez. Emitir solo la pareja
+      // "mejor" escondía el resto: con Cleansing Wildfire, Cascading Cataracts se
+      // llevaba la única línea y Rustvale Bridge —cuatro copias, igual de
+      // indestructible— se quedaba suelto. El orden es el de reglas.py.
+      const roles = regla.piezas.map((p) => p.rol);
+      const opciones = roles.map((r) => porRol[r].slice().sort(
+        (x, y) => y.carta.copias - x.carta.copias ||
+                  x.carta.mv - y.carta.mv ||
+                  cmp(x.carta.nombre, y.carta.nombre)));
+
+      const vistas = new Set();
+      let combo = new Array(opciones.length).fill(0);
+      const total = opciones.reduce((n, o) => n * o.length, 1);
+      for (let k = 0; k < total; k++) {
+        // índice k desplegado en el mismo orden que itertools.product: el último rol
+        // es el que más rápido varía.
+        let resto = k;
+        for (let i = opciones.length - 1; i >= 0; i--) {
+          combo[i] = resto % opciones[i].length;
+          resto = Math.floor(resto / opciones[i].length);
+        }
+        const elegidas = opciones.map((o, i) => o[combo[i]]);
+        const nombres = elegidas.map((e) => e.carta.nombre);
+        if (new Set(nombres).size < nombres.length) continue;
+        const clave = nombres.slice().sort(cmp).join(" ");
+        if (vistas.has(clave)) continue;
+        vistas.add(clave);
+
+        const sust = {};
+        roles.forEach((r, i) => { sust[r] = nombres[i]; });
+        const fmt = (t) => (t || "").replace(/\{(\w+)\}/g, (m, kk) => sust[kk] !== undefined ? sust[kk] : m);
+        const evidencia = {};
+        elegidas.forEach((e) => { evidencia[e.carta.nombre] = e.ev; });
+
+        salida.push({
+          id: [regla.id, ...nombres].join("::"),
+          nombre: regla.nombre, bloque: regla.bloque || "Otros",
+          tipo: regla.tipo || "sinergia", fuerza: regla.fuerza || 2, turno: regla.turno || "",
+          piezas: nombres,
+          resumen: fmt(regla.resumen), pasos: (regla.pasos || []).map(fmt), evidencia,
+        });
+        if (vistas.size >= TOPE_POR_REGLA) break;
       }
-      if (new Set(elegidas.map((e) => e.carta.nombre)).size < elegidas.length) continue;
-
-      const sust = {};
-      elegidas.forEach((e) => { sust[e.rol] = e.carta.nombre; });
-      const fmt = (t) => (t || "").replace(/\{(\w+)\}/g, (m, k) => sust[k] !== undefined ? sust[k] : m);
-      const evidencia = {};
-      elegidas.forEach((e) => { evidencia[e.carta.nombre] = e.ev; });
-
-      salida.push({
-        id: regla.id, nombre: regla.nombre, bloque: regla.bloque || "Otros",
-        tipo: regla.tipo || "sinergia", fuerza: regla.fuerza || 2, turno: regla.turno || "",
-        piezas: elegidas.map((e) => e.carta.nombre),
-        resumen: fmt(regla.resumen), pasos: (regla.pasos || []).map(fmt), evidencia,
-      });
     }
     const orden = { sinergia: 0, aviso: 1, conflicto: 2 };
     // Las tres claves y el criterio de cadena son los de reglas.py: sin el
@@ -354,6 +372,8 @@
   /* Los topes evitan la maraña, pero no deben esconder el motor del mazo: una carta
    que premia cada hechizo que lanzas SÍ tiene sinergia con los diez. El límite es
    por carta, no por concepto, y se cuenta aparte para sinergias y conflictos. */
+// Tope de parejas por regla, igual que reglas.py.
+const TOPE_POR_REGLA = 12;
 const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
   const RECORDATORIO = /\([^)]*\)/g;
   let _lexico = null;
