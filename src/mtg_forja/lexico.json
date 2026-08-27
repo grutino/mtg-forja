@@ -12,7 +12,7 @@
           "\\bmills?\\b",
           "\\bsurveils?\\b",
           "discard(s)? (a|your|two|three|that|any)",
-          "Sacrifice (a|an|this|another)",
+          "Sacrifice (a|an|another|two|three) (nontoken )?(creature|artifact|permanent|enchantment)",
           "\\bDredge\\b"
         ],
         "texto": "llena tu cementerio",
@@ -167,7 +167,8 @@
           "you lose \\d+ life",
           "lose(s)? life equal to"
         ],
-        "texto": "paga vida para funcionar"
+        "texto": "paga vida para funcionar",
+        "no_oracle": "If you don'?t, (it|this land) enters tapped"
       }
     },
     {

@@ -855,3 +855,49 @@ def test_un_concepto_sin_etiqueta_no_es_sospechoso():
     for concepto, tags in mapeo.items():
         assert tags, concepto
         assert set(tags) <= conocidas, f"{concepto} apunta a etiquetas que no existen"
+
+
+def test_el_peaje_de_una_tierra_de_choque_no_es_pagar_vida_como_recurso(monkeypatch):
+    """«Pay 2 life or it enters tapped» se paga una vez, en el turno uno.
+
+    Emparejarlo con el vínculo vital haría que cualquier mazo con tierras de
+    choque saliera unido a cualquier criatura con lifelink. Eso es una categoría,
+    no una sinergia: la vida como recurso es Necropotence, no un peaje.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-dragones.json"))
+    lista = (RAIZ / "ejemplos" / "dragones-boros.txt").read_text(encoding="utf-8")
+    s = lexico.completo(scryfall.resolver(lista, "Dragones"))
+
+    vida = [x for x in s if x.id.split("::")[0] == "vida-como-recurso"]
+    assert not vida, [x.piezas for x in vida]
+
+    # pero un coste de vida de verdad sí tiene que seguir saliendo
+    from mtg_forja.modelo import Carta, Mazo
+    m = Mazo(nombre="P")
+    m.cartas.append(Carta(nombre="Vampiro", copias=4, tipo="Creature — Vampire", mv=3,
+                          oraculo="Flying, lifelink"))
+    m.cartas.append(Carta(nombre="Pacto", copias=4, tipo="Enchantment", mv=3,
+        oraculo="Pay 1 life: Draw a card. Skip your draw step."))
+    assert any(x.id.split("::")[0] == "vida-como-recurso" for x in lexico.detectar(m))
+
+
+def test_sacrificarse_a_si_misma_no_llena_el_cementerio(monkeypatch):
+    """«Sacrifice this land» como coste no alimenta ningún flashback.
+
+    El patrón cazaba cualquier "Sacrifice this", así que Maelstrom of the Spirit
+    Dragon salía emparejado con el flashback de Daydream. Esa tierra en el
+    cementerio no hace nada por Daydream, que llega ahí por lanzarse.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-dragones.json"))
+    lista = (RAIZ / "ejemplos" / "dragones-boros.txt").read_text(encoding="utf-8")
+    s = lexico.completo(scryfall.resolver(lista, "Dragones"))
+    assert not any({"Maelstrom of the Spirit Dragon", "Daydream"} <= set(x.piezas) for x in s)
+
+    # y un sacrificadero de verdad sigue llenando el cementerio
+    from mtg_forja.modelo import Carta, Mazo
+    m = Mazo(nombre="P")
+    m.cartas.append(Carta(nombre="Altar", copias=4, tipo="Artifact", mv=2,
+                          oraculo="Sacrifice a creature: Add one mana of any color."))
+    m.cartas.append(Carta(nombre="Vuelta", copias=4, tipo="Sorcery", mv=3,
+                          oraculo="Return target creature card from your graveyard to your hand."))
+    assert any(x.id.split("::")[0] == "cementerio" for x in lexico.detectar(m))

@@ -554,6 +554,31 @@ ausencia**. Tragarse un `429` y dar la etiqueta por vacía convierte un fallo de
 en un dato, y el informe pasa a mentir con toda la confianza del mundo. Por eso
 salen aparte, en `etiquetas_sin_comprobar`.
 
+### Lo que el contraste destapó al usarlo
+
+La primera vez que se pasó el contraste por los cuatro mazos, marcó cinco parejas
+como «había con qué comprobarlo y no salió nada». Las cinco eran falsos positivos,
+y de dos clases:
+
+**Un peaje no es un recurso.** `Sage of the Skies` tiene vínculo vital y
+`Sacred Foundry` dice «paga 2 vidas o entra girada». Emparejarlos haría que
+cualquier mazo con tierras de choque saliera unido a cualquier criatura con
+lifelink. La vida como recurso es `Necropotence`, no un peaje de dos vidas en el
+turno uno.
+
+**Sacrificarse a sí misma no llena el cementerio.** El patrón cazaba cualquier
+`Sacrifice this`, así que `Maelstrom of the Spirit Dragon` —que se sacrifica para
+buscar un Dragón— salía emparejada con el flashback de `Daydream`. Esa tierra en el
+cementerio no hace nada por Daydream, que llega ahí por lanzarse.
+
+Ese segundo arreglo se llevó por delante, de una vez, las dos parejas del
+Stiflenought que ya sospechábamos a mano días antes. Después: **12 de 12 reforzadas
+y ninguna sospechosa**.
+
+La lección es sobre el contraste, no sobre las cartas: sirve porque cada aviso
+señala un sitio concreto donde mirar. Si se hubiera calibrado para que todo saliera
+verde, no habría encontrado nada.
+
 ### La comunidad manda
 
 Hay un orden de precedencia, y el motor está el último:
