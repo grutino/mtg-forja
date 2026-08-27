@@ -595,6 +595,19 @@ mtg-forja ejemplos/prueba.txt -n "Prueba" -o /tmp/forja-prueba
 Debe imprimir un resumen del tipo `30 cartas · 14 sinergias` y dejar tres HTML en
 `/tmp/forja-prueba`. Ábrelos en el navegador.
 
+Hay un segundo mazo de ejemplo, uno real de 60 cartas —Boros de dragones— que es el
+que destapó dos fallos de bulto y ahora vive aquí como regresión:
+
+```bash
+mtg-forja ejemplos/dragones-boros.txt -n "Dragones Boros" -o /tmp/forja-dragones
+```
+
+Salen `60 cartas · 28 sinergias`. Trae su propio fixture, así que también corre sin red:
+
+```bash
+MTG_FORJA_FIXTURE=ejemplos/fixture-dragones.json mtg-forja ejemplos/dragones-boros.txt -o /tmp/salida
+```
+
 ### Paso 3 — Levantar la web en local
 
 ```bash

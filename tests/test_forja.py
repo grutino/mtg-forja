@@ -405,3 +405,26 @@ def test_el_segundo_hechizo_del_turno_es_un_recurso():
     con_flurry = [x for x in lexico.detectar(mazo) if "Flurrioso" in x.piezas]
     baratos = {p for x in con_flurry for p in x.piezas if p != "Flurrioso"}
     assert baratos == {"Truco 0", "Truco 1"}, f"debería casar solo con los baratos: {baratos}"
+
+
+def test_el_mazo_de_dragones_no_deja_suelta_su_carta_clave(monkeypatch):
+    """El mazo real que destapó los dos fallos, congelado como regresión.
+
+    Sam mandó el mapa de su mazo de dragones: Momo, del que lleva cuatro copias,
+    flotaba sin una sola línea, y Magmatic Hellkite pintaba conflictos rojos
+    contra sus propias tierras porque destruye tierras DEL RIVAL.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-dragones.json"))
+    lista = (RAIZ / "ejemplos" / "dragones-boros.txt").read_text(encoding="utf-8")
+    mazo = scryfall.resolver(lista, "Dragones Boros")
+    assert mazo.total == 60, f"el mazo son 60 cartas, no {mazo.total}"
+
+    s = lexico.completo(mazo)
+    momo = [x for x in s if "Momo, Friendly Flier" in x.piezas]
+    assert len(momo) >= 5, f"Momo vuelve a quedarse suelto: {len(momo)} conexiones"
+
+    tierras = {c.nombre for c in mazo.principal if c.es_tierra}
+    for x in s:
+        if x.tipo == "conflicto" and "Magmatic Hellkite" in x.piezas:
+            chocan = tierras & set(x.piezas)
+            assert not chocan, f"vuelve el aviso falso contra tus tierras: {chocan}"

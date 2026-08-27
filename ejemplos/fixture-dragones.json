@@ -1,0 +1,344 @@
+[
+ {
+  "name": "Sage of the Skies",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Monk",
+  "oracle_text": "When you cast this spell, if you've cast another spell this turn, copy this spell. (The copy becomes a token.)\nFlying, lifelink",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "Flying",
+   "Lifelink"
+  ],
+  "power": "2",
+  "toughness": "3",
+  "layout": "normal"
+ },
+ {
+  "name": "Sarkhan, Dragon Ascendant",
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Druid",
+  "oracle_text": "When Sarkhan enters, you may behold a Dragon. If you do, create a Treasure token. (To behold a Dragon, choose a Dragon you control or reveal a Dragon card from your hand.)\nWhenever a Dragon you control enters, put a +1/+1 counter on Sarkhan. Until end of turn, Sarkhan becomes a Dragon in addition to its other types and gains flying.",
+  "colors": [
+   "R"
+  ],
+  "color_identity": [
+   "R"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "Behold",
+   "Treasure"
+  ],
+  "power": "2",
+  "toughness": "2",
+  "layout": "normal"
+ },
+ {
+  "name": "Seam Rip",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, exile target nonland permanent an opponent controls with mana value 2 or less until this enchantment leaves the battlefield.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "uncommon",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Voice of Victory",
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Bard",
+  "oracle_text": "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)\nYour opponents can't cast spells during your turn.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "Mobilize"
+  ],
+  "power": "1",
+  "toughness": "3",
+  "layout": "normal"
+ },
+ {
+  "name": "Sacred Foundry",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Mountain Plains",
+  "oracle_text": "({T}: Add {R} or {W}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "colors": [],
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [],
+  "produced_mana": [
+   "R",
+   "W"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Multiversal Passage",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "As this land enters, choose a basic land type. Then you may pay 2 life. If you don't, it enters tapped.\nThis land is the chosen type.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "rare",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Nova Hellkite",
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying, haste\nWhen this creature enters, it deals 1 damage to target creature an opponent controls.\nWarp {2}{R} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+  "colors": [
+   "R"
+  ],
+  "color_identity": [
+   "R"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "Flying",
+   "Haste",
+   "Warp"
+  ],
+  "power": "4",
+  "toughness": "5",
+  "layout": "normal"
+ },
+ {
+  "name": "Daydream",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile target creature you control, then return that card to the battlefield under its owner's control with a +1/+1 counter on it.\nFlashback {2}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "uncommon",
+  "keywords": [
+   "Flashback"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Sunbillow Verge",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {W}.\n{T}: Add {R}. Activate only if you control a Mountain or a Plains.",
+  "colors": [],
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [],
+  "produced_mana": [
+   "R",
+   "W"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Magmatic Hellkite",
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nWhen this creature enters, destroy target nonbasic land an opponent controls. Its controller searches their library for a basic land card, puts it onto the battlefield tapped with a stun counter on it, then shuffles. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+  "colors": [
+   "R"
+  ],
+  "color_identity": [
+   "R"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "Flying"
+  ],
+  "power": "4",
+  "toughness": "5",
+  "layout": "normal"
+ },
+ {
+  "name": "Burst Lightning",
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Kicker {4} (You may pay an additional {4} as you cast this spell.)\nBurst Lightning deals 2 damage to any target. If this spell was kicked, it deals 4 damage instead.",
+  "colors": [
+   "R"
+  ],
+  "color_identity": [
+   "R"
+  ],
+  "rarity": "common",
+  "keywords": [
+   "Kicker"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Mountain",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Basic Land — Mountain",
+  "oracle_text": "({T}: Add {R}.)",
+  "colors": [],
+  "color_identity": [
+   "R"
+  ],
+  "rarity": "common",
+  "keywords": [],
+  "produced_mana": [
+   "R"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Maelstrom of the Spirit Dragon",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast a Dragon spell or an Omen spell.\n{4}, {T}, Sacrifice this land: Search your library for a Dragon card, reveal it, put it into your hand, then shuffle.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "rare",
+  "keywords": [],
+  "produced_mana": [
+   "B",
+   "C",
+   "G",
+   "R",
+   "U",
+   "W"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Cavern of Souls",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "As this land enters, choose a creature type.\n{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen type, and that spell can't be countered.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "mythic",
+  "keywords": [],
+  "produced_mana": [
+   "B",
+   "C",
+   "G",
+   "R",
+   "U",
+   "W"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Momo, Friendly Flier",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Legendary Creature — Lemur Bat Ally",
+  "oracle_text": "Flying\nThe first non-Lemur creature spell with flying you cast during each of your turns costs {1} less to cast.\nWhenever another creature you control with flying enters, Momo gets +1/+1 until end of turn.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "Flying"
+  ],
+  "power": "1",
+  "toughness": "1",
+  "layout": "normal"
+ },
+ {
+  "name": "Inspiring Vantage",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped unless you control two or fewer other lands.\n{T}: Add {R} or {W}.",
+  "colors": [],
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [],
+  "produced_mana": [
+   "R",
+   "W"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Clarion Conqueror",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nActivated abilities of artifacts, creatures, and planeswalkers can't be activated.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "Flying"
+  ],
+  "power": "3",
+  "toughness": "3",
+  "layout": "normal"
+ },
+ {
+  "name": "Dragonhawk, Fate's Tempest",
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Bird Dragon",
+  "oracle_text": "Flying\nWhenever Dragonhawk enters or attacks, exile the top X cards of your library, where X is the number of creatures you control with power 4 or greater. You may play those cards until your next end step. At the beginning of your next end step, Dragonhawk deals 2 damage to each opponent for each of those cards that are still exiled.",
+  "colors": [
+   "R"
+  ],
+  "color_identity": [
+   "R"
+  ],
+  "rarity": "mythic",
+  "keywords": [
+   "Flying"
+  ],
+  "power": "5",
+  "toughness": "5",
+  "layout": "normal"
+ }
+]
