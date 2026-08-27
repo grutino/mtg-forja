@@ -579,6 +579,39 @@ La lección es sobre el contraste, no sobre las cartas: sirve porque cada aviso
 señala un sitio concreto donde mirar. Si se hubiera calibrado para que todo saliera
 verde, no habría encontrado nada.
 
+### Cuando la comunidad ve algo que el motor no
+
+`Demonic Consultation` + `Thassa's Oracle` gana la partida en el sitio y es de los
+combos más conocidos que existen. El motor **no lo deduce**: hace falta saber que
+vaciarte la biblioteca convierte el disparo del Oráculo en victoria, y eso no está
+escrito en ninguna de las dos cartas.
+
+El catálogo sí lo sabe. Así que entra en los documentos, marcado como venido de la
+comunidad y con fuerza 5, por encima de lo que deduce el motor:
+
+```bash
+mtg-forja mazo.txt              # consulta el catálogo
+mtg-forja mazo.txt --sin-combos # no lo consulta
+```
+
+Solo entran los combos **completos** —todas sus piezas dentro del mazo—. Los
+`casi_completos` nombran cartas que no llevas: son sugerencias de construcción, y
+dibujarían líneas hacia cartas que no existen en la lista.
+
+**Dos límites que conviene tener claros:**
+
+*La web no puede.* La API del catálogo no envía cabeceras CORS, así que el
+navegador bloquea la petición. Por eso los combos entran solo por la línea de
+comandos y por MCP. El **motor** sigue siendo idéntico en los dos sitios —la prueba
+de paridad lo vigila sobre cuatro mazos—, pero la terminal consulta una fuente
+extra que el navegador no alcanza.
+
+*El mapa no los distingue del todo.* La guía y la chuleta llevan el aviso de que
+esa jugada no sale del oráculo; en el mapa, la evidencia que se muestra por carta
+es la de la primera sinergia que la menciona, así que a veces enseña el texto de
+oráculo en vez de la procedencia. Está pendiente darle a esas líneas un estilo
+propio.
+
 ### La comunidad manda
 
 Hay un orden de precedencia, y el motor está el último:

@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 from .modelo import Mazo
+from .reglas import Sinergia
 from .scryfall import CACHE
 
 API = "https://backend.commanderspellbook.com/find-my-combos/"
@@ -125,3 +126,39 @@ def buscar(mazo: Mazo, limite: int = 12) -> dict[str, Any]:
             "casi_anadiendo_colores": len(r.get("almostIncludedByAddingColors") or []),
         },
     }
+
+
+def como_sinergias(resultado: dict[str, Any], mazo: Mazo, tope: int = 8) -> list[Sinergia]:
+    """Los combos completos del catálogo, como sinergias del mazo.
+
+    Solo `completos`: son los que tienen todas sus piezas dentro del mazo.
+    `casi_completos` nombra cartas que no llevas, así que son sugerencias de
+    construcción y no interacciones presentes — mezclarlas dibujaría líneas hacia
+    cartas que no existen en la lista.
+
+    Van marcadas como venidas del catálogo a propósito. Todo lo demás que afirma
+    esta herramienta sale del oráculo verificado; esto no, y quien lo lea tiene
+    derecho a saberlo.
+    """
+    en_el_mazo = {c.nombre for c in mazo.principal}
+    salida: list[Sinergia] = []
+    for grupo in (resultado.get("completos") or [])[:tope]:
+        piezas = [c for c in grupo.get("cartas", []) if c in en_el_mazo]
+        if len(piezas) < 2:
+            continue
+        pasos = grupo.get("pasos") or ""
+        salida.append(Sinergia(
+            id="comunidad::" + "::".join(piezas),
+            nombre=" y ".join(piezas),
+            bloque="Comunidad",
+            tipo="sinergia",
+            fuerza=5,        # un combo catalogado pesa más que lo que deduce el motor
+            turno="",
+            piezas=piezas,
+            resumen=("Combo catalogado por la comunidad"
+                     + (f". Produce: {', '.join(grupo['produce'])}" if grupo.get("produce") else "")
+                     + ". No sale del oráculo: compruébalo antes de fiarte."),
+            pasos=[p for p in (pasos.split("\n") if isinstance(pasos, str) else pasos) if p.strip()],
+            evidencia={n: "catalogado en Commander Spellbook" for n in piezas},
+        ))
+    return salida

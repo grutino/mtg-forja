@@ -6,6 +6,7 @@ import json
 import sys
 from pathlib import Path
 
+from . import combos
 from . import lexico
 from . import reglas as motor
 from . import scryfall
@@ -23,6 +24,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("-n", "--nombre", default="Mazo", help="nombre del mazo")
     p.add_argument("-o", "--salida", default="salida", help="carpeta de destino")
     p.add_argument("--json", action="store_true", help="volcar también el documento en JSON")
+    p.add_argument("--sin-combos", action="store_true",
+                   help="no consultar el catálogo de combos de la comunidad")
     args = p.parse_args(argv)
 
     texto = sys.stdin.read() if args.lista == "-" else Path(args.lista).read_text(encoding="utf-8")
@@ -40,6 +43,21 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     sinergias = lexico.completo(mazo)
+
+    # El catálogo de la comunidad pesa más que el motor: si alguien ha visto ese
+    # combo funcionar en una mesa, va al documento aunque el motor no lo dedujera.
+    # El navegador no puede consultarlo —la API no envía cabeceras CORS—, así que
+    # este es el único camino por el que entra.
+    del_catalogo = []
+    if not args.sin_combos:
+        try:
+            del_catalogo = combos.como_sinergias(combos.buscar(mazo), mazo)
+        except Exception:      # una fuente externa no puede tumbar el análisis
+            del_catalogo = []
+        ya = {tuple(sorted(s.piezas)) for s in sinergias}
+        del_catalogo = [s for s in del_catalogo if tuple(sorted(s.piezas)) not in ya]
+        sinergias = sinergias + del_catalogo
+
     doc = motor.documento(mazo, sinergias, titulo=args.nombre)
 
     destino = Path(args.salida)
@@ -52,7 +70,8 @@ def main(argv: list[str] | None = None) -> int:
             json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8"
         )
 
-    print(f"{mazo.total} cartas · {len(sinergias)} sinergias · {destino.resolve()}")
+    extra = f" ({len(del_catalogo)} del catálogo de la comunidad)" if del_catalogo else ""
+    print(f"{mazo.total} cartas · {len(sinergias)} sinergias{extra} · {destino.resolve()}")
     if mazo.no_resueltas:
         print("Sin resolver: " + ", ".join(mazo.no_resueltas), file=sys.stderr)
     return 0

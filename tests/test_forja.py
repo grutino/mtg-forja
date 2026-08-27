@@ -901,3 +901,45 @@ def test_sacrificarse_a_si_misma_no_llena_el_cementerio(monkeypatch):
     m.cartas.append(Carta(nombre="Vuelta", copias=4, tipo="Sorcery", mv=3,
                           oraculo="Return target creature card from your graveyard to your hand."))
     assert any(x.id.split("::")[0] == "cementerio" for x in lexico.detectar(m))
+
+
+def test_un_combo_del_catalogo_entra_aunque_el_motor_no_lo_vea():
+    """Si la comunidad lo cataloga y el motor no lo une, manda la comunidad.
+
+    Demonic Consultation + Thassa's Oracle gana la partida en el sitio y es de los
+    combos más conocidos que hay, pero el motor no lo deduce: hace falta saber que
+    vaciarte la biblioteca convierte el disparo del Oráculo en victoria. El
+    catálogo sí lo sabe.
+    """
+    from mtg_forja import combos
+    from mtg_forja.modelo import Carta, Mazo
+
+    mazo = Mazo(nombre="Prueba")
+    for n in ("Thassa's Oracle", "Demonic Consultation", "Isla"):
+        mazo.cartas.append(Carta(nombre=n, copias=1, tipo="Creature", mv=2, oraculo="x"))
+
+    catalogo = {"completos": [{"cartas": ["Demonic Consultation", "Thassa's Oracle"],
+                               "produce": ["Win the game"],
+                               "pasos": "Cast Demonic Consultation naming a card not in your deck.\nCast Thassa's Oracle."}]}
+    s = combos.como_sinergias(catalogo, mazo)
+
+    assert len(s) == 1
+    assert s[0].piezas == ["Demonic Consultation", "Thassa's Oracle"]
+    assert s[0].bloque == "Comunidad"
+    assert s[0].fuerza == 5, "un combo catalogado pesa más que lo que deduce el motor"
+    # y el aviso de que esto no sale del oráculo no puede perderse
+    assert "oráculo" in s[0].resumen
+    assert len(s[0].pasos) == 2
+
+
+def test_un_combo_a_medias_no_dibuja_lineas_a_cartas_que_no_llevas():
+    """`casi_completos` nombra cartas fuera del mazo: son sugerencias, no sinergias."""
+    from mtg_forja import combos
+    from mtg_forja.modelo import Carta, Mazo
+
+    mazo = Mazo(nombre="Prueba")
+    mazo.cartas.append(Carta(nombre="Daydream", copias=2, tipo="Sorcery", mv=3, oraculo="x"))
+
+    # el catálogo lo da como completo, pero Dualcaster Mage no está en la lista
+    catalogo = {"completos": [{"cartas": ["Dualcaster Mage", "Daydream"], "produce": ["Infinito"]}]}
+    assert combos.como_sinergias(catalogo, mazo) == []
