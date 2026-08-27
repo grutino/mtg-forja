@@ -155,8 +155,11 @@ def detectar(mazo: Mazo, conceptos: list[dict[str, Any]] | None = None) -> list[
                 fuerza=fuerza,
                 turno="",
                 piezas=[a.nombre, b.nombre],
-                resumen=(f"{{a}} {_texto(c.get(bl_a), 'aporta')} y "
-                         f"{{b}} {_texto(c.get(bl_b), 'lo aprovecha')}."),
+                # Los nombres van directos: el léxico no pasa por la sustitución
+                # de huecos del motor de reglas, así que un "{a}" aquí llegaba
+                # literal hasta la guía.
+                resumen=(f"{a.nombre} {_texto(c.get(bl_a), 'aporta')} y "
+                         f"{b.nombre} {_texto(c.get(bl_b), 'lo aprovecha')}."),
                 pasos=[],
                 evidencia={a.nombre: eva, b.nombre: evb},
             ))

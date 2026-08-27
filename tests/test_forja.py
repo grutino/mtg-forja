@@ -154,16 +154,22 @@ def test_los_dos_motores_detectan_lo_mismo(tmp_path, monkeypatch):
             f"const mazo=JSON.parse(fs.readFileSync({str(entrada)!r},'utf8'));"
             f"const r=JSON.parse(fs.readFileSync({str(RAIZ / 'docs' / 'reglas.json')!r},'utf8')).reglas;"
             f"const l=JSON.parse(fs.readFileSync({str(RAIZ / 'docs' / 'lexico.json')!r},'utf8')).conceptos;"
-            "console.log(JSON.stringify(Forja.completo(mazo,r,l).map(s=>s.id)));"
+            "console.log(JSON.stringify(Forja.completo(mazo,r,l).map(s=>[s.id,s.resumen])));"
         )
         proc = subprocess.run(["node", "-e", guion], capture_output=True, text=True, check=True)
 
         # `completo` cubre las dos mitades: las reglas escritas y lo que deduce el léxico.
-        py = [s.id for s in lexico.completo(mazo)]
+        # Se compara también el resumen, no solo el id: el léxico construía el texto
+        # con "{a}" y "{b}" esperando una sustitución que solo existe en el motor de
+        # reglas, y los huecos llegaban literales hasta la guía. Los ids coincidían,
+        # así que esta prueba daba verde con el fallo dentro.
+        py = [[s.id, s.resumen] for s in lexico.completo(mazo)]
         js = json.loads(proc.stdout)
         assert py == js, (f"los motores se separan en el mazo de {etiqueta}: "
-                          f"solo python {[x for x in py if x not in js][:3]} · "
-                          f"solo js {[x for x in js if x not in py][:3]}")
+                          f"solo python {[x for x in py if x not in js][:2]} · "
+                          f"solo js {[x for x in js if x not in py][:2]}")
+        sin_rellenar = [r for _, r in py if "{a}" in r or "{b}" in r]
+        assert not sin_rellenar, f"huecos sin sustituir en {etiqueta}: {sin_rellenar[:2]}"
 
 
 def test_cli_falla_si_no_resuelve_nada(tmp_path):

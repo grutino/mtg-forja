@@ -507,7 +507,8 @@ const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
           bloque: BLOQUE_LEX[tipo] || "Motor",
           tipo, turno: "", piezas: [a.nombre, b.nombre], pasos: [], evidencia: ev,
           fuerza: Math.min(4, (c.fuerza || 2) + (Math.min(a.copias, b.copias) >= 3 ? 1 : 0)),
-          resumen: `{a} ${(c[blA] || {}).texto || "aporta"} y {b} ${(c[blB] || {}).texto || "lo aprovecha"}.`,
+          // Los nombres van directos: un "{a}" aquí llegaba literal hasta la guía.
+          resumen: `${a.nombre} ${(c[blA] || {}).texto || "aporta"} y ${b.nombre} ${(c[blB] || {}).texto || "lo aprovecha"}.`,
         });
       }
     }
