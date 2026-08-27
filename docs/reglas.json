@@ -363,7 +363,8 @@
         "Sube el número de básicas hasta siete u ocho.",
         "Cambia tierras que entren giradas y no aporten nada más por básicas.",
         "De paso arreglas los costes de doble símbolo de color."
-      ]
+      ],
+      "una_vez": true
     },
     {
       "id": "doble-simbolo-tierra-incolora",
@@ -385,11 +386,12 @@
           "no_oracle": "(^|\\n)\\{T\\}: Add one mana of any color|(^|\\n)\\{T\\}: Add \\{[WUBRG]\\}"
         }
       ],
-      "resumen": "{a} pide dos símbolos del mismo color y {b} solo produce incoloro: encadenar varias es la forma más habitual de atascarse.",
+      "resumen": "Llevas hechizos de doble símbolo —{a} entre ellos— y {b} solo produce incoloro: encadenar varias es la forma más habitual de atascarse.",
       "pasos": [
         "No juegues dos {b} seguidas en los primeros turnos.",
         "Cuenta cuántas fuentes reales de ese color tienes antes de guardar una mano."
-      ]
+      ],
+      "una_vez": true
     },
     {
       "id": "barrido-modal-simetrico",

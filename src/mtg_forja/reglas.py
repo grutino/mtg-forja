@@ -173,7 +173,9 @@ def detectar(mazo: Mazo, reglas: list[dict[str, Any]] | None = None) -> list[Sin
                     evidencia={c.nombre: ev for c, ev in combo},
                 )
             )
-            if len(vistas) >= TOPE_POR_REGLA:
+            # Hay reglas que hablan del mazo entero, no de una pareja: el aviso de
+            # base de maná es el mismo lo repitas ocho veces o una.
+            if regla.get("una_vez") or len(vistas) >= TOPE_POR_REGLA:
                 break
 
     orden = {"sinergia": 0, "aviso": 1, "conflicto": 2}

@@ -66,7 +66,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 |---|---|---|
 | `reglas.json` | 37 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
 | Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
-| `lexico.json` | 31 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
+| `lexico.json` | 33 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
 | `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
@@ -495,6 +495,27 @@ es la que se ve de un vistazo en el mapa, y ahora sale también en el informe:
 
 Si una carta importante del mazo sale ahí, falta un concepto. Es la comprobación
 que conviene hacer con cualquier mazo de una colección recién salida.
+
+### Cuando el mapa sale casi vacío
+
+Un mazo blanco agresivo de los de siempre —Mother of Runes, Worship, Soltari,
+Rishadan Port— salía con **cuatro** líneas y casi todo suelto. Las tres cosas que
+faltaban dicen bastante de dónde falla un motor de patrones:
+
+| Carta | Por qué debía conectar |
+|---|---|
+| `Enlightened Tutor` | Busca «an artifact or enchantment card»: encuentra cinco cartas del mazo |
+| `Worship` | «If you control a creature…» y el mazo lleva diecinueve |
+| `Mother of Runes` | «Target creature you control gains protection» |
+
+Ninguna era un caso raro: eran **dependencias entre una carta y un tipo**, y el
+motor solo sabía emparejar cartas con cartas. Ahora un tutor casa con lo que dice
+buscar —y solo con eso, nunca con una criatura— y un efecto que exige controlar una
+criatura casa con las criaturas que llevas.
+
+El mazo pasa de 4 sinergias a 26, y las dos cartas que siguen sueltas son
+`Swords to Plowshares` y `Disenchant`: removal puro, que en ese mazo de verdad no
+se apoya en nada. Eso es lo que debe quedar suelto.
 
 ### Un aviso falso es peor que ningún aviso
 

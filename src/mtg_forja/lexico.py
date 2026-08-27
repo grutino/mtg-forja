@@ -178,14 +178,29 @@ def _subtipos(tipo: str) -> set[str]:
     return {x.lower() for x in tipo.split("—")[-1].split()}
 
 
+TIPOS = ("artifact", "enchantment", "creature", "planeswalker",
+         "instant", "sorcery", "land", "battle")
+
+
+def _tipos(tipo: str) -> set[str]:
+    """Los tipos de carta de una línea, sin subtipos ni supertipos."""
+    cabeza = tipo.split("—")[0].lower()
+    return {t for t in TIPOS if t in cabeza}
+
+
 def _parejas(c: dict[str, Any], r: dict[str, list]):
     # Un concepto tribal no puede casar cualquier criatura con cualquier premio:
     # el subtipo de la carta tiene que ser el que menciona la otra. Sin esto, un
     # Human Monk salía emparejado con un premio a los Dragones.
     empareja = c.get("emparejar_subtipo")
+    # Y un tutor solo encuentra lo que dice buscar: "an artifact or enchantment
+    # card" casa con Worship, no con Savannah Lions.
+    empareja_tipo = c.get("emparejar_tipo_buscado")
     for a, eva in r["produce"]:
         for b, evb in r["premia"]:
             if empareja and not any(s in evb.lower() for s in _subtipos(a.tipo)):
+                continue
+            if empareja_tipo and not any(t in eva.lower() for t in _tipos(b.tipo)):
                 continue
             yield (a, eva), (b, evb), "sinergia", "produce", "premia"
     for a, eva in r["rompe"]:

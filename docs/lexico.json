@@ -685,6 +685,40 @@
         ],
         "texto": "se dispara al lanzar el segundo hechizo del turno"
       }
+    },
+    {
+      "id": "tutor-por-tipo",
+      "nombre": "el tutor que encuentra la pieza",
+      "fuerza": 4,
+      "produce": {
+        "oracle": [
+          "Search your library for an? [^.]{0,40}\\b(artifact|enchantment|creature|planeswalker|instant|sorcery)\\b[^.]{0,30}card"
+        ],
+        "texto": "busca en la biblioteca justo esa carta"
+      },
+      "premia": {
+        "tipo": ".",
+        "no_tipo": "Land",
+        "texto": "es una de las cartas que ese tutor puede encontrar"
+      },
+      "emparejar_tipo_buscado": true
+    },
+    {
+      "id": "controlar-una-criatura",
+      "nombre": "hace falta una criatura en la mesa",
+      "fuerza": 3,
+      "produce": {
+        "tipo": "Creature",
+        "texto": "es la criatura que hace falta tener en la mesa"
+      },
+      "premia": {
+        "oracle": [
+          "[Ii]f you control a creature",
+          "as long as you control a creature",
+          "[Tt]arget creature you control (gains|gets)"
+        ],
+        "texto": "solo funciona si controlas una criatura"
+      }
     }
   ]
 }

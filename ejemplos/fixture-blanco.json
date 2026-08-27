@@ -1,0 +1,352 @@
+[
+ {
+  "name": "Savannah Lions",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Cat",
+  "oracle_text": "",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "uncommon",
+  "keywords": [],
+  "power": "2",
+  "toughness": "1",
+  "layout": "normal"
+ },
+ {
+  "name": "Mother of Runes",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "{T}: Target creature you control gains protection from the color of your choice until end of turn.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "uncommon",
+  "keywords": [],
+  "power": "1",
+  "toughness": "1",
+  "layout": "normal"
+ },
+ {
+  "name": "Silver Knight",
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "First strike, protection from red",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "uncommon",
+  "keywords": [
+   "First strike",
+   "Protection"
+  ],
+  "power": "2",
+  "toughness": "2",
+  "layout": "normal"
+ },
+ {
+  "name": "Paladin en-Vec",
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "First strike, protection from black and from red (This creature deals combat damage before creatures without first strike. It can't be blocked, targeted, dealt damage, or enchanted by anything black or red.)",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "First strike",
+   "Protection"
+  ],
+  "power": "2",
+  "toughness": "2",
+  "layout": "normal"
+ },
+ {
+  "name": "Soltari Priest",
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Soltari Cleric",
+  "oracle_text": "Protection from red\nShadow (This creature can block or be blocked by only creatures with shadow.)",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "uncommon",
+  "keywords": [
+   "Shadow",
+   "Protection"
+  ],
+  "power": "2",
+  "toughness": "1",
+  "layout": "normal"
+ },
+ {
+  "name": "Soltari Monk",
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Soltari Monk Cleric",
+  "oracle_text": "Protection from black\nShadow (This creature can block or be blocked by only creatures with shadow.)",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "uncommon",
+  "keywords": [
+   "Shadow",
+   "Protection"
+  ],
+  "power": "2",
+  "toughness": "1",
+  "layout": "normal"
+ },
+ {
+  "name": "Soltari Visionary",
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Soltari Cleric",
+  "oracle_text": "Shadow (This creature can block or be blocked by only creatures with shadow.)\nWhenever this creature deals damage to a player, destroy target enchantment that player controls.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "common",
+  "keywords": [
+   "Shadow"
+  ],
+  "power": "2",
+  "toughness": "2",
+  "layout": "normal"
+ },
+ {
+  "name": "Whipcorder",
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Soldier Rebel",
+  "oracle_text": "{W}, {T}: Tap target creature.\nMorph {W} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "uncommon",
+  "keywords": [
+   "Morph"
+  ],
+  "power": "2",
+  "toughness": "2",
+  "layout": "normal"
+ },
+ {
+  "name": "Exalted Angel",
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nWhenever this creature deals damage, you gain that much life.\nMorph {2}{W}{W} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "Flying",
+   "Morph"
+  ],
+  "power": "4",
+  "toughness": "5",
+  "layout": "normal"
+ },
+ {
+  "name": "Swords to Plowshares",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile target creature. Its controller gains life equal to its power.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "uncommon",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Disenchant",
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target artifact or enchantment.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "common",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Enlightened Tutor",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Search your library for an artifact or enchantment card, reveal it, then shuffle and put that card on top.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Seal of Cleansing",
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Sacrifice this enchantment: Destroy target artifact or enchantment.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "common",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Parallax Wave",
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Fading 5 (This enchantment enters with five fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)\nRemove a fade counter from this enchantment: Exile target creature.\nWhen this enchantment leaves the battlefield, each player returns to the battlefield all cards they own exiled with it.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [
+   "Fading"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Worship",
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "If you control a creature, damage that would reduce your life total to less than 1 reduces it to 1 instead.",
+  "colors": [
+   "W"
+  ],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "rare",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Cursed Scroll",
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact",
+  "oracle_text": "{3}, {T}: Choose a card name, then reveal a card at random from your hand. If that card has the chosen name, this artifact deals 2 damage to any target.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "mythic",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Phyrexian Furnace",
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Exile the bottom card of target player's graveyard.\n{1}, Sacrifice this artifact: Exile target card from a graveyard. Draw a card.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "uncommon",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Rishadan Port",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Tap target land.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "rare",
+  "keywords": [],
+  "produced_mana": [
+   "C"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Wasteland",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{T}, Sacrifice this land: Destroy target nonbasic land.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "rare",
+  "keywords": [],
+  "produced_mana": [
+   "C"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Plains",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Basic Land — Plains",
+  "oracle_text": "({T}: Add {W}.)",
+  "colors": [],
+  "color_identity": [
+   "W"
+  ],
+  "rarity": "common",
+  "keywords": [],
+  "produced_mana": [
+   "W"
+  ],
+  "layout": "normal"
+ }
+]

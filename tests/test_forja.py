@@ -127,6 +127,8 @@ def test_los_dos_motores_detectan_lo_mismo(tmp_path, monkeypatch):
         ("fixture-pruebas.json", LISTA, "control"),
         ("fixture-dragones.json",
          (RAIZ / "ejemplos" / "dragones-boros.txt").read_text(encoding="utf-8"), "dragones"),
+        ("fixture-blanco.json",
+         (RAIZ / "ejemplos" / "blanco-agresivo.txt").read_text(encoding="utf-8"), "blanco"),
     ):
         monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / fixture))
         mazo = scryfall.resolver(lista, etiqueta)
@@ -484,3 +486,38 @@ def test_no_avisa_de_mana_si_la_tierra_si_da_color(monkeypatch):
     s = motor.detectar(scryfall.resolver(LISTA, "Prueba"))
     reales = [x for x in s if x.id.split("::")[0] == "doble-simbolo-tierra-incolora"]
     assert reales, "el aviso de maná que sí es cierto se ha perdido"
+
+
+def test_un_tutor_solo_encuentra_lo_que_dice_buscar(monkeypatch):
+    """«Search your library for an artifact or enchantment card» no es un tutor de todo.
+
+    Enlightened Tutor tiene que salir con los artefactos y encantamientos del mazo,
+    y con ninguna criatura. Antes no salía con nada: el concepto de búsqueda solo
+    premiaba cartas que dijeran «you win the game».
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-blanco.json"))
+    lista = (RAIZ / "ejemplos" / "blanco-agresivo.txt").read_text(encoding="utf-8")
+    mazo = scryfall.resolver(lista, "Blanco")
+
+    encontradas = {p for s in lexico.completo(mazo)
+                   if s.id.split("::")[0] == "tutor-por-tipo"
+                   for p in s.piezas if p != "Enlightened Tutor"}
+    assert encontradas == {"Worship", "Parallax Wave", "Cursed Scroll",
+                           "Seal of Cleansing", "Phyrexian Furnace"}, encontradas
+
+    # ninguna criatura: el tutor no las busca
+    criaturas = {c.nombre for c in mazo.principal if "Creature" in c.tipo}
+    assert not (encontradas & criaturas)
+
+
+def test_un_aviso_de_base_de_mana_no_se_repite(monkeypatch):
+    """El aviso es el mismo lo digas una vez u ocho.
+
+    Al hacer que cada regla emitiera todas sus parejas, este pasó de una línea roja
+    a ocho contra la misma tierra: ocho veces el mismo consejo no es más información.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-blanco.json"))
+    lista = (RAIZ / "ejemplos" / "blanco-agresivo.txt").read_text(encoding="utf-8")
+    s = motor.detectar(scryfall.resolver(lista, "Blanco"))
+    avisos = [x for x in s if x.id.split("::")[0] == "doble-simbolo-tierra-incolora"]
+    assert len(avisos) == 1, f"el aviso sale {len(avisos)} veces"

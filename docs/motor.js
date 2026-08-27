@@ -303,7 +303,8 @@
           piezas: nombres,
           resumen: fmt(regla.resumen), pasos: (regla.pasos || []).map(fmt), evidencia,
         });
-        if (vistas.size >= TOPE_POR_REGLA) break;
+        // Hay reglas que hablan del mazo entero, no de una pareja.
+        if (regla.una_vez || vistas.size >= TOPE_POR_REGLA) break;
       }
     }
     const orden = { sinergia: 0, aviso: 1, conflicto: 2 };
@@ -432,6 +433,15 @@ const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
 
   const BLOQUE_LEX = { sinergia: "Motor", conflicto: "Conflictos" };
 
+  const TIPOS = ["artifact", "enchantment", "creature", "planeswalker",
+                 "instant", "sorcery", "land", "battle"];
+
+  /** Los tipos de carta de una línea, sin subtipos ni supertipos. */
+  function tipos(tipo) {
+    const cabeza = tipo.split("—")[0].toLowerCase();
+    return TIPOS.filter((t) => cabeza.includes(t));
+  }
+
   /** Los subtipos de una línea de tipo: lo que va tras el guion largo. */
   function subtipos(tipo) {
     if (!tipo.includes("—")) return [];
@@ -455,10 +465,14 @@ const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
       // el subtipo de la carta tiene que ser el que menciona la otra. Sin esto, un
       // Human Monk salía emparejado con un premio a los Dragones.
       const emparejar = c.emparejar_subtipo;
+      // Y un tutor solo encuentra lo que dice buscar: "an artifact or enchantment
+      // card" casa con Worship, no con Savannah Lions.
+      const emparejarTipo = c.emparejar_tipo_buscado;
       const parejas = [];
       for (const [a, eva] of reparto.produce)
         for (const [b, evb] of reparto.premia) {
           if (emparejar && !subtipos(a.tipo).some((s) => evb.toLowerCase().includes(s))) continue;
+          if (emparejarTipo && !tipos(b.tipo).some((x) => eva.toLowerCase().includes(x))) continue;
           parejas.push([a, eva, b, evb, "sinergia", "produce", "premia"]);
         }
       for (const [a, eva] of reparto.rompe)
