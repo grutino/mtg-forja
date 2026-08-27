@@ -496,6 +496,28 @@ es la que se ve de un vistazo en el mapa, y ahora sale también en el informe:
 Si una carta importante del mazo sale ahí, falta un concepto. Es la comprobación
 que conviene hacer con cualquier mazo de una colección recién salida.
 
+### La trampa de las palabras clave
+
+El texto entre paréntesis de una carta —el recordatorio— se descarta antes de
+analizarla, porque repite reglas genéricas y disparaba falsos positivos. El precio
+es sutil: en una mecánica con nombre, **el significado vive justo ahí**.
+
+`Voice of Victory` dice «Mobilize 2», y todo lo demás —que crea dos fichas de
+criatura al atacar— está en el recordatorio. El motor veía una palabra sin
+contenido, y una carta de la que llevas cuatro copias colgaba de un solo hilo.
+
+Por eso los conceptos reconocen también el **nombre** de la mecánica, no solo su
+efecto redactado: `Mobilize`, `Amass`, `Fabricate`, `Populate`, `Ferocious`,
+`Flurry`. Es la forma de que una palabra clave nueva entre con una línea de más.
+
+No todas merecen concepto, y decir que no también es una decisión:
+
+| Mecánica | ¿Concepto? | Por qué |
+|---|---|---|
+| `Mobilize` | Sí | Crea fichas de criatura: recurso claro |
+| `Warp` | No | Solo se relanza a sí misma. Meterla inventaría relaciones de «parpadeo tus permanentes» que no existen |
+| `Kicker` | No | Pagar más por más de lo mismo, no un recurso que otra carta aproveche |
+
 ### Dos límites que conviene conocer
 
 **El motor solo encuentra lo que se le ha enseñado.** Si analizas un mazo y salen dos
@@ -691,7 +713,7 @@ Se probaron, una por una, y estos son los resultados reales:
 |---|---|
 | **Commander Spellbook** | ✅ **Integrada.** Su endpoint `find-my-combos` acepta el mazo entero de una vez y devuelve combos con sus pasos redactados. Es la única fuente del proyecto que no es oráculo verificado, y por eso siempre se contrasta |
 | **Gatherer** | Sin API propia, pero **su contenido ya llega por Scryfall**: los rulings oficiales. Es la fuente que más aporta y ya está integrada |
-| **EDHREC** | Su JSON funciona, pero está organizado por comandante y mide popularidad, no interacción |
+| **EDHREC** | Su JSON funciona, pero mide popularidad, no interacción. Y su página `/combos/<carta>` engaña con el título: no lista combos **de** esa carta, sino los combos que aparecen **en mazos que la juegan**. En la de Momo, Momo no sale en ninguno de los 133. Su propia ficha enlaza a Commander Spellbook para buscar los combos de una carta — la fuente que ya usamos |
 | **Moxfield** | Devuelve `403` a cualquier cliente automatizado |
 | **MTGGoldfish** | Sin API y con `Content-Signal: ai-train=no` |
 | **Draftsim** | Su `robots.txt` prohíbe explícitamente al agente `anthropic-ai` |
@@ -702,7 +724,7 @@ Se probaron, una por una, y estos son los resultados reales:
 | **edh-combos.com** | La más abierta de todas —`robots.txt` vacío, sin restricciones— pero su propio pie lo dice: *«Combo data is based on the Commander Spellbook, and card images are provided by Scryfall»*. Es un buscador montado sobre las dos fuentes que ya usamos, así que rascarla sería pedir por HTML lo que ya pedimos por API a la fuente original |
 | **Archidekt · ManaBox** | Almacenan mazos. Valen como formato de importación, y ya se soportan |
 
-La conclusión, tras revisar once: **solo dos aportan algo**, y las dos están dentro.
+La conclusión, tras revisarlas una a una: **solo dos aportan algo**, y las dos están dentro.
 Scryfall pone el oráculo real y los rulings oficiales de Wizards; Commander Spellbook
 pone los combos ya catalogados. El resto son precios, popularidad, listas de mazos o
 —como edh-combos.com— reempaquetados de las anteriores.

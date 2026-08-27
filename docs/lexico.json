@@ -99,7 +99,11 @@
       "produce": {
         "tipo": "Creature",
         "oracle": [
-          "create(s)? .{0,60}creature token"
+          "create(s)? .{0,60}creature token",
+          "\\bMobilize \\d",
+          "\\bAmass \\d",
+          "\\bFabricate \\d",
+          "\\bPopulate\\b"
         ],
         "texto": "pone criaturas en la mesa"
       },
