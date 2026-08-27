@@ -70,8 +70,7 @@ button:disabled{opacity:.5;cursor:default}
 
     <div class="acciones">
       <button class="pri" id="analizar">Analizar mazo</button>
-      <button id="ejemplo">Ejemplo · control</button>
-      <button id="ejemplo2">Ejemplo · dragones</button>
+      <button id="ejemplo">Cargar ejemplo</button>
       <span id="estado"></span>
     </div>
 
@@ -123,31 +122,8 @@ const EJEMPLO = `Deck
 3 Plains
 2 Mountain`;
 
-// Un segundo mazo, de otra forma por completo: agresivo, con criaturas voladoras
-// y jugadas que dependen de encadenar dos hechizos en el mismo turno.
-const EJEMPLO2 = `Deck
-4 Momo, Friendly Flier
-4 Sage of the Skies
-4 Sarkhan, Dragon Ascendant
-4 Voice of Victory
-4 Nova Hellkite
-4 Magmatic Hellkite
-3 Clarion Conqueror
-2 Dragonhawk, Fate's Tempest
-3 Seam Rip
-2 Daydream
-4 Burst Lightning
-4 Sacred Foundry
-4 Inspiring Vantage
-4 Sunbillow Verge
-4 Maelstrom of the Spirit Dragon
-2 Multiversal Passage
-1 Cavern of Souls
-3 Mountain`;
-
 const $ = (s) => document.querySelector(s);
 $("#ejemplo").onclick = () => { $("#lista").value = EJEMPLO; };
-$("#ejemplo2").onclick = () => { $("#lista").value = EJEMPLO2; };
 $("#otro").onclick = () => {
   $("#app").classList.remove("on");
   $("#inicio").style.display = "flex";
