@@ -66,7 +66,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 |---|---|---|
 | `reglas.json` | 37 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
 | Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
-| `lexico.json` | 24 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
+| `lexico.json` | 31 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
 | `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
@@ -471,6 +471,30 @@ quince, y el guion las ordena por uso real.
 
 Hay además una acción que lo ejecuta **cada lunes** y abre un aviso en el repositorio
 si aparece algo nuevo que se use de verdad.
+
+### Cómo saber si TU mazo está bien analizado
+
+Un porcentaje de cobertura puede mentir. El caso real que lo enseñó: un mazo de
+dragones daba «100 %, el motor cubre las mecánicas de este mazo» mientras la carta
+que lo sostenía —una que abarata las criaturas con volar— aparecía en el mapa
+**completamente suelta**, sin una sola línea.
+
+Las dos razones, y las dos están corregidas:
+
+1. Volar estaba en la lista de «palabras de combate que no definen sinergias».
+   Es cierto hasta que una carta se fija en ellas; entonces es el eje del mazo.
+2. La mecánica *Flurry* («lanzas tu segundo hechizo del turno») no la etiqueta
+   Scryfall como palabra clave, así que ningún recuento la veía. Y tiene menos de
+   25 cartas en todo Magic: la auditoría global tampoco la habría sacado nunca,
+   aunque en ese mazo concreto fuera la mitad de la lista.
+
+La lección es que **contar mecánicas no mide comprensión**. La señal que sí la mide
+es la que se ve de un vistazo en el mapa, y ahora sale también en el informe:
+
+    cartas_sin_relacion: ["Momo, Friendly Flier", ...]
+
+Si una carta importante del mazo sale ahí, falta un concepto. Es la comprobación
+que conviene hacer con cualquier mazo de una colección recién salida.
 
 ### Dos límites que conviene conocer
 

@@ -362,3 +362,46 @@ def test_el_conflicto_gana_a_la_sinergia_en_la_misma_pareja():
     par = [x for x in s if set(x.piezas) == {"Odio", "Goloso"}]
     assert par, "la pareja no aparece"
     assert par[0].tipo == "conflicto", "debería avisar del conflicto, no venderlo como sinergia"
+
+
+def test_una_carta_que_se_fija_en_volar_no_queda_suelta():
+    """Momo abarata las criaturas con volar: no puede salir desconectado.
+
+    Volar estaba en la lista de palabras de combate «que no definen sinergias».
+    Es falso en cuanto otra carta se fija en ellas, y el mapa dejaba la carta
+    clave del mazo flotando sin una sola línea.
+    """
+    from mtg_forja.modelo import Carta, Mazo
+
+    mazo = Mazo(nombre="Prueba")
+    mazo.cartas.append(Carta(nombre="Momo", copias=1, tipo="Creature — Bat", mv=1,
+        oraculo="Flying\nThe first creature spell with flying you cast during each of "
+                "your turns costs {1} less to cast."))
+    for i in range(3):
+        mazo.cartas.append(Carta(nombre=f"Dragón {i}", copias=1, tipo="Creature — Dragon",
+                                 mv=5, oraculo="Flying"))
+    mazo.cartas.append(Carta(nombre="Terrestre", copias=1, tipo="Creature — Bear", mv=2,
+                             oraculo="Vigilance"))
+
+    con_momo = [x for x in lexico.detectar(mazo) if "Momo" in x.piezas]
+    assert len(con_momo) == 3, f"Momo sale con {len(con_momo)} voladores de 3"
+    assert not any("Terrestre" in x.piezas for x in con_momo), "un oso no vuela"
+
+
+def test_el_segundo_hechizo_del_turno_es_un_recurso():
+    """«Flurry» pide encadenar dos hechizos: los baratos son quienes lo permiten."""
+    from mtg_forja.modelo import Carta, Mazo
+
+    mazo = Mazo(nombre="Prueba")
+    mazo.cartas.append(Carta(nombre="Flurrioso", copias=2, tipo="Creature — Spirit", mv=2,
+        oraculo="Whenever you cast your second spell each turn, create a 1/1 white "
+                "Spirit creature token with flying."))
+    for i in range(2):
+        mazo.cartas.append(Carta(nombre=f"Truco {i}", copias=4, tipo="Instant", mv=1,
+                                 oraculo="Scry 1. Draw a card."))
+    mazo.cartas.append(Carta(nombre="Carota", copias=1, tipo="Sorcery", mv=7,
+                             oraculo="Draw seven cards."))
+
+    con_flurry = [x for x in lexico.detectar(mazo) if "Flurrioso" in x.piezas]
+    baratos = {p for x in con_flurry for p in x.piezas if p != "Flurrioso"}
+    assert baratos == {"Truco 0", "Truco 1"}, f"debería casar solo con los baratos: {baratos}"

@@ -615,6 +615,72 @@
         "texto": "premia a las criaturas de ese tipo"
       },
       "emparejar_subtipo": true
+    },
+    {
+      "id": "criatura-voladora",
+      "nombre": "las criaturas con volar",
+      "fuerza": 4,
+      "produce": {
+        "tipo": "Creature",
+        "oracle": [
+          "\\bflying\\b"
+        ],
+        "texto": "es una criatura con volar"
+      },
+      "premia": {
+        "oracle": [
+          "creature spells? with flying",
+          "creatures? you control with flying",
+          "creatures? with flying you (cast|control)",
+          "each creature you control with flying",
+          "(another|other) creatures? you control with flying",
+          "whenever a creature (you control )?with flying"
+        ],
+        "no_oracle": "creature with flying an opponent|creature an opponent controls with flying",
+        "texto": "se fija en tus criaturas con volar"
+      }
+    },
+    {
+      "id": "segundo-hechizo",
+      "nombre": "encadenar dos hechizos en el mismo turno",
+      "fuerza": 4,
+      "produce": {
+        "no_tipo": "Land",
+        "mv_max": 2,
+        "texto": "es barato: deja hueco para un segundo hechizo en el turno"
+      },
+      "premia": {
+        "oracle": [
+          "\\bFlurry\\b",
+          "cast your second spell each turn",
+          "if you'?ve cast another spell this turn",
+          "second spell you cast each turn",
+          "cast two or more spells"
+        ],
+        "texto": "se dispara al lanzar el segundo hechizo del turno"
+      }
+    },
+    {
+      "id": "mana-de-tesoro",
+      "nombre": "el maná suelto de los tesoros",
+      "fuerza": 3,
+      "produce": {
+        "oracle": [
+          "create .{0,30}Treasure token",
+          "creates? a Treasure"
+        ],
+        "texto": "deja maná guardado para gastarlo cuando haga falta"
+      },
+      "premia": {
+        "oracle": [
+          "\\bFlurry\\b",
+          "cast your second spell each turn",
+          "if you'?ve cast another spell this turn",
+          "second spell you cast each turn",
+          "cast two or more spells"
+        ],
+        "texto": "se dispara al lanzar el segundo hechizo del turno"
+      }
     }
   ]
 }

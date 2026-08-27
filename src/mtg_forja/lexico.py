@@ -30,10 +30,12 @@ TOPE_SINERGIAS = 40
 TOPE_CONFLICTOS = 10
 POR_CARTA = 12
 
-# Palabras de combate: describen cómo pelea una criatura, no un recurso que otra
-# carta pueda aprovechar. No tiene sentido pedir un concepto para ellas.
+# Palabras de combate sin concepto propio. Ojo: estar aquí solo significa que
+# ninguna carta suele fijarse en ellas. En cuanto una lo hace —Momo abarata las
+# criaturas con volar— dejan de ser decorado y les toca concepto: por eso volar
+# ya no está en esta lista.
 EVERGREEN = {
-    "Flying", "Vigilance", "Menace", "Deathtouch", "Reach", "Trample", "Haste",
+    "Vigilance", "Menace", "Deathtouch", "Reach", "Trample", "Haste",
     "First strike", "Double strike", "Defender", "Hexproof", "Shroud", "Ward",
     "Indestructible", "Protection", "Flash", "Enchant", "Equip", "Crew",
 }
@@ -244,12 +246,20 @@ def cobertura(mazo: Mazo, conceptos: list[dict[str, Any]] | None = None) -> dict
     sin_cubrir = sorted((k for k, v in mecanicas.items() if not v["cubierta"]),
                         key=lambda k: -mecanicas[k]["cartas"])
 
+    # Leer una carta no es relacionarla. Una carta puede encajar en un concepto y
+    # aun así quedarse sin pareja: es exactamente lo que se ve en el mapa como un
+    # círculo suelto, y es la señal que de verdad delata un hueco del léxico.
+    enlazadas = {p for s in completo(mazo, conceptos=conceptos) for p in s.piezas}
+    sueltas = [c.nombre for c in interesantes if c.nombre not in enlazadas
+               and not c.es_tierra]
+
     leidas = len(interesantes) - len(ciegas)
     return {
         "cartas_analizables": len(interesantes),
         "cartas_que_el_motor_lee": leidas,
         "porcentaje": round(100 * leidas / len(interesantes)) if interesantes else 0,
         "cartas_invisibles": ciegas,
+        "cartas_sin_relacion": sueltas,
         "mecanicas_del_mazo": {k: v["cartas"] for k, v in
                                sorted(mecanicas.items(), key=lambda kv: -kv[1]["cartas"])},
         "mecanicas_sin_concepto": sin_cubrir,
@@ -257,6 +267,10 @@ def cobertura(mazo: Mazo, conceptos: list[dict[str, Any]] | None = None) -> dict
             "El motor no cubre este mazo: escribe conceptos para las mecánicas listadas, "
             "o analízalo por MCP, donde el modelo lee el oráculo y razona."
             if sin_cubrir or leidas < len(interesantes) * 0.7
+            else f"Quedan {len(sueltas)} cartas sin ninguna relación. Si alguna es "
+                 "importante en el mazo, ahí falta un concepto: mira su texto y "
+                 "compáralo con lexico.json, o analízala por MCP."
+            if sueltas
             else "El motor cubre las mecánicas de este mazo."
         ),
     }
