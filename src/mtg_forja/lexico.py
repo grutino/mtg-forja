@@ -210,16 +210,18 @@ def _parejas(c: dict[str, Any], r: dict[str, list]):
     # el subtipo de la carta tiene que ser el que menciona la otra. Sin esto, un
     # Human Monk salía emparejado con un premio a los Dragones.
     empareja = c.get("emparejar_subtipo")
-    # Y un efecto solo alcanza a los tipos que dice alcanzar. Vale para el tutor
-    # que busca "an artifact or enchantment card" y para el que reparpadea
-    # "target creature you control": ese no puede parpadear un encantamiento,
-    # tenga el disparo de entrada que tenga.
-    empareja_tipo = c.get("emparejar_tipo_objetivo")
+    # Y un efecto solo alcanza a los tipos que dice alcanzar. Hay que decir quién
+    # apunta a quién: en un tutor apunta el que busca ("an artifact or enchantment
+    # card"), y en una respuesta apunta el que contesta — Vision Charm solo hace
+    # desvanecerse artefactos, así que no sirve contra cualquier disparo.
+    apunta = c.get("emparejar_tipo_objetivo")
     for a, eva in r["produce"]:
         for b, evb in r["premia"]:
             if empareja and not any(s in evb.lower() for s in _subtipos(a.tipo)):
                 continue
-            if empareja_tipo and not (_tipos(b.tipo) & _tipos_objetivo(eva)):
+            if apunta == "produce" and not (_tipos(b.tipo) & _tipos_objetivo(eva)):
+                continue
+            if apunta == "premia" and not (_tipos(a.tipo) & _tipos_objetivo(evb)):
                 continue
             yield (a, eva), (b, evb), "sinergia", "produce", "premia"
     for a, eva in r["rompe"]:

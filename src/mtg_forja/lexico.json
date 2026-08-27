@@ -478,7 +478,7 @@
         ],
         "texto": "apaga los disparos de entrada"
       },
-      "emparejar_tipo_objetivo": true
+      "emparejar_tipo_objetivo": "produce"
     },
     {
       "id": "buscar-carta",
@@ -702,7 +702,7 @@
         "no_tipo": "Land",
         "texto": "es una de las cartas que ese tutor puede encontrar"
       },
-      "emparejar_tipo_objetivo": true
+      "emparejar_tipo_objetivo": "produce"
     },
     {
       "id": "controlar-una-criatura",
@@ -720,6 +720,29 @@
         ],
         "texto": "solo funciona si controlas una criatura"
       }
+    },
+    {
+      "id": "disparo-que-perjudica",
+      "nombre": "el disparo que te obliga a pagar un precio",
+      "fuerza": 5,
+      "produce": {
+        "oracle": [
+          "[Ww]hen this .{0,40} enters, .{0,60}\\bsacrifice it\\b",
+          "[Ww]hen this .{0,40} enters, .{0,60}you lose \\d+ life",
+          "[Aa]t the beginning of your upkeep, sacrifice this",
+          "[Ww]hen this .{0,40} enters, .{0,60}unless you"
+        ],
+        "texto": "trae un disparo que te cuesta la propia carta"
+      },
+      "premia": {
+        "oracle": [
+          "[Cc]ounter target (activated or )?triggered ability",
+          "[Cc]ounter target activated ability",
+          "phases out"
+        ],
+        "texto": "cancela ese disparo antes de que te cueste nada"
+      },
+      "emparejar_tipo_objetivo": "premia"
     }
   ]
 }

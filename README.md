@@ -66,7 +66,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 |---|---|---|
 | `reglas.json` | 37 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
 | Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
-| `lexico.json` | 33 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
+| `lexico.json` | 34 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
 | `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
@@ -516,6 +516,29 @@ criatura casa con las criaturas que llevas.
 El mazo pasa de 4 sinergias a 26, y las dos cartas que siguen sueltas son
 `Swords to Plowshares` y `Disenchant`: removal puro, que en ese mazo de verdad no
 se apoya en nada. Eso es lo que debe quedar suelto.
+
+### No todo disparo al entrar es bueno
+
+`Phyrexian Dreadnought` es un 12/12 por `{1}` con una letra pequeña: al entrar,
+lo sacrificas salvo que sacrifiques doce puntos de fuerza. El mazo entero existe
+para cancelar ese disparo — `Stifle` lo contrarresta, `Vision Charm` hace
+desvanecerse el artefacto — y el motor no encontraba **ninguna de las dos**.
+
+La razón de fondo: daba por hecho que un disparo al entrar es valor. Aquí es un
+lastre. Ahora hay un concepto para el disparo que te cobra un precio y para quien
+lo neutraliza, y el emparejado por tipo sabe **quién apunta a quién**: en un tutor
+apunta el que busca, en una respuesta apunta el que contesta. Por eso Vision Charm
+solo vale contra un artefacto, que es lo único que puede hacer desvanecerse.
+
+### Una carta cualquiera no es una sinergia
+
+En ese mismo mazo, `Misdirection` salía como el nudo principal con nueve
+conexiones. Se lanza exiliando «a blue card», y en un mazo monoazul eso lo cumplen
+las quince cartas: nueve líneas para decir que el mazo es azul.
+
+El consejo que sí vale —cada uso te cuesta dos cartas— habla de Misdirection sola.
+No es una pareja, así que ahora es una nota de una carta y no dibuja ninguna línea.
+Un mapa donde una carta conecta con todo no dice nada de ninguna.
 
 ### Una jugada imposible no es una jugada floja
 

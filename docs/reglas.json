@@ -747,7 +747,7 @@
     },
     {
       "id": "pitch-azul",
-      "nombre": "Contrahechizo gratis con carta azul",
+      "nombre": "Contrahechizo gratis a cambio de dos cartas",
       "bloque": "Respuesta",
       "fuerza": 4,
       "turno": "reacción",
@@ -755,18 +755,13 @@
         {
           "rol": "a",
           "oracle": "exile a blue card from your hand rather than pay"
-        },
-        {
-          "rol": "b",
-          "coste": "\\{U\\}",
-          "copias_min": 3
         }
       ],
-      "resumen": "{a} se lanza sin maná exiliando {b}: es lo que te deja interactuar en el turno uno del rival.",
+      "resumen": "{a} se lanza sin maná exiliando otra carta azul, y eso es lo que te deja interactuar en el turno uno del rival. Da igual cuál exilies: lo que importa es que cada uso te cuesta dos cartas.",
       "pasos": [
-        "Cuenta tus cartas azules antes de exiliar una.",
-        "Exilia {b} y paga el coste alternativo.",
-        "Cada uno te cuesta dos cartas: no lo gastes en cualquier cosa."
+        "Cuenta tus cartas azules en mano antes de comprometerte.",
+        "Exilia una cualquiera y paga el coste alternativo.",
+        "Cada {a} te cuesta dos cartas: no lo gastes en cualquier cosa."
       ]
     },
     {

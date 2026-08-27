@@ -477,17 +477,21 @@ const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
       // el subtipo de la carta tiene que ser el que menciona la otra. Sin esto, un
       // Human Monk salía emparejado con un premio a los Dragones.
       const emparejar = c.emparejar_subtipo;
-      // Y un efecto solo alcanza a los tipos que dice alcanzar: vale para el tutor
-      // que busca "an artifact or enchantment card" y para el que reparpadea
-      // "target creature you control".
-      const emparejarTipo = c.emparejar_tipo_objetivo;
+      // Y un efecto solo alcanza a los tipos que dice alcanzar. Hay que decir quién
+      // apunta a quién: en un tutor apunta el que busca, y en una respuesta apunta
+      // el que contesta — Vision Charm solo hace desvanecerse artefactos.
+      const apunta = c.emparejar_tipo_objetivo;
       const parejas = [];
       for (const [a, eva] of reparto.produce)
         for (const [b, evb] of reparto.premia) {
           if (emparejar && !subtipos(a.tipo).some((s) => evb.toLowerCase().includes(s))) continue;
-          if (emparejarTipo) {
+          if (apunta === "produce") {
             const alcance = tiposObjetivo(eva);
             if (!tipos(b.tipo).some((x) => alcance.includes(x))) continue;
+          }
+          if (apunta === "premia") {
+            const alcance = tiposObjetivo(evb);
+            if (!tipos(a.tipo).some((x) => alcance.includes(x))) continue;
           }
           parejas.push([a, eva, b, evb, "sinergia", "produce", "premia"]);
         }

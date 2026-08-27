@@ -129,6 +129,8 @@ def test_los_dos_motores_detectan_lo_mismo(tmp_path, monkeypatch):
          (RAIZ / "ejemplos" / "dragones-boros.txt").read_text(encoding="utf-8"), "dragones"),
         ("fixture-blanco.json",
          (RAIZ / "ejemplos" / "blanco-agresivo.txt").read_text(encoding="utf-8"), "blanco"),
+        ("fixture-stiflenought.json",
+         (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8"), "stiflenought"),
     ):
         monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / fixture))
         mazo = scryfall.resolver(lista, etiqueta)
@@ -575,3 +577,38 @@ def test_un_simbolo_de_mana_en_el_texto_no_tumba_el_analisis():
         mazo.cartas.append(Carta(nombre="Island", copias=1, tipo="Basic Land — Island",
                                  mv=0, oraculo="({T}: Add {U}.)"))
     motor.detectar(mazo)   # basta con que no lance
+
+
+def test_el_disparo_que_te_perjudica_y_quien_lo_cancela(monkeypatch):
+    """Phyrexian Dreadnought es un 12/12 por {1} si cancelas su propio disparo.
+
+    El motor daba por bueno que todo disparo al entrar es valor. Aquí es un
+    lastre, y media lista existe para neutralizarlo: Stifle lo contrarresta y
+    Vision Charm hace desvanecerse el artefacto. Era el combo del mazo y no
+    salía ninguna de las dos.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-stiflenought.json"))
+    lista = (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8")
+    mazo = scryfall.resolver(lista, "Stiflenought")
+
+    respuestas = {p for s in lexico.completo(mazo)
+                  if s.id.split("::")[0] == "disparo-que-perjudica"
+                  for p in s.piezas if p != "Phyrexian Dreadnought"}
+    assert respuestas == {"Stifle", "Vision Charm"}, respuestas
+
+
+def test_una_carta_azul_cualquiera_no_es_una_sinergia(monkeypatch):
+    """Misdirection exilia «a blue card»: en un mazo monoazul lo cumple todo.
+
+    Eran nueve líneas para decir que el mazo es azul, y dejaban a Misdirection
+    como nudo principal del mapa. El consejo útil —cada uso cuesta dos cartas—
+    habla de Misdirection sola, así que es nota de una carta, no pareja.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-stiflenought.json"))
+    lista = (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8")
+    s = lexico.completo(scryfall.resolver(lista, "Stiflenought"))
+
+    parejas = [x for x in s if "Misdirection" in x.piezas and len(x.piezas) > 1]
+    assert not parejas, f"Misdirection vuelve a emparejarse: {[x.piezas for x in parejas]}"
+    # pero el aviso sobre la propia carta se conserva
+    assert any(x.piezas == ["Misdirection"] for x in s), "se ha perdido el aviso"

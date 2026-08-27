@@ -1,0 +1,249 @@
+[
+ {
+  "name": "Chain of Vapor",
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Return target nonland permanent to its owner's hand. Then that permanent's controller may sacrifice a land of their choice. If the player does, they may copy this spell and may choose a new target for that copy.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "uncommon",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Counterspell",
+  "mana_cost": "{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target spell.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "uncommon",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Daze",
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "You may return an Island you control to its owner's hand rather than pay this spell's mana cost.\nCounter target spell unless its controller pays {1}.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "uncommon",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Flash of Insight",
+  "mana_cost": "{X}{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Look at the top X cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order.\nFlashback—{1}{U}, Exile X blue cards from your graveyard. (You may cast this card from your graveyard for its flashback cost, then exile it. You can't exile Flash of Insight to pay for its own flashback cost.)",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "uncommon",
+  "keywords": [
+   "Flashback"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Foil",
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "You may discard an Island card and another card rather than pay this spell's mana cost.\nCounter target spell.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "common",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Gush",
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "You may return two Islands you control to their owner's hand rather than pay this spell's mana cost.\nDraw two cards.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "common",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Impulse",
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Look at the top four cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "common",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Island",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Basic Land — Island",
+  "oracle_text": "({T}: Add {U}.)",
+  "colors": [],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "common",
+  "keywords": [],
+  "produced_mana": [
+   "U"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Misdirection",
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "You may exile a blue card from your hand rather than pay this spell's mana cost.\nChange the target of target spell with a single target.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "rare",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Opt",
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Scry 1. (Look at the top card of your library. You may put that card on the bottom.)\nDraw a card.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "common",
+  "keywords": [
+   "Scry"
+  ],
+  "layout": "normal"
+ },
+ {
+  "name": "Phyrexian Dreadnought",
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact Creature — Phyrexian Dreadnought",
+  "oracle_text": "Trample\nWhen this creature enters, sacrifice it unless you sacrifice any number of creatures with total power 12 or greater.",
+  "colors": [],
+  "color_identity": [],
+  "rarity": "rare",
+  "keywords": [
+   "Trample"
+  ],
+  "power": "12",
+  "toughness": "12",
+  "layout": "normal"
+ },
+ {
+  "name": "Portent",
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Look at the top three cards of target player's library, then put them back in any order. You may have that player shuffle.\nDraw a card at the beginning of the next turn's upkeep.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "common",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Stifle",
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target activated or triggered ability. (Mana abilities can't be targeted.)",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "rare",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Thwart",
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "You may return three Islands you control to their owner's hand rather than pay this spell's mana cost.\nCounter target spell.",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "uncommon",
+  "keywords": [],
+  "layout": "normal"
+ },
+ {
+  "name": "Vision Charm",
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one —\n• Target player mills four cards.\n• Choose a land type and a basic land type. Each land of the first chosen type becomes the second chosen type until end of turn.\n• Target artifact phases out. (While it's phased out, it's treated as though it doesn't exist. It phases in before its controller untaps during their next untap step.)",
+  "colors": [
+   "U"
+  ],
+  "color_identity": [
+   "U"
+  ],
+  "rarity": "common",
+  "keywords": [
+   "Mill"
+  ],
+  "layout": "normal"
+ }
+]
