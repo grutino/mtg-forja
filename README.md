@@ -444,6 +444,34 @@ tipos que menciona, zonas que toca— para que pueda razonar en vez de adivinar.
 y la web no tienen un modelo detrás; ahí el léxico sirve de suelo, para que un mazo
 desconocido nunca devuelva una página casi vacía.
 
+### ¿Y las colecciones nuevas?
+
+El léxico no describe cartas ni colecciones: describe **recursos**. Una carta nueva
+que llene el cementerio, haga fichas o premie a los dragones encaja en conceptos que
+ya existen, salga en la colección que salga.
+
+Medido sobre **525 cartas reales de 2023 en adelante**: el motor lee el **98 %**.
+Lo que no entiende son equipos y auras que solo dan +X/+X, que apenas tienen señal
+de sinergia.
+
+Lo que sí se escapa es una mecánica **genuinamente nueva** — *Ferocious* pide
+«controlas una criatura de fuerza 4 o más», y sin un concepto para eso un mazo
+entero se queda mudo. Suelen ser dos o tres por colección.
+
+Para no depender de que alguien se dé cuenta:
+
+```bash
+python scripts/auditar_cobertura.py --minimo 25
+```
+
+Pregunta a Scryfall qué mecánicas existen hoy, cuántas cartas usa cada una, y avisa
+de las que ningún concepto menciona. De las 371 del juego, 295 tienen menos de veinte
+cartas: son residuales de colecciones antiguas. Las que merecen un concepto son unas
+quince, y el guion las ordena por uso real.
+
+Hay además una acción que lo ejecuta **cada lunes** y abre un aviso en el repositorio
+si aparece algo nuevo que se use de verdad.
+
 ### Dos límites que conviene conocer
 
 **El motor solo encuentra lo que se le ha enseñado.** Si analizas un mazo y salen dos

@@ -1,0 +1,71 @@
+name: cobertura del léxico
+
+# Cada colección nueva puede traer mecánicas que el motor no sabe leer. Esto lo
+# comprueba solo, una vez por semana, y abre un aviso si aparece alguna que se
+# use de verdad. No arregla nada: hace visible lo que falta por escribir.
+on:
+  schedule:
+    - cron: "0 7 * * 1"   # lunes por la mañana
+  workflow_dispatch:       # y a mano cuando quieras
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  auditar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Buscar mecánicas sin concepto
+        id: auditoria
+        run: |
+          set +e
+          python scripts/auditar_cobertura.py --minimo 25 > informe.txt 2>/dev/null
+          echo "faltan=$?" >> "$GITHUB_OUTPUT"
+          cat informe.txt
+
+      - name: Avisar si falta algo
+        if: steps.auditoria.outputs.faltan == '1'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const informe = fs.readFileSync('informe.txt', 'utf8');
+            const titulo = 'Mecánicas de Magic que el léxico todavía no cubre';
+
+            // Si ya hay un aviso abierto, se actualiza en vez de abrir otro.
+            const abiertos = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'cobertura',
+            });
+            const cuerpo = [
+              'Revisión automática contra el catálogo de Scryfall.',
+              '',
+              '```',
+              informe.trim(),
+              '```',
+              '',
+              'Cada concepto nuevo en `src/mtg_forja/lexico.json` cubre de golpe todas',
+              'las parejas de cartas que lo compartan — no hay que escribir una regla',
+              'por mazo. Para comprobar el efecto sobre un mazo concreto:',
+              '',
+              '```bash',
+              'python scripts/auditar_cobertura.py --minimo 25',
+              '```',
+            ].join('\n');
+
+            if (abiertos.data.length) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: abiertos.data[0].number, body: cuerpo,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title: titulo, body: cuerpo, labels: ['cobertura'],
+              });
+            }
