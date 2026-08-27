@@ -71,7 +71,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 | `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
 | El servidor MCP | `server.py` | **El enchufe con Claude.** Expone las herramientas para que el modelo pueda llamarlas. |
-| Las herramientas | Once funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
+| Las herramientas | Doce funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
 | La skill | `skill/SKILL.md` | Lo que Claude *debe saber*: qué verificar antes de afirmar nada, qué documento pide cada situación, cómo redactar. |
 | El CLI | `cli.py` | Los mismos tres documentos sin pasar por Claude. |
 | La web | `docs/` | Todo lo anterior en el navegador, sin instalar nada. |
@@ -516,6 +516,36 @@ criatura casa con las criaturas que llevas.
 El mazo pasa de 4 sinergias a 26, y las dos cartas que siguen sueltas son
 `Swords to Plowshares` y `Disenchant`: removal puro, que en ese mazo de verdad no
 se apoya en nada. Eso es lo que debe quedar suelto.
+
+### Contrastar contra la fuente oficial
+
+Un combo conocido desde hace veinte años no debería costar deducirlo. Y no hace
+falta: **suele estar explicado en el ruling oficial de la propia carta**, que es la
+mejor prueba que existe — no es la opinión de nadie, es la regla.
+
+Los rulings de `Phyrexian Dreadnought` documentan las dos mitades del combo:
+
+> «Reverted to its original wording, this now has an **"enters" triggered
+> ability**.» — por eso Stifle lo contrarresta
+>
+> «**Phasing in does not trigger "enters" abilities**, so you don't have to
+> sacrifice again if it phases in.» — por eso Vision Charm funciona
+
+Por eso hay una herramienta que coge las sinergias detectadas y busca qué dice
+Wizards sobre ellas. Sobre ese mazo respalda las dos piezas del combo.
+
+Dos avisos, porque importan:
+
+* Empareja por vocabulario, así que señala rulings **relacionados**. No demuestra
+  la jugada: la lee un humano —o el modelo, por MCP— y decide.
+* Que una pareja no traiga apoyo **no la vuelve falsa**. La mayoría de las cartas
+  apenas tienen rulings, y la ausencia no dice nada.
+
+Si un ruling contradice una sinergia detectada, gana el ruling.
+
+**Por qué no vale Commander Spellbook aquí.** Ya está integrada y es buena, pero es
+una base de datos de Commander: preguntada por este mazo de Legacy devuelve cero.
+Los rulings, en cambio, no saben de formatos.
 
 ### No todo disparo al entrar es bueno
 

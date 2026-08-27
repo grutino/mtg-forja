@@ -612,3 +612,65 @@ def test_una_carta_azul_cualquiera_no_es_una_sinergia(monkeypatch):
     assert not parejas, f"Misdirection vuelve a emparejarse: {[x.piezas for x in parejas]}"
     # pero el aviso sobre la propia carta se conserva
     assert any(x.piezas == ["Misdirection"] for x in s), "se ha perdido el aviso"
+
+
+def test_contraste_encuentra_el_ruling_que_documenta_el_combo(monkeypatch):
+    """Un combo conocido suele estar explicado en el ruling oficial de la carta.
+
+    Phyrexian Dreadnought + Stifle lleva veinte años documentado, y Wizards lo
+    dice con todas las letras. Deducirlo a ciegas cuando la fuente oficial ya lo
+    explica es trabajar de más y peor.
+    """
+    from mtg_forja import contraste
+
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-stiflenought.json"))
+    lista = (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8")
+    mazo = scryfall.resolver(lista, "Stiflenought")
+
+    # los rulings reales de Scryfall, fijados aquí para no depender de la red
+    falsos = {
+        "Phyrexian Dreadnought": [
+            'Reverted to its original wording, this now has an "enters" triggered '
+            "ability. During resolution of the triggered ability, you choose one option.",
+            'Phasing in does not trigger "enters" abilities, so you don\'t have to '
+            "sacrifice again if it phases in.",
+        ],
+    }
+    r = contraste.contrastar(mazo, lexico.completo(mazo),
+                             buscar_rulings=lambda c: falsos.get(c.nombre, []))
+
+    apoyadas = {tuple(sorted(x["piezas"])) for x in r["contrastes"]}
+    assert ("Phyrexian Dreadnought", "Stifle") in apoyadas, apoyadas
+    assert ("Phyrexian Dreadnought", "Vision Charm") in apoyadas, apoyadas
+
+    # y el aviso de que esto no demuestra nada no puede desaparecer por descuido
+    assert "no demuestra" in r["atencion"]
+
+
+def test_contraste_no_se_rompe_sin_red(monkeypatch):
+    """Los rulings son una consulta extra: sin ellos el análisis sigue igual."""
+    from mtg_forja import contraste
+
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-stiflenought.json"))
+    lista = (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8")
+    mazo = scryfall.resolver(lista, "Stiflenought")
+
+    r = contraste.contrastar(mazo, lexico.completo(mazo), buscar_rulings=lambda c: [])
+    assert r["contrastes"] == [] and r["parejas_analizadas"] > 0
+
+
+def test_contraste_no_confunde_contrarrestar_con_contadores():
+    """"countered" es contrarrestar y "counters" son contadores +1/+1.
+
+    Reduciéndolas a la misma raíz, un ruling sobre contrahechizos casaba con
+    cualquier carta que pusiera contadores.
+    """
+    from mtg_forja import contraste
+
+    ruling = "A spell cast using flashback will always be exiled, whether it resolves or is countered."
+    assert not contraste._apoya(ruling, "Put a +1/+1 counter on it. Draw a card.")
+    # pero el término compartido de verdad sí vale: este es el ruling literal
+    # de Phyrexian Dreadnought, y es el que documenta el combo con Vision Charm
+    oficial = ('Phasing in does not trigger "enters" abilities, so you don\'t have '
+               "to sacrifice again if it phases in.")
+    assert contraste._apoya(oficial, "Target artifact phases out.") == ["phases"]

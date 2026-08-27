@@ -24,6 +24,7 @@ except ImportError:  # SDK de MCP 1.x
 
 from . import __version__
 from . import combos
+from . import contraste
 from . import hechos
 from . import lexico
 from . import reglas as motor
@@ -143,6 +144,35 @@ def rulings_oficiales(lista: str, cartas: str = "") -> str:
         "cartas_con_aclaraciones": len(fuera),
         "rulings": fuera,
     })
+
+
+@mcp.tool()
+def contrastar_con_rulings(lista: str, nombre: str = "Mazo") -> str:
+    """Contrasta las sinergias detectadas contra los rulings oficiales de Wizards.
+
+    Úsala **antes de afirmar que una interacción funciona**, y sobre todo con
+    combos conocidos: muchos están explicados en el ruling oficial de la propia
+    carta, que es la mejor prueba que existe — no es la opinión de nadie, es la
+    regla.
+
+    El caso que la motivó: Phyrexian Dreadnought + Stifle lleva veinte años
+    documentado, y sus rulings lo dicen con todas las letras («this now has an
+    "enters" triggered ability», «phasing in does not trigger "enters"
+    abilities»). Deducirlo a ciegas cuando la fuente oficial ya lo explica es
+    trabajar de más y peor.
+
+    Dos avisos al leer el resultado:
+
+    * Empareja por vocabulario, así que devuelve rulings **relacionados**. Léelos
+      y decide tú si respaldan la jugada o hablan de otra cosa.
+    * Que una pareja no traiga apoyo **no la vuelve falsa**: la mayoría de las
+      cartas apenas tienen rulings. La ausencia no dice nada.
+
+    Si un ruling contradice una sinergia detectada, gana el ruling: dilo y
+    descarta la sinergia.
+    """
+    mazo = scryfall.resolver(lista, nombre)
+    return _json(contraste.contrastar(mazo, lexico.completo(mazo)))
 
 
 @mcp.tool()
