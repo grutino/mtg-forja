@@ -521,3 +521,33 @@ def test_un_aviso_de_base_de_mana_no_se_repite(monkeypatch):
     s = motor.detectar(scryfall.resolver(lista, "Blanco"))
     avisos = [x for x in s if x.id.split("::")[0] == "doble-simbolo-tierra-incolora"]
     assert len(avisos) == 1, f"el aviso sale {len(avisos)} veces"
+
+
+def test_un_efecto_no_alcanza_lo_que_no_puede_apuntar(monkeypatch):
+    """Daydream dice «exile target creature you control»: no toca encantamientos.
+
+    El motor razonaba «esto reparpadea permanentes» + «esto tiene disparo al
+    entrar» = sinergia, sin comprobar nunca que el primero pudiera apuntar al
+    segundo. Salía Daydream con Seam Rip, que es un encantamiento: la jugada no
+    es floja, es imposible.
+    """
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-dragones.json"))
+    lista = (RAIZ / "ejemplos" / "dragones-boros.txt").read_text(encoding="utf-8")
+    mazo = scryfall.resolver(lista, "Dragones")
+
+    con_daydream = {p for s in lexico.completo(mazo)
+                    if s.id.split("::")[0] == "entra-en-juego" and "Daydream" in s.piezas
+                    for p in s.piezas if p != "Daydream"}
+    assert "Seam Rip" not in con_daydream, "vuelve a parpadear un encantamiento"
+    # y las criaturas con disparo al entrar siguen saliendo
+    assert {"Nova Hellkite", "Magmatic Hellkite"} <= con_daydream, con_daydream
+
+
+def test_un_efecto_sobre_permanentes_si_alcanza_a_todo():
+    """«Return target permanent» sí llega a un encantamiento: no hay que filtrarlo."""
+    assert lexico._tipos_objetivo("Exile target creature you control") == {"creature"}
+    todo = set(lexico.TIPOS)
+    assert lexico._tipos_objetivo("Return target permanent to its owner's hand") == todo
+    assert lexico._tipos_objetivo("exile target nonland permanent") == todo - {"land"}
+    # sin ningún tipo nombrado no se puede afirmar nada, así que no se filtra
+    assert lexico._tipos_objetivo("Flicker it") == todo

@@ -477,7 +477,8 @@
           "creature abilities.{0,30}don't trigger"
         ],
         "texto": "apaga los disparos de entrada"
-      }
+      },
+      "emparejar_tipo_objetivo": true
     },
     {
       "id": "buscar-carta",
@@ -701,7 +702,7 @@
         "no_tipo": "Land",
         "texto": "es una de las cartas que ese tutor puede encontrar"
       },
-      "emparejar_tipo_buscado": true
+      "emparejar_tipo_objetivo": true
     },
     {
       "id": "controlar-una-criatura",

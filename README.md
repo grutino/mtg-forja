@@ -517,6 +517,28 @@ El mazo pasa de 4 sinergias a 26, y las dos cartas que siguen sueltas son
 `Swords to Plowshares` y `Disenchant`: removal puro, que en ese mazo de verdad no
 se apoya en nada. Eso es lo que debe quedar suelto.
 
+### Una jugada imposible no es una jugada floja
+
+En el mazo de dragones salía `Daydream` emparejado con `Seam Rip`. El razonamiento
+del motor era correcto por separado y absurdo junto: «Daydream vuelve a meter
+permanentes en juego» más «Seam Rip tiene un disparo al entrar».
+
+Lo que nunca comprobó es si Daydream **puede apuntarla**. Dice «exile target
+**creature** you control», y Seam Rip es un encantamiento.
+
+Ahora un efecto solo alcanza a los tipos que su propio texto dice alcanzar:
+
+| El texto dice | Llega a |
+|---|---|
+| `target creature you control` | criaturas |
+| `target nonland permanent` | todo menos tierras |
+| `target permanent` | todo |
+| no nombra ningún tipo | todo — no se puede afirmar, y callar una sinergia real es peor |
+
+La misma comprobación sirve para los tutores, que solo encuentran lo que dicen
+buscar. Daydream conserva sus tres criaturas con disparo al entrar y pierde el
+encantamiento.
+
 ### Un aviso falso es peor que ningún aviso
 
 La regla «doble símbolo de color con tierras incoloras» decía *solo produce

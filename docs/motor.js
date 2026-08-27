@@ -442,6 +442,18 @@ const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
     return TIPOS.filter((t) => cabeza.includes(t));
   }
 
+  /** A qué tipos de carta alcanza un efecto, según su propio texto.
+      "Exile target creature you control" no puede reparpadear un encantamiento;
+      "target nonland permanent" llega a todo menos tierras; y si no nombra ningún
+      tipo no se puede afirmar nada, así que no se filtra. */
+  function tiposObjetivo(evidencia) {
+    const e = evidencia.toLowerCase();
+    if (e.includes("nonland permanent")) return TIPOS.filter((t) => t !== "land");
+    if (e.includes("permanent")) return TIPOS.slice();
+    const nombrados = TIPOS.filter((t) => e.includes(t));
+    return nombrados.length ? nombrados : TIPOS.slice();
+  }
+
   /** Los subtipos de una línea de tipo: lo que va tras el guion largo. */
   function subtipos(tipo) {
     if (!tipo.includes("—")) return [];
@@ -465,14 +477,18 @@ const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
       // el subtipo de la carta tiene que ser el que menciona la otra. Sin esto, un
       // Human Monk salía emparejado con un premio a los Dragones.
       const emparejar = c.emparejar_subtipo;
-      // Y un tutor solo encuentra lo que dice buscar: "an artifact or enchantment
-      // card" casa con Worship, no con Savannah Lions.
-      const emparejarTipo = c.emparejar_tipo_buscado;
+      // Y un efecto solo alcanza a los tipos que dice alcanzar: vale para el tutor
+      // que busca "an artifact or enchantment card" y para el que reparpadea
+      // "target creature you control".
+      const emparejarTipo = c.emparejar_tipo_objetivo;
       const parejas = [];
       for (const [a, eva] of reparto.produce)
         for (const [b, evb] of reparto.premia) {
           if (emparejar && !subtipos(a.tipo).some((s) => evb.toLowerCase().includes(s))) continue;
-          if (emparejarTipo && !tipos(b.tipo).some((x) => eva.toLowerCase().includes(x))) continue;
+          if (emparejarTipo) {
+            const alcance = tiposObjetivo(eva);
+            if (!tipos(b.tipo).some((x) => alcance.includes(x))) continue;
+          }
           parejas.push([a, eva, b, evb, "sinergia", "produce", "premia"]);
         }
       for (const [a, eva] of reparto.rompe)

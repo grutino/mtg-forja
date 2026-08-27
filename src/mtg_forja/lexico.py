@@ -188,19 +188,38 @@ def _tipos(tipo: str) -> set[str]:
     return {t for t in TIPOS if t in cabeza}
 
 
+def _tipos_objetivo(evidencia: str) -> set[str]:
+    """A qué tipos de carta alcanza un efecto, según su propio texto.
+
+    «Exile target creature you control» solo llega a criaturas, así que no puede
+    reparpadear un encantamiento por mucho disparo de entrada que tenga. «Target
+    nonland permanent» llega a todo menos tierras. Y si el texto no nombra ningún
+    tipo no se puede afirmar nada: entonces no se filtra, que es peor callar una
+    sinergia real que dejar pasar una dudosa.
+    """
+    e = evidencia.lower()
+    if "nonland permanent" in e:
+        return set(TIPOS) - {"land"}
+    if "permanent" in e:
+        return set(TIPOS)
+    return {t for t in TIPOS if t in e} or set(TIPOS)
+
+
 def _parejas(c: dict[str, Any], r: dict[str, list]):
     # Un concepto tribal no puede casar cualquier criatura con cualquier premio:
     # el subtipo de la carta tiene que ser el que menciona la otra. Sin esto, un
     # Human Monk salía emparejado con un premio a los Dragones.
     empareja = c.get("emparejar_subtipo")
-    # Y un tutor solo encuentra lo que dice buscar: "an artifact or enchantment
-    # card" casa con Worship, no con Savannah Lions.
-    empareja_tipo = c.get("emparejar_tipo_buscado")
+    # Y un efecto solo alcanza a los tipos que dice alcanzar. Vale para el tutor
+    # que busca "an artifact or enchantment card" y para el que reparpadea
+    # "target creature you control": ese no puede parpadear un encantamiento,
+    # tenga el disparo de entrada que tenga.
+    empareja_tipo = c.get("emparejar_tipo_objetivo")
     for a, eva in r["produce"]:
         for b, evb in r["premia"]:
             if empareja and not any(s in evb.lower() for s in _subtipos(a.tipo)):
                 continue
-            if empareja_tipo and not any(t in eva.lower() for t in _tipos(b.tipo)):
+            if empareja_tipo and not (_tipos(b.tipo) & _tipos_objetivo(eva)):
                 continue
             yield (a, eva), (b, evb), "sinergia", "produce", "premia"
     for a, eva in r["rompe"]:
