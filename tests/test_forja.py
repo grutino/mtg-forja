@@ -760,11 +760,41 @@ def test_todos_los_costes_pagados_con_islas_salen_con_la_isla(monkeypatch):
     En ese mazo hay cuatro hechizos que se pagan con Islas y solo salía uno. Gush
     devuelve dos, Thwart tres y Foil descarta una, y las tres formas fallaban por
     el singular o por el verbo. Diecisiete Islas no están ahí por el maná.
+
+    Ahora es un concepto que empareja por subtipo, así que vale para los cinco
+    colores y para los tres verbos del ciclo.
     """
     monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-stiflenought.json"))
     lista = (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8")
     s = lexico.completo(scryfall.resolver(lista, "Stiflenought"))
 
-    con_isla = {p for x in s if x.id.split("::")[0] == "isla-coste-alternativo"
+    con_isla = {p for x in s if x.id.split("::")[0] == "tierra-como-coste"
                 for p in x.piezas if p != "Island"}
     assert con_isla == {"Daze", "Gush", "Thwart", "Foil"}, con_isla
+
+
+def test_la_tierra_que_paga_es_la_del_tipo_correcto():
+    """Foil descarta una Isla y Fireblast sacrifica Montañas: no se cruzan.
+
+    La regla original decía literalmente «return an Island», así que valía para
+    una carta. El ciclo real recorre los cinco colores y tres verbos —devolver,
+    descartar y sacrificar—, y generalizarla dentro de las reglas escritas habría
+    emparejado Foil con una Montaña, porque allí el tipo va fijo en la pieza.
+    """
+    from mtg_forja.modelo import Carta, Mazo
+
+    mazo = Mazo(nombre="Prueba")
+    mazo.cartas.append(Carta(nombre="Foil", copias=4, tipo="Instant", mv=4,
+        oraculo="You may discard an Island card and another card rather than pay "
+                "this spell's mana cost. Counter target spell."))
+    mazo.cartas.append(Carta(nombre="Fireblast", copias=4, tipo="Instant", mv=6,
+        oraculo="You may sacrifice two Mountains rather than pay this spell's mana "
+                "cost. Fireblast deals 4 damage to any target."))
+    mazo.cartas.append(Carta(nombre="Island", copias=10, tipo="Basic Land — Island",
+                             mv=0, oraculo=""))
+    mazo.cartas.append(Carta(nombre="Mountain", copias=10, tipo="Basic Land — Mountain",
+                             mv=0, oraculo=""))
+
+    parejas = {tuple(sorted(x.piezas)) for x in lexico.detectar(mazo)
+               if x.id.split("::")[0] == "tierra-como-coste"}
+    assert parejas == {("Foil", "Island"), ("Fireblast", "Mountain")}, parejas

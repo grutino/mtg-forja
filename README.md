@@ -64,9 +64,9 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 
 | Pieza | Qué es | Su papel aquí |
 |---|---|---|
-| `reglas.json` | 37 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
+| `reglas.json` | 36 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
 | Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
-| `lexico.json` | 35 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
+| `lexico.json` | 36 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
 | `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
@@ -553,6 +553,25 @@ Una advertencia que costó un bug: cuando una consulta falla, **eso no es una
 ausencia**. Tragarse un `429` y dar la etiqueta por vacía convierte un fallo de red
 en un dato, y el informe pasa a mentir con toda la confianza del mundo. Por eso
 salen aparte, en `etiquetas_sin_comprobar`.
+
+### Una regla escrita mirando una carta
+
+`Daze` devuelve una Isla para lanzarse gratis, y había una regla para eso. Decía
+literalmente `return an Island`, así que en un mazo con cuatro hechizos de esa
+familia solo enseñaba uno: `Gush` devuelve **dos** Islas, `Thwart` **tres**, y
+`Foil` la **descarta** en vez de devolverla.
+
+Preguntando a Scryfall salen **32 cartas** con costes que se pagan con tierras, y
+es un ciclo por los cinco colores con tres verbos: devolver, descartar y
+sacrificar —`Fireblast` sacrifica dos Montañas, `Abolish` descarta un Llano—.
+
+Generalizarla como regla escrita no valía: allí el tipo de la segunda pieza va
+fijo, así que habría emparejado `Foil` con una Montaña. Pasa a ser concepto del
+léxico, que sí casa por subtipo: cada hechizo con la tierra que de verdad nombra.
+
+La moraleja se repite tanto que conviene decirla: **una regla escrita mirando una
+carta describe esa carta, no el efecto.** El singular, el verbo concreto y el tipo
+fijo son las tres formas de que se note.
 
 ### Compartir etiqueta no es tener sinergia
 

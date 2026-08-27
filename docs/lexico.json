@@ -745,6 +745,23 @@
       "emparejar_tipo_objetivo": "premia"
     },
     {
+      "id": "tierra-como-coste",
+      "nombre": "la tierra con la que se paga el hechizo",
+      "fuerza": 4,
+      "produce": {
+        "tipo": "Land",
+        "texto": "es la tierra con la que se paga ese coste alternativo"
+      },
+      "premia": {
+        "oracle": [
+          "(return|discard|sacrifice) (a|an|two|three|four|\\w+) (Island|Mountain|Forest|Plains|Swamp)s?( card)?.{0,70}rather than pay",
+          "rather than pay.{0,50}(return|discard|sacrifice) (a|an|two|three|four|\\w+) (Island|Mountain|Forest|Plains|Swamp)"
+        ],
+        "texto": "se lanza sin maná pagando con esa tierra"
+      },
+      "emparejar_subtipo": true
+    },
+    {
       "id": "tierra-a-la-mano",
       "nombre": "la tierra que vuelve a tu mano y paga otro hechizo",
       "fuerza": 4,
