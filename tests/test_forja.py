@@ -551,3 +551,27 @@ def test_un_efecto_sobre_permanentes_si_alcanza_a_todo():
     assert lexico._tipos_objetivo("exile target nonland permanent") == todo - {"land"}
     # sin ningún tipo nombrado no se puede afirmar nada, así que no se filtra
     assert lexico._tipos_objetivo("Flicker it") == todo
+
+
+def test_un_simbolo_de_mana_en_el_texto_no_tumba_el_analisis():
+    """El texto de las reglas habla de costes, y "{1}" es un símbolo, no un hueco.
+
+    Con str.format, un mazo con Daze reventaba entero: la regla dice «el rival
+    paga el {1} sin despeinarse» y format lo leía como argumento posicional. La
+    web no se enteraba —sustituye por expresión regular— así que además los dos
+    motores daban cosas distintas para el mismo mazo.
+    """
+    assert motor._sustituir("{a} paga el {1}", {"a": "Daze"}) == "Daze paga el {1}"
+    assert motor._sustituir("cuesta {U}{U}", {}) == "cuesta {U}{U}"
+    assert motor._sustituir("{a} y {b}", {"a": "X", "b": "Y"}) == "X y Y"
+
+    # y ninguna regla puede tumbar el motor por mucho símbolo que lleve encima
+    from mtg_forja.modelo import Carta, Mazo
+    mazo = Mazo(nombre="P")
+    mazo.cartas.append(Carta(nombre="Daze", copias=3, tipo="Instant", mv=2,
+        oraculo="You may return an Island you control to its owner's hand rather than "
+                "pay this spell's mana cost. Counter target spell unless its controller pays {1}."))
+    for i in range(17):
+        mazo.cartas.append(Carta(nombre="Island", copias=1, tipo="Basic Land — Island",
+                                 mv=0, oraculo="({T}: Add {U}.)"))
+    motor.detectar(mazo)   # basta con que no lance

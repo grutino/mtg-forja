@@ -101,6 +101,17 @@ def _casa(carta: Carta, pieza: dict[str, Any]) -> tuple[bool, str]:
     return True, evidencia
 
 
+def _sustituir(texto: str, sust: dict[str, str]) -> str:
+    """Rellena los huecos {a}/{b} sin tocar lo demás.
+
+    No vale str.format: el texto de las reglas habla de costes de maná, y "{1}"
+    o "{U}" son símbolos, no huecos. Con format, un mazo con Daze tumbaba el
+    análisis entero con un IndexError. El gemelo de JS ya lo hacía así.
+    """
+    return re.sub(r"\{(\w+)\}",
+                  lambda m: sust.get(m.group(1), m.group(0)), texto or "")
+
+
 def _conteo_ok(mazo: Mazo, condiciones: list[dict[str, Any]]) -> bool:
     valores = {
         "basicas": mazo.basicas,
@@ -168,8 +179,8 @@ def detectar(mazo: Mazo, reglas: list[dict[str, Any]] | None = None) -> list[Sin
                     fuerza=int(regla.get("fuerza", 2)),
                     turno=regla.get("turno", ""),
                     piezas=nombres,
-                    resumen=regla.get("resumen", "").format(**sust),
-                    pasos=[p.format(**sust) for p in regla.get("pasos", [])],
+                    resumen=_sustituir(regla.get("resumen", ""), sust),
+                    pasos=[_sustituir(p, sust) for p in regla.get("pasos", [])],
                     evidencia={c.nombre: ev for c, ev in combo},
                 )
             )
