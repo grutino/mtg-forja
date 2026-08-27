@@ -798,3 +798,60 @@ def test_la_tierra_que_paga_es_la_del_tipo_correcto():
     parejas = {tuple(sorted(x.piezas)) for x in lexico.detectar(mazo)
                if x.id.split("::")[0] == "tierra-como-coste"}
     assert parejas == {("Foil", "Island"), ("Fireblast", "Mountain")}, parejas
+
+
+def test_el_coste_alternativo_no_es_solo_de_tierras():
+    """También se paga sacrificando criaturas, tapándolas o exiliando artefactos."""
+    from mtg_forja.modelo import Carta, Mazo
+
+    mazo = Mazo(nombre="Prueba")
+    mazo.cartas.append(Carta(nombre="Delraich", copias=2, tipo="Creature — Horror", mv=6,
+        oraculo="You may sacrifice three black creatures rather than pay this spell's "
+                "mana cost. Trample"))
+    mazo.cartas.append(Carta(nombre="Bicho", copias=4, tipo="Creature — Zombie", mv=2,
+                             oraculo="Menace"))
+    mazo.cartas.append(Carta(nombre="Trasto", copias=4, tipo="Artifact", mv=2,
+                             oraculo="{T}: Add {C}."))
+    mazo.cartas.append(Carta(nombre="Llano", copias=8, tipo="Basic Land — Plains",
+                             mv=0, oraculo=""))
+
+    con_delraich = {p for x in lexico.detectar(mazo)
+                    if x.id.split("::")[0] == "permanente-como-coste"
+                    for p in x.piezas if p != "Delraich"}
+    # el coste dice "creatures": ni el artefacto ni la tierra sirven para pagarlo
+    assert con_delraich == {"Bicho"}, con_delraich
+
+
+def test_la_comunidad_pesa_mas_que_el_motor():
+    """Si un catálogo cataloga el combo y el motor no lo une, el hueco es nuestro."""
+    from mtg_forja import contraste
+    from mtg_forja.modelo import Carta, Mazo
+
+    mazo = Mazo(nombre="Prueba")
+    for n in ("Pieza A", "Pieza B"):
+        mazo.cartas.append(Carta(nombre=n, copias=4, tipo="Artifact", mv=2, oraculo="{T}: Add {C}."))
+
+    catalogo = {"completos": [{"cartas": ["Pieza A", "Pieza B"],
+                               "produce": "maná infinito", "pasos": ["p"]}]}
+    r = contraste.contrastar(mazo, [], buscar_rulings=lambda c: [],
+                             combos_comunidad=catalogo)
+
+    falta = r["la_comunidad_ve_lo_que_nosotros_no"]
+    assert len(falta) == 1 and falta[0]["cartas"] == ["Pieza A", "Pieza B"]
+    assert "pesa MÁS" in r["atencion"]
+
+
+def test_un_concepto_sin_etiqueta_no_es_sospechoso():
+    """Distinguir «nadie lo comprobó» de «nadie lo respalda».
+
+    Mapear conceptos a etiquetas a la fuerza daba refuerzos y alarmas falsas: un
+    premio tribal no es un `lord`. Sin correspondencia clara, no se mapea.
+    """
+    from mtg_forja import etiquetas
+
+    mapeo = etiquetas.por_concepto()
+    assert "tribu" not in mapeo, "un premio tribal no es un lord"
+    conocidas = set(etiquetas.cargar())
+    for concepto, tags in mapeo.items():
+        assert tags, concepto
+        assert set(tags) <= conocidas, f"{concepto} apunta a etiquetas que no existen"

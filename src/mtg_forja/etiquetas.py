@@ -49,6 +49,16 @@ def cargar() -> dict[str, int]:
     return _CACHE
 
 
+def por_concepto() -> dict[str, list[str]]:
+    """Qué etiqueta comunitaria cabría esperar en una pareja de cada concepto.
+
+    Solo están mapeados los conceptos con correspondencia clara. Un concepto sin
+    mapear no es sospechoso: es que no hay etiqueta equivalente y por tanto no se
+    puede contrastar por esta vía.
+    """
+    return json.loads(RUTA.read_text(encoding="utf-8")).get("conceptos", {})
+
+
 def _pedir(consulta: str) -> list[str]:
     """Cartas que casan la consulta.
 

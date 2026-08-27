@@ -39,5 +39,78 @@
     "extra-combat": 46,
     "pitch-spell": 42,
     "copy-permanent": 15
-  }
+  },
+  "conceptos": {
+    "cementerio": [
+      "mill",
+      "recursion",
+      "graveyard-hate"
+    ],
+    "reanimacion": [
+      "reanimate",
+      "recursion"
+    ],
+    "entra-en-juego": [
+      "flicker",
+      "blink",
+      "bounce"
+    ],
+    "disparo-que-perjudica": [
+      "drawback",
+      "downside",
+      "phasing",
+      "counterspell"
+    ],
+    "tierra-como-coste": [
+      "pitch-spell",
+      "bounce"
+    ],
+    "tierra-a-la-mano": [
+      "pitch-spell",
+      "bounce"
+    ],
+    "mana-explosivo": [
+      "ramp",
+      "mana-sink"
+    ],
+    "robar-cartas": [
+      "cantrip",
+      "wheel"
+    ],
+    "ganar-vida-disparo": [
+      "lifegain"
+    ],
+    "vida-como-recurso": [
+      "lifegain"
+    ],
+    "criatura-muere": [
+      "death-trigger",
+      "sacrifice-outlet"
+    ],
+    "desenganche": [
+      "untapper"
+    ],
+    "contadores-en-ataque": [
+      "attack-trigger"
+    ],
+    "criatura-voladora": [
+      "evasion"
+    ],
+    "dano-de-hechizo": [
+      "removal",
+      "damage-doubler"
+    ],
+    "tierras-extra": [
+      "landfall",
+      "ramp"
+    ],
+    "mano-vacia": [
+      "discard",
+      "wheel"
+    ],
+    "permanente-como-coste": [
+      "sacrifice-outlet"
+    ]
+  },
+  "nota_conceptos": "Qué etiqueta comunitaria cabría esperar en una pareja de cada concepto. Solo se mapea donde la correspondencia es clara: un mapeo forzado daría refuerzos falsos, y eso es peor que no tener refuerzo. Un concepto sin mapear no es sospechoso, es que no hay etiqueta equivalente."
 }

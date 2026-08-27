@@ -195,9 +195,18 @@ def contrastar_con_rulings(lista: str, nombre: str = "Mazo") -> str:
 
     Si un ruling contradice una sinergia detectada, gana el ruling: dilo y
     descarta la sinergia.
+
+    Y hay una regla de precedencia por encima de todo: si
+    `la_comunidad_ve_lo_que_nosotros_no` trae algo, **eso pesa más que el motor**.
+    Son jugadas catalogadas por gente que las ha visto funcionar en una mesa, así
+    que ante una discrepancia gana la comunidad y el hueco es nuestro: cuéntalas
+    como sinergias del mazo aunque no aparezcan en el mapa.
     """
     mazo = scryfall.resolver(lista, nombre)
-    return _json(contraste.contrastar(mazo, lexico.completo(mazo)))
+    # Las dos fuentes externas a la vez: la regla oficial y lo que dice la comunidad.
+    tags = etq.de_mazo(mazo).get("por_carta", {})
+    return _json(contraste.contrastar(mazo, lexico.completo(mazo), etiquetas_mazo=tags,
+                                      combos_comunidad=combos.buscar(mazo)))
 
 
 @mcp.tool()

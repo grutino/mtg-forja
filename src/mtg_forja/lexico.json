@@ -778,6 +778,24 @@
         ],
         "texto": "se lanza gratis descartando una tierra de la mano"
       }
+    },
+    {
+      "id": "permanente-como-coste",
+      "nombre": "el permanente con el que se paga el hechizo",
+      "fuerza": 4,
+      "produce": {
+        "tipo": ".",
+        "no_tipo": "Land",
+        "texto": "es el permanente que ese coste alternativo se lleva por delante"
+      },
+      "premia": {
+        "oracle": [
+          "(sacrifice|exile|tap|discard|return) (a|an|two|three|four|\\w+) [^.]{0,30}(creature|artifact|enchantment|planeswalker)s?[^.]{0,60}rather than pay",
+          "rather than pay[^.]{0,50}(sacrifice|exile|tap) (a|an|two|three|four|\\w+) [^.]{0,30}(creature|artifact|enchantment|planeswalker)"
+        ],
+        "texto": "se lanza sin maná pagando con ese permanente"
+      },
+      "emparejar_tipo_objetivo": "premia"
     }
   ]
 }

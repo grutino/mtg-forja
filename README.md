@@ -66,7 +66,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 |---|---|---|
 | `reglas.json` | 36 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
 | Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
-| `lexico.json` | 36 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
+| `lexico.json` | 37 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
 | El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
 | `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
@@ -553,6 +553,38 @@ Una advertencia que costó un bug: cuando una consulta falla, **eso no es una
 ausencia**. Tragarse un `429` y dar la etiqueta por vacía convierte un fallo de red
 en un dato, y el informe pasa a mentir con toda la confianza del mundo. Por eso
 salen aparte, en `etiquetas_sin_comprobar`.
+
+### La comunidad manda
+
+Hay un orden de precedencia, y el motor está el último:
+
+1. **Un ruling oficial.** Es la regla escrita por Wizards. Si contradice una
+   sinergia detectada, se descarta la sinergia.
+2. **Un combo catalogado por la comunidad.** Son jugadas que alguien ha visto
+   funcionar en una mesa. Si el catálogo une dos cartas del mazo y el motor no,
+   **el hueco es nuestro**: sale en `la_comunidad_ve_lo_que_nosotros_no` y cuenta
+   como sinergia aunque no aparezca en el mapa.
+3. **Lo que deduce el motor.** Lo último, y solo cuando nadie más ha hablado.
+
+Por eso cada pareja detectada sale con veredicto: `reforzada por ruling oficial`,
+`reforzada por etiquetas`, o sin apoyo. Y el campo que más conviene mirar es
+`sin_apoyo_pero_comprobables`: parejas donde **sí había con qué contrastar y no
+salió nada**. Sobre el mazo de Stiflenought señala dos, y son exactamente las dos
+que ya sospechábamos a mano.
+
+Distinguir «nadie lo ha comprobado» de «nadie lo respalda» es la mitad del valor:
+un concepto sin etiqueta equivalente no es sospechoso, es que no hay por dónde
+mirarlo. Forzar el mapeo para que todo salga verde destruiría el aviso — un premio
+tribal no es un `lord`, así que ese concepto no se mapea y punto.
+
+### Pagar un hechizo con algo que no es maná
+
+Además de las tierras, hay **80 cartas** cuyo coste alternativo se cobra en otra
+moneda: sacrificar criaturas (`Delraich`, `Demon of Death's Gate`), taparlas
+(el ciclo de Masques), exiliar cartas de la mano, pagar vida.
+
+El motor empareja cada una con lo que su texto dice que se lleva por delante, no
+con cualquier permanente: un coste que pide criaturas no se paga con un artefacto.
 
 ### Una regla escrita mirando una carta
 
