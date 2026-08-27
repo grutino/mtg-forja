@@ -25,6 +25,7 @@ except ImportError:  # SDK de MCP 1.x
 from . import __version__
 from . import combos
 from . import contraste
+from . import etiquetas as etq
 from . import hechos
 from . import lexico
 from . import reglas as motor
@@ -144,6 +145,30 @@ def rulings_oficiales(lista: str, cartas: str = "") -> str:
         "cartas_con_aclaraciones": len(fuera),
         "rulings": fuera,
     })
+
+
+@mcp.tool()
+def etiquetas_funcionales(lista: str, nombre: str = "Mazo") -> str:
+    """Qué hace cada carta según el etiquetado comunitario de Scryfall.
+
+    Es una **segunda opinión que no es nuestra**: el motor deduce leyendo el
+    oráculo con sus propios patrones, y esto viene de gente que etiquetó las
+    cartas por función — `drawback`, `pitch-spell`, `sacrifice-outlet`, `tutor`.
+
+    Tres usos, por orden de utilidad:
+
+    1. **Contrastar.** Si el motor llama lastre a una carta y la etiqueta
+       `drawback` coincide, tienes dos fuentes independientes de acuerdo.
+    2. **Ver lo que se escapa.** Una carta con etiquetas jugosas que no aparece en
+       ninguna sinergia es la mejor pista de que falta un concepto: lee su oráculo
+       y razona tú la interacción.
+    3. **Describir el mazo** sin depender de nuestras categorías.
+
+    Dos avisos: el etiquetado lo hacen personas y puede faltar o sobrar, así que
+    no es oráculo verificado; y si `etiquetas_sin_comprobar` viene con algo, esas
+    **no están comprobadas, no ausentes** — no concluyas nada de ellas.
+    """
+    return _json(etq.de_mazo(scryfall.resolver(lista, nombre)))
 
 
 @mcp.tool()

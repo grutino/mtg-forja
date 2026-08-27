@@ -674,3 +674,59 @@ def test_contraste_no_confunde_contrarrestar_con_contadores():
     oficial = ('Phasing in does not trigger "enters" abilities, so you don\'t have '
                "to sacrifice again if it phases in.")
     assert contraste._apoya(oficial, "Target artifact phases out.") == ["phases"]
+
+
+def test_etiquetas_no_confunden_fallo_de_red_con_ausencia(monkeypatch):
+    """Un 429 no significa «esta carta no lleva la etiqueta».
+
+    Tragarse el error y dar la etiqueta por vacía convierte un fallo de red en un
+    dato, y el informe pasa a mentir con toda la confianza del mundo.
+    """
+    import urllib.error
+
+    from mtg_forja import etiquetas
+
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-stiflenought.json"))
+    lista = (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8")
+    mazo = scryfall.resolver(lista, "Stiflenought")
+    monkeypatch.setattr(etiquetas, "PAUSA", 0)
+
+    def se_cae(consulta):
+        if "drawback" in consulta:
+            raise urllib.error.URLError("429")
+        return ["Vision Charm"] if "phasing" in consulta else []
+
+    r = etiquetas.de_mazo(mazo, etiquetas=["drawback", "phasing"], pedir=se_cae)
+
+    assert r["por_etiqueta"] == {"phasing": ["Vision Charm"]}
+    assert r["etiquetas_sin_comprobar"] == ["drawback"], r["etiquetas_sin_comprobar"]
+    assert "no ausentes" in r["atencion"]
+
+
+def test_etiquetas_sin_red_no_rompen_nada(monkeypatch):
+    """Es una fuente externa: si no responde, el análisis sigue sin ella."""
+    import urllib.error
+
+    from mtg_forja import etiquetas
+
+    monkeypatch.setenv("MTG_FORJA_FIXTURE", str(RAIZ / "ejemplos" / "fixture-stiflenought.json"))
+    lista = (RAIZ / "ejemplos" / "stiflenought.txt").read_text(encoding="utf-8")
+    monkeypatch.setattr(etiquetas, "PAUSA", 0)
+
+    def nada(consulta):
+        raise urllib.error.URLError("sin red")
+
+    r = etiquetas.de_mazo(scryfall.resolver(lista, "S"), etiquetas=["drawback"], pedir=nada)
+    assert r["por_carta"] == {} and r["etiquetas_sin_comprobar"] == ["drawback"]
+
+
+def test_el_vocabulario_de_etiquetas_es_usable():
+    """etiquetas.json tiene que viajar en el paquete y traer las que importan."""
+    from mtg_forja import etiquetas
+
+    v = etiquetas.cargar()
+    assert len(v) >= 30, f"solo {len(v)} etiquetas"
+    # las tres que destaparon los combos de los mazos de prueba
+    for imprescindible in ("drawback", "phasing", "pitch-spell"):
+        assert imprescindible in v, imprescindible
+    assert all(isinstance(n, int) and n >= 10 for n in v.values())

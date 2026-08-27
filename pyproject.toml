@@ -23,4 +23,4 @@ path = "src/mtg_forja/__init__.py"
 packages = ["src/mtg_forja"]
 
 [tool.hatch.build]
-include = ["src/mtg_forja/**/*.py", "src/mtg_forja/reglas.json", "src/mtg_forja/lexico.json", "src/mtg_forja/render/*.js", "src/mtg_forja/render/*.css"]
+include = ["src/mtg_forja/**/*.py", "src/mtg_forja/reglas.json", "src/mtg_forja/lexico.json", "src/mtg_forja/etiquetas.json", "src/mtg_forja/render/*.js", "src/mtg_forja/render/*.css"]

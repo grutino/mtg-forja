@@ -71,7 +71,7 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 | `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
 | Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
 | El servidor MCP | `server.py` | **El enchufe con Claude.** Expone las herramientas para que el modelo pueda llamarlas. |
-| Las herramientas | Doce funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
+| Las herramientas | Trece funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
 | La skill | `skill/SKILL.md` | Lo que Claude *debe saber*: qué verificar antes de afirmar nada, qué documento pide cada situación, cómo redactar. |
 | El CLI | `cli.py` | Los mismos tres documentos sin pasar por Claude. |
 | La web | `docs/` | Todo lo anterior en el navegador, sin instalar nada. |
@@ -516,6 +516,43 @@ criatura casa con las criaturas que llevas.
 El mazo pasa de 4 sinergias a 26, y las dos cartas que siguen sueltas son
 `Swords to Plowshares` y `Disenchant`: removal puro, que en ese mazo de verdad no
 se apoya en nada. Eso es lo que debe quedar suelto.
+
+### Tres fuentes que no somos nosotros
+
+El motor deduce leyendo el oráculo con patrones propios. Eso es una sola opinión, y
+conviene contrastarla con quien no seamos nosotros:
+
+| Fuente | Qué aporta | Dónde falla |
+|---|---|---|
+| **Rulings oficiales** | La regla escrita por Wizards. La mejor prueba que existe | Solo unas pocas cartas tienen rulings |
+| **Etiquetas de Scryfall** | Qué hace una carta, según quien la etiquetó: `drawback`, `pitch-spell`, `tutor` | Comunitario: puede faltar o sobrar |
+| **Commander Spellbook** | Combos catalogados con sus pasos | Solo Commander: ante un mazo de Legacy devuelve cero |
+
+Las tres degradan sin romper nada: sin red, el análisis sigue.
+
+**Las etiquetas funcionales** se consultan con el operador `otag:` de la API pública
+de Scryfall, y valen sobre todo para ver lo que se nos escapa. Sobre el mazo de
+Stiflenought:
+
+    drawback     Phyrexian Dreadnought
+    phasing      Vision Charm
+    pitch-spell  Foil, Misdirection
+    counterspell Counterspell, Daze, Foil, Stifle, Thwart
+
+`drawback` en Phyrexian Dreadnought es exactamente el concepto que habíamos escrito
+a mano — dos fuentes independientes de acuerdo. Y `pitch-spell` señala un grupo que
+el motor todavía no relaciona.
+
+No hay catálogo público de etiquetas, así que se descubren probando:
+
+```bash
+python scripts/etiquetas_descubrir.py
+```
+
+Una advertencia que costó un bug: cuando una consulta falla, **eso no es una
+ausencia**. Tragarse un `429` y dar la etiqueta por vacía convierte un fallo de red
+en un dato, y el informe pasa a mentir con toda la confianza del mundo. Por eso
+salen aparte, en `etiquetas_sin_comprobar`.
 
 ### Contrastar contra la fuente oficial
 
