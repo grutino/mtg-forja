@@ -412,6 +412,12 @@ const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
 
   const BLOQUE_LEX = { sinergia: "Motor", conflicto: "Conflictos" };
 
+  /** Los subtipos de una línea de tipo: lo que va tras el guion largo. */
+  function subtipos(tipo) {
+    if (!tipo.includes("—")) return [];
+    return tipo.split("—").pop().split(/\s+/).filter(Boolean).map((x) => x.toLowerCase());
+  }
+
   function detectarLexico(mazo, conceptos) {
     const limpio = {};
     for (const c of mazo.principal) limpio[c.nombre] = textoReglas(c.oraculo, c.nombre);
@@ -425,9 +431,16 @@ const TOPE_SINERGIAS = 40, TOPE_CONFLICTOS = 10, POR_CARTA = 12;
           if (ev) reparto[papel].push([carta, ev]);
         }
       }
+      // Un concepto tribal no puede casar cualquier criatura con cualquier premio:
+      // el subtipo de la carta tiene que ser el que menciona la otra. Sin esto, un
+      // Human Monk salía emparejado con un premio a los Dragones.
+      const emparejar = c.emparejar_subtipo;
       const parejas = [];
       for (const [a, eva] of reparto.produce)
-        for (const [b, evb] of reparto.premia) parejas.push([a, eva, b, evb, "sinergia", "produce", "premia"]);
+        for (const [b, evb] of reparto.premia) {
+          if (emparejar && !subtipos(a.tipo).some((s) => evb.toLowerCase().includes(s))) continue;
+          parejas.push([a, eva, b, evb, "sinergia", "produce", "premia"]);
+        }
       for (const [a, eva] of reparto.rompe)
         for (const [b, evb] of reparto.premia) parejas.push([a, eva, b, evb, "conflicto", "rompe", "premia"]);
 

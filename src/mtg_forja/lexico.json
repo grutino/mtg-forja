@@ -40,7 +40,8 @@
           "would be put into a graveyard.{0,60}exile",
           "Players can't cast spells from graveyards"
         ],
-        "texto": "vacía los cementerios"
+        "texto": "vacía los cementerios",
+        "no_oracle": "an opponent controls|opponents? control|target opponent|each opponent|an opponent's|your opponents"
       }
     },
     {
@@ -87,7 +88,8 @@
           "Destroy all artifacts",
           "artifacts?.{0,30}(can't|don't) untap"
         ],
-        "texto": "barre los artefactos"
+        "texto": "barre los artefactos",
+        "no_oracle": "an opponent controls|opponents? control|target opponent|each opponent|an opponent's|your opponents"
       }
     },
     {
@@ -117,7 +119,8 @@
           "Exile all creatures",
           "creatures get -\\d+/-\\d+"
         ],
-        "texto": "barre las criaturas"
+        "texto": "barre las criaturas",
+        "no_oracle": "an opponent controls|target opponent"
       }
     },
     {
@@ -276,7 +279,8 @@
           "Destroy target nonbasic land",
           "nonbasic land.{0,40}sacrifice"
         ],
-        "texto": "castiga las tierras no básicas"
+        "texto": "castiga las tierras no básicas",
+        "no_oracle": "an opponent controls|opponents? control|target opponent|each opponent|an opponent's|your opponents"
       }
     },
     {
@@ -590,6 +594,27 @@
         "tipo": "Creature",
         "texto": "es una criatura que los recibe"
       }
+    },
+    {
+      "id": "tribu",
+      "nombre": "el tipo de criatura compartido",
+      "fuerza": 4,
+      "produce": {
+        "tipo": "Creature",
+        "texto": "aporta una criatura de ese tipo"
+      },
+      "premia": {
+        "oracle": [
+          "(Dragon|Elf|Goblin|Zombie|Wizard|Warrior|Soldier|Merfolk|Vampire|Human|Spirit|Angel|Demon|Beast|Cat|Dwarf|Halfling|Orc|Wolf|Spider|Knight|Pirate|Rogue|Bird)s? (you control|spell|card|creature)",
+          "another target (Dragon|Elf|Goblin|Zombie|Wizard|Merfolk|Vampire|Wolf|Dwarf)",
+          "Search your library for a (Dragon|Elf|Goblin|Zombie|Wizard|Merfolk|Vampire|Wolf|Dwarf|Halfling|Orc) card",
+          "Whenever (a|another) (Dragon|Elf|Goblin|Zombie|Wizard|Merfolk|Vampire|Wolf|Dwarf)",
+          "\\bbehold a (Dragon|Elf|Goblin|Zombie)\\b",
+          "only to cast (a|an) (Dragon|Elf|Goblin|Zombie|Wizard) spell"
+        ],
+        "texto": "premia a las criaturas de ese tipo"
+      },
+      "emparejar_subtipo": true
     }
   ]
 }

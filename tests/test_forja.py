@@ -283,6 +283,42 @@ def test_umbral_de_fuerza():
     assert not lexico._encaja(variable, bloque)
 
 
+def test_efecto_solo_del_rival_no_es_conflicto_propio():
+    """«destroy target nonbasic land an opponent controls» no ataca tus tierras.
+
+    Magmatic Hellkite destruye tierras DEL RIVAL, y el mapa pintaba cinco avisos
+    rojos contra las tierras propias. Un aviso falso es peor que ningún aviso.
+    """
+    from mtg_forja.modelo import Carta
+
+    concepto = next(c for c in lexico.cargar() if c["id"] == "tierras-no-basicas")
+    solo_rival = Carta(nombre="Hellkite", tipo="Creature — Dragon",
+                       oraculo="When this creature enters, destroy target nonbasic "
+                               "land an opponent controls.")
+    simetrica = Carta(nombre="Ruina", tipo="Sorcery",
+                      oraculo="Destroy target nonbasic land.")
+
+    assert not lexico._encaja(solo_rival, concepto["rompe"]), "solo alcanza al rival"
+    assert lexico._encaja(simetrica, concepto["rompe"]), "esta sí te puede tocar"
+
+
+def test_tribal_empareja_por_subtipo_real():
+    """Un premio a los Dragones no casa con un Human Monk."""
+    from mtg_forja.modelo import Carta
+
+    concepto = next(c for c in lexico.cargar() if c["id"] == "tribu")
+    assert concepto.get("emparejar_subtipo"), "el concepto tribal debe exigir el subtipo"
+
+    dragon = Carta(nombre="D", tipo="Creature — Dragon", oraculo="Flying")
+    monje = Carta(nombre="M", tipo="Creature — Human Monk", oraculo="")
+    reparto = {"produce": [(dragon, "Creature — Dragon"), (monje, "Creature — Human Monk")],
+               "premia": [(Carta(nombre="P", tipo="Land", oraculo=""),
+                           "Search your library for a Dragon card")],
+               "rompe": []}
+    casadas = {a.nombre for (a, _), _, _, _, _ in lexico._parejas(concepto, reparto)}
+    assert casadas == {"D"}, f"el monje no debería casar: {casadas}"
+
+
 def test_renderizadores():
     mazo = scryfall.resolver(LISTA, "Prueba")
     doc = motor.documento(mazo, motor.detectar(mazo), titulo="Prueba")

@@ -169,9 +169,22 @@ def detectar(mazo: Mazo, conceptos: list[dict[str, Any]] | None = None) -> list[
 _BLOQUE = {"sinergia": "Motor", "conflicto": "Conflictos"}
 
 
+def _subtipos(tipo: str) -> set[str]:
+    """Los subtipos de una línea de tipo: lo que va tras el guion largo."""
+    if "—" not in tipo:
+        return set()
+    return {x.lower() for x in tipo.split("—")[-1].split()}
+
+
 def _parejas(c: dict[str, Any], r: dict[str, list]):
+    # Un concepto tribal no puede casar cualquier criatura con cualquier premio:
+    # el subtipo de la carta tiene que ser el que menciona la otra. Sin esto, un
+    # Human Monk salía emparejado con un premio a los Dragones.
+    empareja = c.get("emparejar_subtipo")
     for a, eva in r["produce"]:
         for b, evb in r["premia"]:
+            if empareja and not any(s in evb.lower() for s in _subtipos(a.tipo)):
+                continue
             yield (a, eva), (b, evb), "sinergia", "produce", "premia"
     for a, eva in r["rompe"]:
         for b, evb in r["premia"]:
