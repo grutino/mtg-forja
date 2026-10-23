@@ -6,11 +6,35 @@ sinergias, una chuleta imprimible de dos caras y un mapa interactivo navegable.
 Funciona de tres maneras: como **servidor MCP** dentro de Claude, como **herramienta de
 línea de comandos** y como **web** que corre entera en el navegador.
 
-> La premisa: las interacciones se comprueban contra el texto de oráculo real que
-> devuelve [Scryfall](https://scryfall.com), nunca contra lo que un modelo de lenguaje
-> cree recordar. Los cuatro errores que originaron este proyecto —una carta que se creía
-> que barajaba y mandaba al fondo, una tierra indestructible tomada por condicional— son
-> exactamente los que el motor detecta bien.
+> **La premisa:** ni la memoria de un modelo ni un patrón de texto deciden qué hace una
+> carta. El análisis lo hace **un experto** —Claude, el modelo que tú digas o una
+> persona— leyendo el oráculo y los rulings oficiales de [Scryfall](https://scryfall.com)
+> y consultando lo que la comunidad ha escrito sobre el mazo. La forja comprueba que
+> cada jugada está respaldada por **citas literales** de las cartas, que cada dato
+> externo tiene fuente, y que el análisis lleva **la firma de la revisión experta**.
+> Si algo no cuadra, no genera nada.
+
+## Por qué ya no hay motor automático (octubre de 2026)
+
+Hasta la versión anterior, la forja deducía sinergias por su cuenta con patrones de
+texto (`reglas.json` y `lexico.json`). Con un mazo de Jace de *Reality Fracture* quedó
+claro el límite: llamó «Ganar vida a escala de tu mano» a un planeswalker que no da
+vida, tomó el texto recordatorio de una ficha por un robo de cartas y no vio nada del
+motor real del mazo, porque las mecánicas nuevas no estaban en sus patrones.
+
+Un análisis que suena seguro y está mal es peor que ninguno. Así que ahora:
+
+```
+ Scryfall ──▶ HECHOS ──▶ EXPERTO ──▶ analisis.json ──▶ VALIDACIÓN ──▶ guía · chuleta · mapa
+             oráculo     lee, busca     jugadas con        citas literales,
+             rulings     en internet,   citas y fuentes,   fuentes con URL,
+                         valora         firma              firma presente
+```
+
+El código del motor antiguo (`reglas.py`, `lexico.py`, `etiquetas.py`, `contraste.py`,
+`hechos.py` y su gemelo `docs/motor.js`) sigue en el repositorio para consulta, pero
+**ya no entra en ningún resultado**. La sección «Cómo funciona el motor», más abajo,
+describe esa versión antigua.
 
 ---
 
@@ -64,28 +88,23 @@ Cada línea es una interacción con sus cartas en miniatura y cuándo aplica.
 
 | Pieza | Qué es | Su papel aquí |
 |---|---|---|
-| `reglas.json` | 36 patrones de interacción escritos a mano | **Lo que alguien enseñó.** Profundo pero estrecho: solo encuentra lo que está escrito. |
-| Commander Spellbook | Base externa de combos curados | **Lo que otros catalogaron.** Combos con nombre propio y pasos redactados. Consultada bajo petición, cacheada, y siempre a contrastar contra el oráculo. |
-| `lexico.json` | 37 conceptos de recurso | **Lo que se deduce.** No describe parejas de cartas sino recursos: quién los produce, quién los premia y quién los rompe. Cubre cualquier mazo, aunque más en superficie. |
-| El motor | `reglas.py` y su gemelo `motor.js` | Cruza el mazo con los patrones y devuelve las candidatas, cada una **con la frase de oráculo que la disparó**. |
-| `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. Todo lo que se afirma sale de aquí. |
-| Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis en HTML autónomo. Una sola implementación, compartida por la web y la terminal. |
-| El servidor MCP | `server.py` | **El enchufe con Claude.** Expone las herramientas para que el modelo pueda llamarlas. |
-| Las herramientas | Trece funciones — [tabla completa abajo](#herramientas-mcp) | Lo que Claude *puede hacer*: resolver, detectar, listar reglas, renderizar cada documento. |
-| La skill | `skill/SKILL.md` | Lo que Claude *debe saber*: qué verificar antes de afirmar nada, qué documento pide cada situación, cómo redactar. |
-| El CLI | `cli.py` | Los mismos tres documentos sin pasar por Claude. |
-| La web | `docs/` | Todo lo anterior en el navegador, sin instalar nada. |
+| `scryfall.py` | Cliente de Scryfall, con caché en disco | **La fuente de verdad.** Oráculo real y **rulings oficiales de Wizards** — el contenido de Gatherer. |
+| El experto | Claude, el modelo que indiques, o una persona | **Todo el criterio.** Lee las cartas, consulta listas, artículos y metajuego en internet, escribe el análisis y lo firma. |
+| `analisis.py` | El validador | **El guardián.** Exige citas literales del oráculo o de los rulings para cada pieza, fuentes con URL para lo externo y la firma de la revisión. Si algo falla, no se genera nada. |
+| Commander Spellbook | Base externa de combos curados | Una fuente de la comunidad más, consultada bajo petición. Si se usa, se cita. |
+| Los renderizadores | `guia.js`, `chuleta.js`, `grafo.js` | Convierten el análisis validado en HTML autónomo, con la firma del revisor, las citas y las fuentes. |
+| El servidor MCP | `server.py` | **El enchufe con Claude.** Seis herramientas — [tabla abajo](#herramientas-mcp): hechos, rulings, combos, validar y forjar. |
+| La skill | `skill/SKILL.md` | Cómo trabaja el experto: dónde investigar, el formato del análisis, qué exige el validador. |
+| El CLI | `cli.py` | `datos` y `forjar`, sin pasar por un cliente MCP. |
+| La web | `docs/` | Visor del análisis forjado en el navegador, sin instalar nada. |
 
 **Qué es MCP.** El Model Context Protocol es un estándar abierto para que un modelo pueda
 llamar a programas externos. Aquí el reparto es deliberado: **el servidor aporta los
-hechos, el modelo aporta el criterio.** Por eso `detectar_sinergias` no devuelve prosa
-cerrada, sino candidatas con su evidencia: los datos los pone el motor, la redacción y el
-juicio los pone Claude.
+hechos y la comprobación; el experto, el criterio.**
 
 **Qué es la skill.** Un archivo de instrucciones que Claude lee cuando la tarea lo pide.
-Si las herramientas le dan *capacidad*, la skill le da *criterio*: le prohíbe afirmar nada
-de memoria, le dice cuándo generar cada documento y cómo escribir los pasos. Funciona sin
-ella; con ella los análisis salen bastante mejor.
+Si las herramientas le dan *capacidad*, la skill le da *método*: le prohíbe afirmar nada
+de memoria, le dice dónde investigar, el formato del análisis y qué exige el validador.
 
 ### Qué necesitas según cómo lo uses
 
@@ -257,17 +276,19 @@ más común de que un servidor no arranque.
 Sin instalar nada de forma permanente:
 
 ```bash
-uvx --from git+https://github.com/grutino/mtg-forja mtg-forja mazo.txt -n "Mi mazo" -o salida
+uvx --from git+https://github.com/grutino/mtg-forja mtg-forja datos mazo.txt -o salida
 ```
 
 O instalándolo de una vez:
 
 ```bash
 pip install git+https://github.com/grutino/mtg-forja
-mtg-forja mazo.txt -n "Mi mazo" -o salida
+mtg-forja datos  mazo.txt -o salida                         # hechos para el experto
+mtg-forja forjar mazo.txt -a analisis.json -o salida        # documentos del análisis
 ```
 
-Genera `salida/guia.html`, `salida/chuleta.html` y `salida/mapa.html`.
+`forjar` genera `salida/guia.html`, `salida/chuleta.html`, `salida/mapa.html` y
+`salida/documento.json`, solo si el análisis pasa la validación.
 
 ---
 
@@ -282,30 +303,36 @@ Una vez instalado el conector, pídeselo en lenguaje natural y pégale la lista:
 > 4 Cascading Cataracts
 > …»
 
-Claude resolverá las cartas contra Scryfall, buscará los patrones de interacción y
-generará los HTML en la carpeta que pusiste en `MTG_FORJA_SALIDA`. Vale el formato de
+Claude traerá el oráculo y los rulings de cada carta, buscará en internet listas,
+artículos y datos de metajuego del arquetipo, escribirá el análisis citando las cartas
+y las fuentes, lo validará con la forja y generará los HTML en la carpeta que pusiste en
+`MTG_FORJA_SALIDA`. Cada documento lleva su firma: «Revisado por Claude Opus 5.5».
+Si prefieres que lo revise otro modelo, díselo. Vale el formato de
 exportación de MTG Arena, Moxfield, Archidekt, MTGO, el CSV de ManaBox, o una carta por línea.
 
 Cosas que puedes pedirle, ya que las herramientas están separadas a propósito:
 
-- «¿Qué sinergias detecta este mazo?» — solo el análisis, sin generar documentos.
-- «Enséñame las reglas que conoce el motor» — el catálogo de patrones.
+- «¿Qué sinergias tiene este mazo?» — el análisis en el chat, con citas, sin documentos.
 - «Genérame solo la chuleta» — un único documento.
-- «¿Por qué dice que estas dos cartas se estorban?» — cada sinergia viene con **la frase
-  de oráculo exacta que la disparó**, así que puedes auditar el razonamiento.
+- «¿Por qué dices que estas dos cartas se estorban?» — cada jugada lleva **la frase
+  literal de cada carta que la sostiene**, y su origen (oráculo o ruling oficial).
 
 ### Desde la línea de comandos
 
 ```bash
-mtg-forja mazo.txt -n "Mi mazo" -o salida
+mtg-forja datos  mazo.txt -o salida
+mtg-forja forjar mazo.txt -a analisis.json -o salida --incrustar-imagenes
 ```
 
 | Opción | Qué hace |
 |---|---|
+| `datos` | Resuelve el mazo y guarda `datos.json`: oráculo, tipos, costes y rulings. Ninguna interpretación. |
+| `forjar` | Valida el análisis del experto y, si cuadra, genera los documentos. Si no, lista los problemas y no escribe nada. |
 | `mazo.txt` | Archivo con la lista. Usa `-` para leer de la entrada estándar. |
-| `-n`, `--nombre` | Nombre del mazo, el que sale en los títulos. |
+| `-a`, `--analisis` | El análisis en JSON. El formato está en `skill/SKILL.md`. |
+| `-n`, `--nombre` | Nombre del mazo. |
 | `-o`, `--salida` | Carpeta de destino. |
-| `--json` | Vuelca además el documento en JSON, por si quieres procesarlo tú. |
+| `--incrustar-imagenes` | Mete las imágenes de las cartas dentro del HTML (unos 3 MB), para visores que bloquean la red, como el de archivos del chat. |
 
 Abre los tres HTML en el navegador. Son autónomos: puedes moverlos, enviarlos por correo
 o imprimir la chuleta directamente desde el navegador.
@@ -313,8 +340,9 @@ o imprimir la chuleta directamente desde el navegador.
 ### Desde la web
 
 1. Entra en <https://grutino.github.io/mtg-forja/>
-2. Pega la lista, o pulsa **Cargar ejemplo** para ver cómo funciona con un mazo de prueba.
-3. Pulsa **Analizar mazo**.
+2. Pega el `documento.json` de un análisis forjado, o pulsa **Elegir archivo**. La web
+   ya no analiza listas por su cuenta: es el visor de análisis revisados.
+3. Pulsa **Abrir análisis**.
 4. Pulsa cualquier carta del grafo para aislar sus conexiones; arrastra para recolocar,
    rueda del ratón para acercar y los botones de arriba para filtrar por función.
 5. Los botones **Guía** y **Chuleta**, arriba a la derecha, abren esos documentos en una
@@ -341,19 +369,18 @@ o imprimir la chuleta directamente desde el navegador.
 | Herramienta | Qué hace |
 |---|---|
 | `resolver_mazo` | Resuelve la lista contra Scryfall y devuelve el oráculo real. |
-| `radiografia_del_mazo` | Los hechos objetivos: a quién alcanza cada efecto, qué tipos menciona, qué zonas toca, y si el mazo tiene fuentes de color para lo que él mismo exige. |
-| `detectar_sinergias` | Busca patrones de interacción y devuelve candidatas **con la frase de oráculo que disparó cada una**. |
-| `combos_conocidos` | Combos ya catalogados por [Commander Spellbook](https://commanderspellbook.com), con sus pasos. **Única fuente que no es oráculo verificado**: hay que contrastarla. |
-| `listar_reglas` | Enseña los patrones que conoce el motor. |
-| `render_guia` / `render_chuleta` / `render_mapa` | Generan cada HTML a partir del documento. |
-| `analizar` | Atajo: hace todo de una pasada con los textos automáticos. |
+| `datos_para_analisis` | Los hechos para el experto: oráculo, tipos, costes, palabras clave y rulings de cada carta, y la curva. |
+| `rulings_oficiales` | Las aclaraciones oficiales de Wizards, carta a carta. |
+| `combos_conocidos` | Combos catalogados por [Commander Spellbook](https://commanderspellbook.com). Es una fuente de la comunidad: si se usa, se cita. |
+| `validar_analisis` | Comprueba un análisis sin generar nada y devuelve los problemas. |
+| `forjar` | Valida y, si cuadra, genera guía, chuleta y mapa. Opción `incrustar_imagenes`. |
 
-El reparto es deliberado: **el servidor aporta los hechos, el modelo aporta el criterio.**
-Por eso `detectar_sinergias` devuelve borradores con evidencia en lugar de prosa cerrada.
+El reparto es deliberado: **el servidor aporta los hechos y la comprobación; el experto,
+todo el criterio.** Ninguna herramienta deduce sinergias ni clasifica cartas.
 
 ---
 
-## Cómo funciona el motor
+## Cómo funcionaba el motor (versión antigua, ya no se usa)
 
 `src/mtg_forja/reglas.json` es una lista de **patrones genéricos de interacción**. No sabe
 nada de cartas concretas: describe formas. Por ejemplo, «una carta que destruye una tierra
@@ -890,23 +917,17 @@ aquí, no sigas: algo está mal en la instalación, no en tu mazo.
 Ahora una prueba de verdad, contra Scryfall:
 
 ```bash
-mtg-forja ejemplos/prueba.txt -n "Prueba" -o /tmp/forja-prueba
+mtg-forja datos ejemplos/prueba.txt -n "Prueba" -o /tmp/forja-prueba
 ```
 
-Debe imprimir un resumen del tipo `30 cartas · 15 sinergias` y dejar tres HTML en
-`/tmp/forja-prueba`. Ábrelos en el navegador.
+Debe dejar `/tmp/forja-prueba/datos.json` con el oráculo y los rulings de cada carta.
+Para los documentos hace falta un análisis: en `ejemplos/jace-monoazul/` tienes uno
+completo, revisado y forjado.
 
-Hay un segundo mazo de ejemplo, uno real de 60 cartas —Boros de dragones— que es el
-que destapó dos fallos de bulto y ahora vive aquí como regresión:
-
-```bash
-mtg-forja ejemplos/dragones-boros.txt -n "Dragones Boros" -o /tmp/forja-dragones
-```
-
-Salen `60 cartas · 28 sinergias`. Trae su propio fixture, así que también corre sin red:
+Y para forjar ese ejemplo:
 
 ```bash
-MTG_FORJA_FIXTURE=ejemplos/fixture-dragones.json mtg-forja ejemplos/dragones-boros.txt -o /tmp/salida
+mtg-forja forjar ejemplos/jace-monoazul/mazo.txt -a ejemplos/jace-monoazul/analisis.json -o /tmp/forja-jace
 ```
 
 ### Paso 3 — Levantar la web en local

@@ -1,0 +1,242 @@
+{
+  "titulo": "Jace monoazul",
+  "subtitulo": "Estándar · 60 cartas · 24 tierras · control de contrahechizos con victoria alternativa",
+  "revision_experta": {
+    "revisor": "Claude Opus 5.5",
+    "fecha": "2026-10-23",
+    "titular": "Un control divertido y coherente, de nivel medio",
+    "veredicto": "El mazo tiene un plan claro y bien construido: aguantar con contrahechizos y rebotes baratos mientras se acumulan <b>25 contadores de lealtad entre los Jaces</b>, y entonces el 0 de Jace, Reality Sculptor deja al rival sin biblioteca. Es la lista que circula por Arena desde la salida de Reality Fracture, con un registro público de 10 victorias y 11 derrotas: una muestra pequeña, pero coherente con lo que se ve, un mazo de nivel medio. Su punto flaco es que <b>no elimina nada</b>: solo rebota, y todos los contadores se concentran en una única ficha de Jace que el rival puede atacar. Y ojo: en febrero de 2027 pierde trece cartas por la rotación.",
+    "fortalezas": [
+      "Casi todo es instantáneo y barato: 24 de 36 hechizos cuestan 1 o 2.",
+      "La victoria alternativa ignora la vida ganada y las criaturas grandes.",
+      "Jace's Machinations da 8 contadores de golpe y permite activar los Jaces en el turno rival.",
+      "El −3 de Reality Sculptor deja casi sin daño a los atacantes durante una vuelta entera."
+    ],
+    "debilidades": [
+      "Ninguna carta destruye ni exilia: un permanente que llegue a mesa y no sea criatura solo se rebota con regalo.",
+      "Los contadores de empower solo van a la ficha de Jace: si el rival la mata, se pierde casi todo el progreso.",
+      "Solo 3 Reality Sculptor para cerrar la partida, y ningún tutor.",
+      "Los regalos dan recursos al rival (una carta, un pez 1/1 que puede atacar a la ficha).",
+      "Rotación de febrero de 2027: se van Into the Flood Maw, Long River's Pull, Three Steps Ahead y Jace Reawakened."
+    ],
+    "confianza": "media",
+    "fuentes": ["mtgdecks", "draftsim", "rotacion"]
+  },
+  "fuentes": [
+    {"id": "mtgdecks", "titulo": "Mono Blue Jace de Serioustoast (MTGDecks, 10-oct-2026, 10-11)", "url": "https://mtgdecks.net/Standard/mono-blue-jace-decklist-by-serioustoast-3116059"},
+    {"id": "draftsim", "titulo": "The 34 Best Reality Fracture Cards for Standard (Draftsim)", "url": "https://draftsim.com/mtg-reality-fracture-standard-cards/"},
+    {"id": "magicgg", "titulo": "Metagame Mentor: The First Standard Results with Reality Fracture (magic.gg)", "url": "https://www.magic.gg/news/metagame-mentor-the-first-standard-results-with-reality-fracture"},
+    {"id": "coolstuff", "titulo": "My Favorite Standard Control Cards from Reality Fracture (CoolStuffInc)", "url": "https://www.coolstuffinc.com/a/standard-control-cards-reality-fracture-09182026"},
+    {"id": "rotacion", "titulo": "MTG Standard Rotation Guide 2026 (Star City Games)", "url": "https://articles.starcitygames.com/magic-the-gathering/mtg-standard-rotation-guide-2026/"}
+  ],
+  "planes": [
+    {"titulo": "Plan A: la hucha de 25", "texto": "Cada carta con <b>empower Jace</b> mete contadores en una ficha de Jace. El 0 de Reality Sculptor suma la lealtad de <b>todos</b> tus Jaces: la ficha, Sculptor, The Theorist y Reawakened. Al llegar a 25, el rival exilia toda su biblioteca menos la última carta. La roba en su siguiente robo y pierde en el próximo."},
+    {"titulo": "Plan B: The Theorist", "texto": "Si el plan A se atasca, The Theorist roba una carta en cada paso de robo del rival y hace Ilusiones 1/1. Con la mano llena, su −6 las convierte en una amenaza real. Es lento: úsalo sobre todo como motor de cartas."},
+    {"titulo": "Cómo se sobrevive", "texto": "Contrahechizos para lo que importa (Countersculpt, Long River's Pull, Three Steps Ahead), rebotes para ganar tiempo (Into the Flood Maw, Aetherize, el −2 de The Theorist) y el −3 de Sculptor contra mesas anchas. Theorist's Proxy es a la vez bloqueador 0/3 y 3 contadores."}
+  ],
+  "cartas": {
+    "Jace, Reality Sculptor": {"rol": "amenaza", "estrategia": "La que gana. Su +1 llena la ficha según tus Islas (Theorist's Sanctum cuenta), su −3 frena el combate y su 0 vacía la biblioteca rival cuando hay 25 contadores entre tus Jaces."},
+    "The Theorist, Jace Beleren": {"rol": "amenaza", "estrategia": "Motor de cartas: robas en cada paso de robo del rival. Su lealtad suma para los 25 y su −2 rebota la amenaza más grande."},
+    "Jace Reawakened": {"rol": "motor", "estrategia": "No se puede lanzar en tus tres primeros turnos, pero desde la mano ya sirve para contemplar (behold) un Jace. Su lealtad suma para los 25."},
+    "Jace's Machinations": {"rol": "motor", "estrategia": "La pieza más importante después de Sculptor: 8 contadores de golpe y loyalty a velocidad de instantáneo durante ese turno."},
+    "Countersculpt": {"rol": "respuesta", "estrategia": "Un Counterspell cuando ya hay un Jace a la vista, que además suma 1 contador."},
+    "Theorist's Proxy": {"rol": "motor", "estrategia": "Con destello: 3 contadores en el turno rival y un 0/3 que bloquea. En el espejo de control, su sacrificio protege tu hechizo clave."},
+    "Into the Flood Maw": {"rol": "respuesta", "estrategia": "Rebote por un maná. Con el regalo del pez alcanza cualquier permanente que no sea tierra: es tu única respuesta a artefactos y encantamientos."},
+    "Three Steps Ahead": {"rol": "respuesta", "estrategia": "Contrahechizo flexible. Su modo de copia sobre Theorist's Proxy repite los 3 contadores."},
+    "Long River's Pull": {"rol": "respuesta", "estrategia": "Contra criaturas cuesta UU limpio. Para otros hechizos le regalas una carta al rival: úsalo así solo si es imprescindible."},
+    "Waterbending Scroll": {"rol": "motor", "estrategia": "Robo extra para partidas largas. Con seis Islas, robar sale gratis cada turno; antes es lento."},
+    "Aetherize": {"rol": "respuesta", "estrategia": "El seguro contra un ataque masivo: devuelve todas las criaturas atacantes."},
+    "Theorist's Sanctum": {"rol": "tierra", "estrategia": "Isla que entra enderezada si contemplas un Jace y que más tarde vuelca maná sobrante en 2 contadores."}
+  },
+  "sinergias": [
+    {
+      "nombre": "La hucha de 25 contadores",
+      "bloque": "El plan de victoria",
+      "tipo": "sinergia", "fuerza": 3, "turno": "T5+",
+      "piezas": ["Jace's Machinations", "Jace, Reality Sculptor"],
+      "resumen": "Machinations mete 8 contadores de golpe en la ficha y el 0 de Sculptor cuenta la lealtad de <b>todos</b> tus Jaces.",
+      "pasos": [
+        "T5: Sculptor y su +1 con cinco Islas → Sculptor 6 + ficha 5 = 11.",
+        "Mantenimiento del rival: Machinations (ficha 13, total 19) y otra vez el +1 de Sculptor, que ya es otro turno (Sculptor 7 + ficha 18) → 25.",
+        "Tu turno: el 0 de Sculptor deja al rival con una sola carta en la biblioteca."
+      ],
+      "aviso": "El empower nunca pone contadores en Sculptor: solo en la ficha.",
+      "citas": [
+        {"carta": "Jace's Machinations", "texto": "Empower Jace 8."},
+        {"carta": "Jace, Reality Sculptor", "texto": "Activate only if there are twenty-five or more loyalty counters among Jaces you control."},
+        {"carta": "Jace, Reality Sculptor", "texto": "Empower Jace won't let you put loyalty counters on nontoken Jace planeswalkers."}
+      ],
+      "fuentes": ["draftsim"]
+    },
+    {
+      "nombre": "Ganar un turno: el 0 en el mantenimiento rival",
+      "bloque": "El plan de victoria",
+      "tipo": "sinergia", "fuerza": 3, "turno": "Reacción",
+      "piezas": ["Jace's Machinations", "Jace, Reality Sculptor"],
+      "resumen": "Si los 8 de Machinations te llevan a 25 en el mantenimiento rival, activas el 0 en ese mismo turno: roba su última carta ya y pierde en su siguiente robo.",
+      "pasos": [
+        "Llega al turno rival con al menos 17 contadores entre tus Jaces y sin haber usado aún a Sculptor en ese turno.",
+        "En su mantenimiento, lanza Machinations: la ficha sube 8.",
+        "Activa el 0 de Sculptor a velocidad de instantáneo, antes de su paso de robo."
+      ],
+      "aviso": "Cada Jace sigue activando una sola habilidad de lealtad por turno.",
+      "citas": [
+        {"carta": "Jace's Machinations", "texto": "you may activate loyalty abilities of Jace planeswalkers you control on any player's turn any time you could cast an instant"},
+        {"carta": "Jace's Machinations", "texto": "You may still activate only one loyalty ability of each permanent you control during the turn you cast Jace's Machinations."},
+        {"carta": "Jace, Reality Sculptor", "texto": "Exile all but the bottom card of each opponent's library."}
+      ]
+    },
+    {
+      "nombre": "Más Islas, más contadores",
+      "bloque": "El plan de victoria",
+      "tipo": "sinergia", "fuerza": 2, "turno": "T5+",
+      "piezas": ["Jace, Reality Sculptor", "Theorist's Sanctum"],
+      "resumen": "El +1 de Sculptor mete tantos contadores como Islas controlas, y Theorist's Sanctum es una Isla. Además, con maná sobrante, Sanctum mete otros 2.",
+      "pasos": [
+        "Juega todas las tierras: cada Isla es un contador más por cada +1 de Sculptor.",
+        "Al final del turno rival, si te sobran tres manás, activa Sanctum: +2 en la ficha."
+      ],
+      "citas": [
+        {"carta": "Jace, Reality Sculptor", "texto": "Empower Jace X, where X is the number of Islands you control."},
+        {"carta": "Theorist's Sanctum", "texto": "{2}{U}, {T}: Empower Jace 2."}
+      ]
+    },
+    {
+      "nombre": "Proxy con destello, contadores en el turno rival",
+      "bloque": "El plan de victoria",
+      "tipo": "sinergia", "fuerza": 2, "turno": "T2+",
+      "piezas": ["Theorist's Proxy", "Countersculpt"],
+      "resumen": "Proxy crea la ficha de Jace en el turno rival, y desde entonces Countersculpt cuesta solo UU porque ya hay un Jace que contemplar.",
+      "pasos": [
+        "Turno 2 del rival: Proxy con destello → ficha de Jace con 3.",
+        "Desde ahí, Countersculpt cuesta UU y añade 1 más a la ficha."
+      ],
+      "citas": [
+        {"carta": "Theorist's Proxy", "texto": "When this creature enters, empower Jace 3."},
+        {"carta": "Countersculpt", "texto": "As an additional cost to cast this spell, behold a Jace or pay {1}."}
+      ]
+    },
+    {
+      "nombre": "Un Jace en la mano ya sirve",
+      "bloque": "El plan de victoria",
+      "tipo": "sinergia", "fuerza": 2, "turno": "T2",
+      "piezas": ["Jace Reawakened", "Countersculpt", "Theorist's Sanctum"],
+      "resumen": "Contemplar vale también enseñando un Jace desde la mano. Reawakened no se puede lanzar hasta tu cuarto turno, pero ya abarata Countersculpt y hace que Sanctum entre enderezada.",
+      "pasos": [
+        "Con Reawakened (o cualquier Jace) en la mano, revélalo para pagar Countersculpt con UU.",
+        "Igual al jugar Sanctum: entra sin girar."
+      ],
+      "citas": [
+        {"carta": "Jace Reawakened", "texto": "You can't cast Jace Reawakened during your first, second, or third turns of the game."},
+        {"carta": "Countersculpt", "texto": "reveal a Jace card from your hand"},
+        {"carta": "Theorist's Sanctum", "texto": "As this land enters, you may behold a Jace. If you don't, this land enters tapped."}
+      ]
+    },
+    {
+      "nombre": "Copiar a Proxy: otros 3 contadores",
+      "bloque": "El plan de victoria",
+      "tipo": "sinergia", "fuerza": 1, "turno": "Tarde",
+      "piezas": ["Three Steps Ahead", "Theorist's Proxy"],
+      "resumen": "El modo de copia de Three Steps Ahead sobre Proxy crea otro Proxy, y su disparo al entrar vuelve a dar 3 contadores.",
+      "pasos": ["Con Proxy en mesa: Three Steps Ahead pagando {U} + {3} → ficha copia de Proxy → empower 3."],
+      "citas": [
+        {"carta": "Three Steps Ahead", "texto": "Create a token that's a copy of target artifact or creature you control."},
+        {"carta": "Three Steps Ahead", "texto": "Any enters-the-battlefield abilities of the copied permanent will trigger when the token enters the battlefield."},
+        {"carta": "Theorist's Proxy", "texto": "When this creature enters, empower Jace 3."}
+      ]
+    },
+    {
+      "nombre": "Nadie ataca a la ficha",
+      "bloque": "Defender la hucha",
+      "tipo": "sinergia", "fuerza": 3, "turno": "Ojo",
+      "piezas": ["Jace, Reality Sculptor", "Aetherize"],
+      "resumen": "Todos los contadores viven en una sola ficha que el rival puede atacar. El −3 de Sculptor deja casi sin fuerza a los atacantes una vuelta entera, y Aetherize los devuelve todos.",
+      "pasos": [
+        "Contra un mazo de criaturas: baja Sculptor y usa el −3 antes que el +1.",
+        "Si se lanzan igualmente a por la ficha, Aetherize en el paso de atacantes."
+      ],
+      "citas": [
+        {"carta": "Jace, Reality Sculptor", "texto": "whenever a creature attacks you or a planeswalker you control, it gets -5/-0 until end of turn"},
+        {"carta": "Aetherize", "texto": "Return all attacking creatures to their owner's hand."}
+      ]
+    },
+    {
+      "nombre": "The Theorist despeja la mesa y roba",
+      "bloque": "Defender la hucha",
+      "tipo": "sinergia", "fuerza": 2, "turno": "T4",
+      "piezas": ["The Theorist, Jace Beleren", "Jace, Reality Sculptor"],
+      "resumen": "The Theorist roba una carta en cada turno rival, su −2 rebota la criatura que amenaza a tus Jaces y su lealtad cuenta para los 25.",
+      "pasos": [
+        "T4: The Theorist. Si hay una criatura peligrosa, −2; si no, +1 para tener un bloqueador 1/1.",
+        "Desde entonces robas el doble y llegas antes a Sculptor y a Machinations."
+      ],
+      "citas": [
+        {"carta": "The Theorist, Jace Beleren", "texto": "At the beginning of each opponent's draw step, you draw a card."},
+        {"carta": "The Theorist, Jace Beleren", "texto": "return up to one target artifact or creature that player controls to its owner's hand"},
+        {"carta": "Jace, Reality Sculptor", "texto": "twenty-five or more loyalty counters among Jaces you control"}
+      ]
+    },
+    {
+      "nombre": "Una sola ficha para todo",
+      "bloque": "Ojo",
+      "tipo": "aviso", "fuerza": 3, "turno": "Ojo",
+      "piezas": ["Jace's Machinations", "Theorist's Proxy"],
+      "resumen": "Todo empower va a la misma ficha de Jace. Si el rival la mata con daño o un ataque, pierdes de golpe todos esos contadores.",
+      "pasos": [
+        "No lances Machinations con la ficha amenazada si no puedes protegerla ese turno.",
+        "Prefiere llenar la hucha en el turno rival, justo antes de usarla."
+      ],
+      "citas": [
+        {"carta": "Jace's Machinations", "texto": "If you control a Jace planeswalker token, you can't choose to create a new one when you empower Jace."},
+        {"carta": "Theorist's Proxy", "texto": "You have to put the loyalty counters on your existing Jace planeswalker token."}
+      ]
+    },
+    {
+      "nombre": "Las habilidades de la ficha gastan tu hucha",
+      "bloque": "Ojo",
+      "tipo": "conflicto", "fuerza": 2, "turno": "Ojo",
+      "piezas": ["Countersculpt", "Jace, Reality Sculptor"],
+      "resumen": "La ficha puede vigilar 1 (−1) o robar (−3), pero cada uso resta contadores de los 25. Úsala solo si vas a perderla de todos modos o si no tienes Sculptor a la vista.",
+      "citas": [
+        {"carta": "Countersculpt", "texto": "first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\""},
+        {"carta": "Jace, Reality Sculptor", "texto": "Activate only if there are twenty-five or more loyalty counters among Jaces you control."}
+      ]
+    },
+    {
+      "nombre": "Los regalos también juegan para el rival",
+      "bloque": "Ojo",
+      "tipo": "aviso", "fuerza": 2, "turno": "Ojo",
+      "piezas": ["Long River's Pull", "Into the Flood Maw"],
+      "resumen": "Con regalo, Long River's Pull contrarresta cualquier hechizo, pero el rival roba una carta. Into the Flood Maw alcanza cualquier permanente que no sea tierra, pero le das un pez 1/1, que puede atacar a tu ficha.",
+      "citas": [
+        {"carta": "Long River's Pull", "texto": "Counter target creature spell. If the gift was promised, instead counter target spell."},
+        {"carta": "Into the Flood Maw", "texto": "If the gift was promised, instead return target nonland permanent an opponent controls to its owner's hand."}
+      ]
+    },
+    {
+      "nombre": "Sin respuesta definitiva",
+      "bloque": "Ojo",
+      "tipo": "aviso", "fuerza": 2, "turno": "Ojo",
+      "piezas": ["Into the Flood Maw", "Aetherize"],
+      "resumen": "Nada en el mazo destruye ni exilia: todo vuelve a la mano y el rival lo puede lanzar otra vez. Rebota para ganar tiempo, no para resolver; lo definitivo es contrarrestarlo.",
+      "citas": [
+        {"carta": "Into the Flood Maw", "texto": "Return target creature an opponent controls to its owner's hand."},
+        {"carta": "Aetherize", "texto": "Return all attacking creatures to their owner's hand."}
+      ]
+    }
+  ],
+  "orden": [
+    {"turno": "T1-T2", "carta": "Into the Flood Maw", "resumen": "Contestar lo barato del rival; guardar Countersculpt o Long River's Pull."},
+    {"turno": "T2-T3", "carta": "Theorist's Proxy", "resumen": "Con destello al final del turno rival: crea la ficha y abarata Countersculpt."},
+    {"turno": "T4", "carta": "The Theorist, Jace Beleren", "resumen": "Solo con mesa controlada o un contrahechizo de respaldo."},
+    {"turno": "T5", "carta": "Jace, Reality Sculptor", "resumen": "−3 si hay criaturas; +1 si la mesa está limpia."},
+    {"turno": "T5+", "carta": "Jace's Machinations", "resumen": "En el turno rival, cuando te deje en 25 o muy cerca."}
+  ],
+  "reglas_oro": [
+    "El empower solo va a la ficha de Jace, nunca a Sculptor, The Theorist ni Reawakened.",
+    "Los 25 se cuentan entre <b>todos</b> tus Jaces: la ficha, Sculptor, The Theorist y Reawakened.",
+    "Con Machinations activas los Jaces a velocidad de instantáneo, pero cada uno solo una vez por turno.",
+    "Contrarresta lo que gana partidas; rebota lo que solo hace daño.",
+    "No gastes los contadores de la ficha salvo que la vayas a perder."
+  ]
+}

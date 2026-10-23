@@ -186,7 +186,7 @@ function vacio(){
    <p class="bloq">Cada círculo es una carta y su tamaño depende de las <b>copias</b> que llevas.
    El grosor de la línea marca la fuerza de la sinergia; las
    <b style="color:var(--brasa)">líneas rojas discontinuas</b> son cartas que se estorban.</p>
-   <p class="bloq">Las cartas sin líneas no tienen sinergia ni conflicto detectados: salen
+   <p class="bloq">Las cartas sin líneas no tienen jugadas en el análisis del experto: salen
    igualmente para que veas el mazo entero.</p>
    <p class="bloq">Pulsa cualquier carta para ver sus conexiones. Puedes arrastrarlas, hacer zoom
    con la rueda, y encender varios filtros a la vez.</p>

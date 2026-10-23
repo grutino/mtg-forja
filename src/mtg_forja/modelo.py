@@ -54,6 +54,8 @@ class Carta:
     # Fuerza tal cual la da Scryfall ("3", "*", "1+*"). Hay mecánicas que
     # piden umbrales de fuerza y sin esto no se pueden expresar.
     fuerza: str = ""
+    # Lealtad inicial de los planeswalkers, tal cual la da Scryfall.
+    lealtad: str = ""
     resuelta: bool = True
 
     @property

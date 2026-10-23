@@ -46,7 +46,7 @@ def _datos(documento: dict[str, Any]) -> dict[str, Any]:
             "copias": c.get("copias", 1),
             "coste": c.get("coste", ""),
             "tipo": c.get("tipo", ""),
-            "rol": c.get("rol", "motor"),
+            "rol": c.get("rol") or "",
             "corto": corto,
             "estrategia": c.get("estrategia", ""),
             "evidencia": evidencia,
@@ -68,6 +68,13 @@ def _datos(documento: dict[str, Any]) -> dict[str, Any]:
     return {"cartas": cartas, "enlaces": enlaces, "roles": roles}
 
 
+def _firma(documento: dict[str, Any]) -> str:
+    r = documento.get("revision_experta") or {}
+    if not r.get("revisor"):
+        return "sin revisión experta"
+    return f"revisado por {r['revisor']}" + (f" · {r['fecha']}" if r.get("fecha") else "")
+
+
 def render(documento: dict[str, Any]) -> str:
     # El escape de "<" evita que un nombre de carta con "</script>" corte el bloque.
     datos = json.dumps(_datos(documento), ensure_ascii=False).replace("<", "\\u003c")
@@ -77,7 +84,7 @@ def render(documento: dict[str, Any]) -> str:
 <style>{CSS}</style></head><body>
 <div id="app"><div id="lienzo"><svg id="svg"></svg>
 <div class="barra"><div><h1>{e(documento.get('titulo',''))} <em>· mapa de sinergias</em></h1>
-<p>{e(documento.get('subtitulo',''))}</p></div><div class="chips" id="chips"></div></div>
+<p>{e(documento.get('subtitulo',''))} · {e(_firma(documento))}</p></div><div class="chips" id="chips"></div></div>
 <div class="pie">Arrastra las cartas · rueda para acercar</div>
 <div class="leyenda"><span><i></i>sinergia</span><span><i class="r"></i>conflicto</span></div>
 </div><aside id="panel"></aside></div>

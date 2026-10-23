@@ -111,13 +111,36 @@
     return `<div class="curva" style="height:${alto || 42}px">${cols}</div>`;
   }
 
+  /** "Revisado por X · fecha": ningún documento sale sin revisión experta. */
+  function firma(documento) {
+    const r = documento.revision_experta || {};
+    if (!r.revisor) return "Sin revisión experta";
+    return "Revisado por " + e(r.revisor) + (r.fecha ? " · " + e(r.fecha) : "");
+  }
+
+  /** Índice id -> fuente, para enlazar las referencias. */
+  function fuentes(documento) {
+    const out = {};
+    for (const f of documento.fuentes || []) out[f.id] = f;
+    return out;
+  }
+
+  /** Enlaces [1] [2] a las fuentes externas que cita una jugada o una carta. */
+  function refs(ids, documento) {
+    const idx = fuentes(documento);
+    const orden = (documento.fuentes || []).map((f) => f.id);
+    return (ids || []).filter((i) => idx[i]).map((i) =>
+      `<a class="ref" href="${e(idx[i].url)}" target="_blank" rel="noopener" ` +
+      `title="${e(idx[i].titulo || idx[i].url)}">[${orden.indexOf(i) + 1}]</a>`).join("");
+  }
+
   function pie(documento) {
     let aviso = "";
     const sr = documento.no_resueltas || [];
     if (sr.length) aviso = " · sin resolver: " + e(sr.slice(0, 5).join(", "));
-    return "<footer><span>" + e(documento.titulo || "") + aviso + "</span>" +
-      "<span>Generado con MTG Forja · imágenes de Scryfall · " +
-      "Magic: The Gathering © Wizards of the Coast</span></footer>";
+    return "<footer><span>" + e(documento.titulo || "") + aviso + " · " + firma(documento) +
+      "</span><span>Generado con MTG Forja · citas verificadas contra el oráculo y los " +
+      "rulings de Scryfall · Magic: The Gathering © Wizards of the Coast</span></footer>";
   }
 
   /** Inyecta el CSS y pinta el cuerpo. Lo usan los HTML generados por Python. */
@@ -128,6 +151,6 @@
 
   global.ForjaComun = {
     PALETA, PIPS, CSS_CURVA, COLOR_ROL, NOMBRE_ROL,
-    e, consulta, imagen, pips, indice, bloques, curvaSvg, pie, montar,
+    e, consulta, imagen, pips, indice, bloques, curvaSvg, pie, montar, firma, fuentes, refs,
   };
 })(typeof window !== "undefined" ? window : globalThis);

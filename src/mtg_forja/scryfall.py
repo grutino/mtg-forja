@@ -161,6 +161,7 @@ def resolver(lista: str, nombre_mazo: str = "Mazo") -> Mazo:
                 keywords=bruto.get("keywords", []) or [],
                 rulings_uri=bruto.get("rulings_uri", ""),
                 fuerza=str(bruto.get("power", "") or ""),
+                lealtad=str(bruto.get("loyalty", "") or ""),
             )
         clave = (_clave(carta.nombre), banq)
         if clave in vistos:

@@ -180,8 +180,8 @@ def test_cli_falla_si_no_resuelve_nada(tmp_path):
     lista.write_text("4 Carta Inventada Que No Existe\n", encoding="utf-8")
     salida = tmp_path / "salida"
 
-    assert cli.main([str(lista), "-o", str(salida)]) == 1
-    assert not salida.exists(), "no debe dejar HTML vacíos por el camino"
+    assert cli.main(["datos", str(lista), "-o", str(salida)]) == 1
+    assert not salida.exists(), "no debe dejar archivos vacíos por el camino"
 
 
 def test_combos_no_rompen_el_analisis_si_falla_la_api(monkeypatch, tmp_path):

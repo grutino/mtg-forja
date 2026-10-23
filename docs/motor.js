@@ -347,7 +347,7 @@
       if (corto.length > 20) corto = corto.slice(0, 19) + "…";
       cartas[nombre] = {
         copias: c.copias || 1, coste: c.coste || "", tipo: c.tipo || "",
-        rol: c.rol || "motor", corto, estrategia: c.estrategia || "", evidencia,
+        rol: c.rol || "", corto, estrategia: c.estrategia || "", evidencia,
         };
     }
 

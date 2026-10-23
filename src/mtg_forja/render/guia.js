@@ -43,7 +43,7 @@ h1 em{font-style:normal;color:#D8B15E}
  border-bottom:2px solid var(--tinta);padding-bottom:10px}
 .seccion .intro{color:var(--humo);margin:12px 0 0;font-size:14px;max-width:70ch}
 .combo{margin-top:28px;padding-left:74px;position:relative;break-inside:avoid}
-.turno{position:absolute;left:0;top:2px;width:60px;text-align:center;font-family:var(--cond);
+.turno{position:absolute;left:0;top:2px;width:64px;text-align:center;font-family:var(--cond);
  font-weight:700;font-size:11px;letter-spacing:.05em;color:var(--brasa);border:1px solid var(--brasa);
  border-radius:3px;padding:3px 2px;text-transform:uppercase}
 .combo.conflicto .turno,.combo.aviso .turno{color:var(--humo);border-color:var(--lin)}
@@ -61,6 +61,26 @@ ol.sec li::before{content:counter(paso);position:absolute;left:0;top:1px;font-fa
 .grupo{margin-top:26px;break-inside:avoid}
 .grupo .eyebrow span{color:var(--tinta);margin-left:6px}
 .rejilla{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+
+.citas{margin:12px 0 0;padding:0;list-style:none;font-size:12.5px;color:var(--humo)}
+.citas li{margin:3px 0;padding-left:12px;border-left:2px solid var(--lin)}
+.citas q{font-style:italic;color:var(--tinta)}
+.citas .org{font-family:var(--cond);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+ margin-left:4px}
+.ref{font-family:var(--cond);font-size:11px;font-weight:700;color:var(--brasa);text-decoration:none;
+ margin-left:3px}
+.veredicto{background:var(--papel);border:1px solid var(--lin);border-left:4px solid var(--laton);
+ padding:18px 22px;margin-top:18px}
+.veredicto p{margin:0 0 10px}
+.veredicto .cols{display:flex;gap:28px;flex-wrap:wrap;margin-top:6px}
+.veredicto .cols div{flex:1 1 260px}
+.veredicto h4{font-family:var(--cond);text-transform:uppercase;letter-spacing:.12em;font-size:11px;
+ margin:6px 0 4px;color:var(--laton)}
+.veredicto ul{margin:0;padding-left:18px;font-size:14px}
+.firma{font-family:var(--cond);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+ color:#D8B15E;margin-top:16px}
+ol.fuentes{font-size:13px;padding-left:22px}ol.fuentes a{color:var(--brasa)}
+.plan{margin-top:20px}.plan h3{margin:0 0 4px;font-size:18px}.plan p{margin:0;max-width:75ch}
 footer{margin-top:52px;padding-top:18px;border-top:2px solid var(--tinta);font-size:12.5px;
  color:var(--humo);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
@@ -93,6 +113,24 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
     const idx = C.indice(doc);
     const partes = [];
 
+    const rev = doc.revision_experta || {};
+    if (rev.veredicto) {
+      const lista = (xs) => (xs || []).map((x) => `<li>${x}</li>`).join("");
+      const cols = (rev.fortalezas || rev.debilidades)
+        ? `<div class="cols"><div><h4>Puntos fuertes</h4><ul>${lista(rev.fortalezas)}</ul></div>` +
+          `<div><h4>Puntos débiles</h4><ul>${lista(rev.debilidades)}</ul></div></div>` : "";
+      partes.push('<section class="seccion"><p class="eyebrow">Valoración del experto</p>' +
+        `<h2>${C.e(rev.titular || "Qué tal es el mazo")}</h2><div class="veredicto">` +
+        `<p>${rev.veredicto}${C.refs(rev.fuentes, doc)}</p>${cols}` +
+        `<p style="margin:12px 0 0;font-size:12.5px;color:var(--humo)">${C.firma(doc)}` +
+        (rev.confianza ? ` · confianza ${C.e(rev.confianza)}` : "") + "</p></div></section>");
+    }
+    if ((doc.planes || []).length) {
+      partes.push('<section class="seccion"><p class="eyebrow">Cómo gana</p><h2>Planes de juego</h2>' +
+        doc.planes.map((p) => `<div class="plan"><h3>${C.e(p.titulo || "")}</h3>` +
+          `<p>${p.texto || ""}${C.refs(p.fuentes, doc)}</p></div>`).join("") + "</section>");
+    }
+
     if (doc.curva && Object.keys(doc.curva).length) {
       partes.push(
         '<section class="seccion"><p class="eyebrow">Punto de partida</p>' +
@@ -115,10 +153,16 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
           aviso = '<div class="ojo"><b>Conflicto</b>Estas cartas se estorban entre sí: ' +
             "revisa el orden en que las juegas.</div>";
         }
+        const citas = (s.citas || []).length || (s.fuentes || []).length
+          ? '<ul class="citas">' + (s.citas || []).map((ct) =>
+              `<li><b>${C.e(ct.carta)}</b>: <q>${C.e(ct.texto)}</q>` +
+              `<span class="org">${C.e(ct.origen || "")}</span></li>`).join("") +
+            ((s.fuentes || []).length ? `<li>Fuentes ${C.refs(s.fuentes, doc)}</li>` : "") +
+            "</ul>" : "";
         return `<div class="combo ${C.e(s.tipo || "")}">` +
           `<div class="turno">${C.e(s.turno || "—")}</div>` +
           `<h3>${C.e(s.nombre || "")}<span class="que">${s.resumen || ""}</span></h3>` +
-          `<div class="piezas">${piezas}</div><ol class="sec">${pasos}</ol>${aviso}</div>`;
+          `<div class="piezas">${piezas}</div><ol class="sec">${pasos}</ol>${aviso}${citas}</div>`;
       }).join("");
       partes.push(`<section class="seccion"><p class="eyebrow">${C.e(bloque)}</p>` +
         `<h2>${C.e(bloque)}</h2>` + combos + "</section>");
@@ -134,7 +178,7 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
 
     const grupos = new Map();
     for (const c of doc.cartas || []) {
-      const rol = c.rol || "otros";
+      const rol = c.rol || "sin clasificar";
       if (!grupos.has(rol)) grupos.set(rol, []);
       grupos.get(rol).push(c);
     }
@@ -142,15 +186,27 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
       `<div class="grupo"><p class="eyebrow">${C.e(C.NOMBRE_ROL[rol] || rol)} ` +
       `<span>${cartas.reduce((a, c) => a + (c.copias || 0), 0)}</span></p>` +
       `<div class="rejilla">${cartas.map((c) => ficha(c, c.nombre)).join("")}</div></div>`).join("");
+    if ((doc.reglas_oro || []).length) {
+      partes.push('<section class="seccion"><p class="eyebrow">Para no olvidar</p>' +
+        '<h2>Reglas de oro</h2><ol class="sec" style="margin-top:18px">' +
+        doc.reglas_oro.map((r) => `<li>${typeof r === "string" ? r : (r.texto || "")}</li>`).join("") +
+        "</ol></section>");
+    }
     partes.push('<section class="seccion"><p class="eyebrow">Referencia</p>' +
       "<h2>El mazo completo</h2>" + rejillas + "</section>");
 
+    const fuentesHtml = (doc.fuentes || []).length
+      ? '<section class="seccion"><p class="eyebrow">De dónde sale</p><h2>Fuentes</h2>' +
+        '<ol class="fuentes">' + doc.fuentes.map((f) =>
+          `<li><a href="${C.e(f.url)}" target="_blank" rel="noopener">${C.e(f.titulo || f.url)}</a></li>`)
+          .join("") + "</ol></section>" : "";
     return `<header><div class="sol"></div><div class="wrap">
 <p class="eyebrow">${C.e(doc.subtitulo || "")}</p>
 <h1>${C.e(doc.titulo || "")}<br><em>guía de sinergias</em></h1>
 <p class="dek">Cada jugada del mazo con sus cartas a la vista y el orden en que se ejecuta.
 Pasa el ratón por encima de cualquier carta para verla grande.</p>
-</div></header><div class="wrap">${partes.join("")}${C.pie(doc)}</div>`;
+<p class="firma">${C.firma(doc)}</p>
+</div></header><div class="wrap">${partes.join("")}${fuentesHtml}${C.pie(doc)}</div>`;
   }
 
   global.ForjaGuia = {

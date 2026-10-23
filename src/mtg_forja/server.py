@@ -1,14 +1,16 @@
 """Servidor MCP de MTG Forja.
 
-Reparto de trabajo deliberado:
+Reparto de trabajo:
 
-* el servidor aporta **hechos** — texto de oráculo traído de Scryfall y patrones
-  de interacción comprobados contra ese texto;
-* el modelo aporta **criterio** — qué sinergias importan, cómo se explican y en
-  qué orden se juegan.
+* el servidor aporta **hechos** — texto de oráculo y rulings oficiales traídos
+  de Scryfall — y **comprueba** el análisis antes de dibujarlo;
+* el **experto** (Claude u otro modelo que se indique) aporta todo el criterio:
+  qué hace cada carta en este mazo, qué sinergias existen, cómo se juegan y
+  cómo de bueno es el mazo, apoyándose en los recursos de la comunidad.
 
-Por eso `detectar_sinergias` devuelve la evidencia textual de cada acierto: todo
-lo que acabe en el documento final se puede contrastar con la carta.
+El servidor ya no deduce sinergias con patrones de texto: inventaban jugadas y
+no entendían las mecánicas nuevas. Ningún documento sale sin un análisis con
+citas literales verificadas y la firma de la revisión experta.
 """
 from __future__ import annotations
 
@@ -23,15 +25,12 @@ except ImportError:  # SDK de MCP 1.x
     from mcp.server.fastmcp import FastMCP as _Servidor
 
 from . import __version__
+from . import analisis as an
 from . import combos
-from . import contraste
-from . import etiquetas as etq
-from . import hechos
-from . import lexico
-from . import reglas as motor
 from . import scryfall
 from .render import chuleta as r_chuleta
 from .render import guia as r_guia
+from .render import incrustar as r_incrustar
 from .render import mapa as r_mapa
 
 try:  # los SDK que la aceptan la anuncian en el handshake como serverInfo.version
@@ -46,20 +45,13 @@ def _json(dato: Any) -> str:
     return json.dumps(dato, ensure_ascii=False, indent=2)
 
 
-def _cargar(documento: str) -> dict[str, Any]:
-    if isinstance(documento, dict):
-        return documento
-    texto = documento.strip()
-    if texto.startswith("{"):
-        return json.loads(texto)
-    return json.loads(Path(texto).read_text(encoding="utf-8"))
-
-
-def _escribir(nombre: str, html: str, ruta: str | None) -> str:
-    destino = Path(ruta) if ruta else SALIDA / nombre
-    destino.parent.mkdir(parents=True, exist_ok=True)
-    destino.write_text(html, encoding="utf-8")
-    return str(destino.resolve())
+def _cargar(texto: str | dict) -> dict[str, Any]:
+    if isinstance(texto, dict):
+        return texto
+    t = texto.strip()
+    if t.startswith("{"):
+        return json.loads(t)
+    return json.loads(Path(t).read_text(encoding="utf-8"))
 
 
 @mcp.tool()
@@ -67,48 +59,22 @@ def resolver_mazo(lista: str, nombre: str = "Mazo") -> str:
     """Resuelve una lista de mazo contra Scryfall y devuelve el texto de oráculo real.
 
     Acepta las exportaciones de MTG Arena, Moxfield, Archidekt, MTGO, el CSV de
-    ManaBox o una lista suelta ("4 Lightning Helix" por línea). Úsalo SIEMPRE antes de afirmar nada
-    sobre lo que hace una carta: no cites de memoria.
+    ManaBox o una lista suelta ("4 Lightning Helix" por línea). Úsalo SIEMPRE antes
+    de afirmar nada sobre lo que hace una carta: no cites de memoria.
     """
-    mazo = scryfall.resolver(lista, nombre)
-    return _json(mazo.dict())
+    return _json(scryfall.resolver(lista, nombre).dict())
 
 
 @mcp.tool()
-def radiografia_del_mazo(lista: str, nombre: str = "Mazo") -> str:
-    """Los hechos objetivos del mazo, para razonar sobre datos y no de memoria.
+def datos_para_analisis(lista: str, nombre: str = "Mazo") -> str:
+    """Los hechos del mazo para que tú, como experto, escribas el análisis.
 
-    Úsala ANTES de escribir el análisis, junto con `detectar_sinergias`. Devuelve,
-    para cada carta, el oráculo real y unas señales comprobables:
-
-    * `alcance` — si el efecto es simétrico, asimétrico, solo tuyo o solo del rival.
-      Es lo que distingue «barre la mesa» de «apaga lo suyo pero no lo tuyo».
-    * `tipos_que_menciona` — para ver qué NO alcanza un efecto: un barrido de
-      criaturas deja vivos los planeswalkers.
-    * `zonas_que_toca` y `velocidad` — para razonar sobre secuencias y respuestas.
-
-    Y a nivel de mazo: curva, reparto por tipo, copias únicas, y si hay fuentes
-    de color suficientes para lo que el propio mazo exige.
-
-    Estas son las piezas con las que se hace un análisis bueno de un mazo que
-    nadie ha visto antes. El motor de patrones solo encuentra lo que ya estaba
-    escrito; aquí tienes los hechos para ver el resto tú.
-    """
-    return _json(hechos.radiografia(scryfall.resolver(lista, nombre)))
-
-
-@mcp.tool()
-def detectar_sinergias(lista: str, nombre: str = "Mazo") -> str:
-    """Resuelve el mazo y busca patrones de interacción entre sus cartas.
-
-    Devuelve un documento con las cartas, la curva y las sinergias candidatas.
-    Cada candidata incluye `evidencia`: la frase del oráculo que ha disparado la
-    regla. Trátalas como borrador — reescribe títulos, resúmenes y pasos con tu
-    propio criterio, descarta las que no apliquen y añade las que el motor no vea.
+    Por carta: oráculo, tipo, coste, palabras clave y **rulings oficiales**. Por
+    mazo: total, tierras y curva. No trae ninguna sinergia ni clasificación: eso
+    lo decides tú, leyendo las cartas y consultando listas y artículos reales.
     """
     mazo = scryfall.resolver(lista, nombre)
-    sinergias = lexico.completo(mazo)
-    return _json(motor.documento(mazo, sinergias, titulo=nombre))
+    return _json(an.datos_para_experto(mazo, scryfall.rulings))
 
 
 @mcp.tool()
@@ -148,89 +114,6 @@ def rulings_oficiales(lista: str, cartas: str = "") -> str:
 
 
 @mcp.tool()
-def etiquetas_funcionales(lista: str, nombre: str = "Mazo") -> str:
-    """Qué hace cada carta según el etiquetado comunitario de Scryfall.
-
-    Es una **segunda opinión que no es nuestra**: el motor deduce leyendo el
-    oráculo con sus propios patrones, y esto viene de gente que etiquetó las
-    cartas por función — `drawback`, `pitch-spell`, `sacrifice-outlet`, `tutor`.
-
-    Tres usos, por orden de utilidad:
-
-    1. **Contrastar.** Si el motor llama lastre a una carta y la etiqueta
-       `drawback` coincide, tienes dos fuentes independientes de acuerdo.
-    2. **Ver lo que se escapa.** Una carta con etiquetas jugosas que no aparece en
-       ninguna sinergia es la mejor pista de que falta un concepto: lee su oráculo
-       y razona tú la interacción.
-    3. **Describir el mazo** sin depender de nuestras categorías.
-
-    Dos avisos: el etiquetado lo hacen personas y puede faltar o sobrar, así que
-    no es oráculo verificado; y si `etiquetas_sin_comprobar` viene con algo, esas
-    **no están comprobadas, no ausentes** — no concluyas nada de ellas.
-    """
-    return _json(etq.de_mazo(scryfall.resolver(lista, nombre)))
-
-
-@mcp.tool()
-def contrastar_con_rulings(lista: str, nombre: str = "Mazo") -> str:
-    """Contrasta las sinergias detectadas contra los rulings oficiales de Wizards.
-
-    Úsala **antes de afirmar que una interacción funciona**, y sobre todo con
-    combos conocidos: muchos están explicados en el ruling oficial de la propia
-    carta, que es la mejor prueba que existe — no es la opinión de nadie, es la
-    regla.
-
-    El caso que la motivó: Phyrexian Dreadnought + Stifle lleva veinte años
-    documentado, y sus rulings lo dicen con todas las letras («this now has an
-    "enters" triggered ability», «phasing in does not trigger "enters"
-    abilities»). Deducirlo a ciegas cuando la fuente oficial ya lo explica es
-    trabajar de más y peor.
-
-    Dos avisos al leer el resultado:
-
-    * Empareja por vocabulario, así que devuelve rulings **relacionados**. Léelos
-      y decide tú si respaldan la jugada o hablan de otra cosa.
-    * Que una pareja no traiga apoyo **no la vuelve falsa**: la mayoría de las
-      cartas apenas tienen rulings. La ausencia no dice nada.
-
-    Si un ruling contradice una sinergia detectada, gana el ruling: dilo y
-    descarta la sinergia.
-
-    Y hay una regla de precedencia por encima de todo: si
-    `la_comunidad_ve_lo_que_nosotros_no` trae algo, **eso pesa más que el motor**.
-    Son jugadas catalogadas por gente que las ha visto funcionar en una mesa, así
-    que ante una discrepancia gana la comunidad y el hueco es nuestro: cuéntalas
-    como sinergias del mazo aunque no aparezcan en el mapa.
-    """
-    mazo = scryfall.resolver(lista, nombre)
-    # Las dos fuentes externas a la vez: la regla oficial y lo que dice la comunidad.
-    tags = etq.de_mazo(mazo).get("por_carta", {})
-    return _json(contraste.contrastar(mazo, lexico.completo(mazo), etiquetas_mazo=tags,
-                                      combos_comunidad=combos.buscar(mazo)))
-
-
-@mcp.tool()
-def cobertura_del_analisis(lista: str, nombre: str = "Mazo") -> str:
-    """Cuánto de este mazo entiende el motor, y qué se le escapa.
-
-    Úsala **siempre que el mazo traiga cartas de una colección reciente**, y en
-    general cuando el análisis salga escaso: distingue las dos causas posibles,
-    que se confunden con facilidad.
-
-    * Si `sin resolver` viene vacío, las cartas se leyeron bien contra Scryfall.
-      Eso funciona incluso con colecciones que aún no han salido.
-    * Si hay `mecanicas_sin_concepto` o `cartas_invisibles`, el motor **lee pero
-      no entiende**: nadie ha escrito todavía un concepto para esa mecánica, así
-      que sus sinergias no se van a deducir por muchas vueltas que le des.
-
-    Cuando eso pase, no te fíes del recuento de sinergias: coge `radiografia_del_mazo`,
-    lee el oráculo de las cartas invisibles y razona tú la interacción. Es
-    exactamente el caso para el que existe el camino MCP.
-    """
-    return _json(lexico.cobertura(scryfall.resolver(lista, nombre)))
-
-
-@mcp.tool()
 def combos_conocidos(lista: str, nombre: str = "Mazo") -> str:
     """Combos ya catalogados que hay en el mazo, según Commander Spellbook.
 
@@ -242,74 +125,60 @@ def combos_conocidos(lista: str, nombre: str = "Mazo") -> str:
     comunidad, y es la única herramienta de este servidor cuyos datos no salen de
     Scryfall. Antes de meter cualquiera de estos combos en un documento:
 
-    1. Comprueba con `resolver_mazo` o `radiografia_del_mazo` que las cartas hacen
+    1. Comprueba con `datos_para_analisis` que las cartas hacen
        de verdad lo que el combo dice.
     2. Si el oráculo real no sostiene los pasos, descarta el combo.
     3. Cuando lo uses, cita Commander Spellbook como fuente.
 
-    Complementa al motor de patrones: aquí salen combos con nombre propio que
-    nadie ha escrito en `reglas.json`, y que el léxico de recursos no puede
-    deducir porque requieren razonar sobre reglas del juego.
+    Es una fuente de la comunidad más, como las listas y artículos que consultes:
+    si usas un combo, añade Commander Spellbook a `fuentes` y cítala.
     """
     return _json(combos.buscar(scryfall.resolver(lista, nombre)))
 
 
 @mcp.tool()
-def listar_reglas() -> str:
-    """Lista los patrones de interacción que conoce el motor, con su id y qué buscan."""
-    return _json([
-        {
-            "id": r["id"],
-            "nombre": r["nombre"],
-            "bloque": r.get("bloque"),
-            "tipo": r.get("tipo"),
-            "busca": [
-                {k: v for k, v in p.items() if k != "rol"} for p in r["piezas"]
-            ],
-        }
-        for r in motor.cargar_reglas()
-    ])
+def validar_analisis(lista: str, analisis: str, nombre: str = "Mazo") -> str:
+    """Comprueba un análisis sin generar nada. Devuelve la lista de problemas.
 
-
-@mcp.tool()
-def render_guia(documento: str, ruta: str = "") -> str:
-    """Genera la guía extensa en HTML a partir de un documento de análisis.
-
-    `documento` es el JSON de `detectar_sinergias`, idealmente ya reescrito por ti.
-    Devuelve la ruta del archivo creado.
-    """
-    return _escribir("guia.html", r_guia.render(_cargar(documento)), ruta or None)
-
-
-@mcp.tool()
-def render_chuleta(documento: str, ruta: str = "") -> str:
-    """Genera la chuleta imprimible de dos caras A4. Devuelve la ruta del archivo."""
-    return _escribir("chuleta.html", r_chuleta.render(_cargar(documento)), ruta or None)
-
-
-@mcp.tool()
-def render_mapa(documento: str, ruta: str = "") -> str:
-    """Genera el mapa interactivo de sinergias. Devuelve la ruta del archivo."""
-    return _escribir("mapa.html", r_mapa.render(_cargar(documento)), ruta or None)
-
-
-@mcp.tool()
-def analizar(lista: str, nombre: str = "Mazo", ruta: str = "") -> str:
-    """Atajo: resuelve, detecta y genera los tres HTML con los textos automáticos.
-
-    Útil para una primera pasada rápida. Para un resultado bueno de verdad,
-    encadena `detectar_sinergias` → reescribes el documento → los tres `render_*`.
+    `analisis` es el JSON (o la ruta a él). Se exige: firma de la revisión
+    experta, rol de cada carta que no sea tierra, una cita literal del oráculo o
+    de un ruling para cada pieza de cada jugada, y fuentes con URL para lo que
+    no sale de la carta. El formato está en la skill.
     """
     mazo = scryfall.resolver(lista, nombre)
-    doc = motor.documento(mazo, lexico.completo(mazo), titulo=nombre)
+    errores = an.validar(mazo, _cargar(analisis), scryfall.rulings)
+    return _json({"valido": not errores, "problemas": errores})
+
+
+@mcp.tool()
+def forjar(lista: str, analisis: str, nombre: str = "Mazo", ruta: str = "",
+           incrustar_imagenes: bool = False) -> str:
+    """Valida el análisis del experto y, si cuadra, genera guía, chuleta y mapa.
+
+    Si hay problemas no se escribe ningún archivo y se devuelven. Con
+    `incrustar_imagenes` las cartas van dentro del HTML (para visores que
+    bloquean la red, como el de archivos del chat).
+    """
+    mazo = scryfall.resolver(lista, nombre)
+    datos = _cargar(analisis)
+    errores = an.validar(mazo, datos, scryfall.rulings)
+    if errores:
+        return _json({"forjado": False, "problemas": errores})
+    doc = an.documento(mazo, datos)
+    htmls = {"guia.html": r_guia.render(doc), "chuleta.html": r_chuleta.render(doc),
+             "mapa.html": r_mapa.render(doc)}
+    if incrustar_imagenes:
+        htmls = r_incrustar.incrustar_documentos(htmls, doc)
     base = Path(ruta) if ruta else SALIDA
-    return _json({
-        "sinergias_encontradas": len(doc["sinergias"]),
-        "cartas_sin_resolver": doc["no_resueltas"],
-        "guia": _escribir("guia.html", r_guia.render(doc), str(base / "guia.html")),
-        "chuleta": _escribir("chuleta.html", r_chuleta.render(doc), str(base / "chuleta.html")),
-        "mapa": _escribir("mapa.html", r_mapa.render(doc), str(base / "mapa.html")),
-    })
+    base.mkdir(parents=True, exist_ok=True)
+    rutas = {}
+    for n, h in htmls.items():
+        (base / n).write_text(h, encoding="utf-8")
+        rutas[n] = str((base / n).resolve())
+    (base / "documento.json").write_text(_json(doc), encoding="utf-8")
+    return _json({"forjado": True, "jugadas": len(doc["sinergias"]),
+                  "citas_verificadas": doc["forjado"]["citas_verificadas"],
+                  "revisor": doc["revision_experta"].get("revisor"), "archivos": rutas})
 
 
 def main() -> None:

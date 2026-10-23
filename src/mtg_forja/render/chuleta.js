@@ -90,7 +90,7 @@ p{margin:0}
       `<em>${C.e(o.resumen || o.que || "")}</em></span>`).join("");
 
     const reglas = (doc.reglas_oro || []).map((r, i) =>
-      `<p class="x" style="margin-bottom:4px"><b>${i + 1}.</b> ${r}</p>`).join("");
+      `<p class="x" style="margin-bottom:4px"><b>${i + 1}.</b> ${typeof r === "string" ? r : (r.texto || "")}</p>`).join("");
 
     let cara2 = "";
     if (orden || reglas) {
@@ -99,7 +99,7 @@ p{margin:0}
 <p class="sub">La secuencia por defecto y los principios que no cambian</p></div></div>
 ${orden ? '<h2>Orden de aparición</h2><div class="orden">' + orden + "</div>" : ""}
 ${reglas ? '<h2 style="margin-top:12px">Reglas de oro</h2><div class="cols">' + reglas + "</div>" : ""}
-<div class="pie"><span>Cara 2 · secuencia</span><span>Generado con MTG Forja</span></div></div>`;
+<div class="pie"><span>Cara 2 · secuencia</span><span>${C.firma(doc)} · MTG Forja</span></div></div>`;
     }
 
     return `<div class="hoja">
@@ -110,7 +110,7 @@ ${reglas ? '<h2 style="margin-top:12px">Reglas de oro</h2><div class="cols">' + 
 </div>
 <div class="cols">${columnas}</div>
 <div class="pie"><span>Cara 1 · sinergias</span>
-<span>Los números rojos son copias en el mazo</span></div>
+<span>${C.firma(doc)} · los números rojos son copias en el mazo</span></div>
 </div>${cara2}`;
   }
 
