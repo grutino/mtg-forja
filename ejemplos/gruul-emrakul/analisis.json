@@ -1,0 +1,594 @@
+{
+  "titulo": "Gruul Emrakul",
+  "subtitulo": "Estándar · 60 cartas · 24 tierras · rampa Heartwood hacia Ugin y Emrakul",
+  "revision_experta": {
+    "revisor": "Claude Opus 5.5",
+    "fecha": "2026-10-24",
+    "titular": "Rampa coherente con un techo altísimo y un suelo frágil",
+    "veredicto": "El plan es limpio: <b>acelerar con elfos y fichas Heartwood</b> para bajar Ugin en el turno 4–5 y Emrakul poco después. Ugin exilia algo de color al lanzarlo y <b>otra vez con cada hechizo incoloro</b> (Emrakul y el Fulcrum), y Emrakul destapa tus tierras, así que a menudo cae otra amenaza en el mismo turno. Es la misma familia que una lista Gruul aparecida en las listas clasificadas de Arena del 19 de octubre, que juega 4 Fulcrum, Simulacrum Shaper, Anticausal Vestige y Magmatic Hellkite donde tú juegas elfos, quemas y solo 2 Fulcrum. Tu versión es más rápida y más interactiva al principio, pero roba menos y tiene menos plan B si Ugin cae. El punto débil del arquetipo son los mazos agresivos que matan antes del turno 4–5.",
+    "fortalezas": [
+      "Rampa redundante: 4 Llanowar, 4 Crafter, 4 Tethermage, Aerid y el modo de maná del Charm.",
+      "Ugin + 6 hechizos incoloros (4 Emrakul, 2 Fulcrum): cada uno exilia un permanente de color.",
+      "Emrakul destapa las tierras al lanzarla: casi siempre deja maná para otra amenaza.",
+      "Cavern of Souls en Eldrazi y el ward de sacrificar tres permanentes hacen a Emrakul muy difícil de parar.",
+      "Interacción barata contra voladores y criaturas pequeñas: Konstrari Charm, Burst Lightning y Choco-Comet."
+    ],
+    "debilidades": [
+      "Contra agresivos rápidos llega tarde: el Fulcrum solo se activa como conjuro y cuesta 7 en total.",
+      "El Fulcrum destruye también tus criaturas, Emrakul incluida.",
+      "Poco robo: solo el saqueo del Fulcrum y el +2 de Ugin.",
+      "El maná incoloro de Crafter no paga nada desde la mano: ni Ugin ni tus quemas.",
+      "Mucha dependencia de criaturas de maná de 1/1: una barrida temprana del rival te deja sin rampa."
+    ],
+    "confianza": "media",
+    "fuentes": [
+      "magicgg",
+      "mtgrocks",
+      "draftsim"
+    ]
+  },
+  "fuentes": [
+    {
+      "id": "magicgg",
+      "titulo": "Traditional Standard Ranked Decklists: 19-oct-2026 (magic.gg) — lista Gruul con Tethermage, Crafter, 4 Emrakul, 4 Ugin y Konstrari Charm",
+      "url": "https://magic.gg/decklists/traditional-standard-ranked-decklists-october-19-2026"
+    },
+    {
+      "id": "mtgrocks",
+      "titulo": "Mono-Green Eldrazi Ramp 5-0 en liga de Estándar de MTGO (MTG Rocks, 18-oct-2026)",
+      "url": "https://mtgrocks.com/mtg-mono-green-eldrazi-ramp-standard/"
+    },
+    {
+      "id": "draftsim",
+      "titulo": "The 34 Best Reality Fracture Cards for Standard (Draftsim) — Aerid n.º 3, Tethermage n.º 19",
+      "url": "https://draftsim.com/mtg-reality-fracture-standard-cards/"
+    }
+  ],
+  "planes": [
+    {
+      "titulo": "Plan A: Ugin en el turno 4",
+      "texto": "Elfo en el 1, Tenured Tethermage en el 2 sacrificando una tierra (dos Heartwood), Aerid en el 3 (otra Heartwood) y en el 4 tienes 7 manás para <b>Ugin</b>. Al lanzarlo exilias la mejor amenaza de color del rival; luego su +2 te da vida y cartas."
+    },
+    {
+      "titulo": "Plan B: Emrakul desde el exilio",
+      "texto": "En el turno 3 paga {3} y exilia a Emrakul de la mano: una tierra pasa a dar <b>dos</b> manás incoloros. Esa tierra, el maná de Crafter (que sí vale para cartas exiliadas) y las Heartwood te llevan a los 10. Al lanzarla <b>se destapan todas tus tierras</b>: úsalas para Ugin o para otra cosa."
+    },
+    {
+      "titulo": "Cómo se sobrevive",
+      "texto": "Burst Lightning y Choco-Comet para las criaturas tempranas, Konstrari Charm hace 6 a un volador, y el Fulcrum barre la mesa si te desbordan: Ugin y tus Heartwood sobreviven porque no son criaturas."
+    }
+  ],
+  "cartas": {
+    "Llanowar Elves": {
+      "rol": "motor",
+      "estrategia": "Turno 1 siempre que puedas: adelanta Tethermage al turno 2. Muere al Fulcrum."
+    },
+    "Heartwood Crafter": {
+      "rol": "motor",
+      "estrategia": "Su maná incoloro no paga hechizos de la mano, pero sí su propio hechizo preparado (Soul Tether, que crea una Heartwood), la activación de Emrakul y a Emrakul desde el exilio."
+    },
+    "Tenured Tethermage": {
+      "rol": "motor",
+      "estrategia": "Sacrifica una tierra por dos Heartwood giradas: pierdes un maná ese turno y ganas uno neto desde el siguiente. Más tarde convierte artefactos sobrantes en contadores."
+    },
+    "Aerid Konstrari": {
+      "rol": "amenaza",
+      "estrategia": "Volador de 4 manás que deja una Heartwood al entrar y otra al morir. Con maná de sobra, su {6} lo convierte en un remate enorme."
+    },
+    "Emrakul, the Exigent Doom": {
+      "rol": "amenaza",
+      "estrategia": "El remate: volar, arrollar y un ward de sacrificar tres permanentes. Casi siempre desde el exilio: primero su {3} para doblar una tierra, luego lanzarla."
+    },
+    "Ugin, Eye of the Storms": {
+      "rol": "amenaza",
+      "estrategia": "El corazón del mazo: exilia al lanzarlo y con cada hechizo incoloro posterior. Su +2 roba y te da vida; su 0 añade tres manás para Emrakul."
+    },
+    "Konstrari Charm": {
+      "rol": "respuesta",
+      "estrategia": "Navaja suiza: 6 de daño a un volador, dos contadores y arrollar, o tres manás incoloros (uno neto) para llegar antes a Ugin."
+    },
+    "Choco-Comet": {
+      "rol": "respuesta",
+      "estrategia": "Daño X a cualquier objetivo y además un pájaro 2/2. Tarde, con maná de sobra, es un remate a la cara."
+    },
+    "Burst Lightning": {
+      "rol": "respuesta",
+      "estrategia": "Mata el atacante temprano por un maná; con kicker hace 4 al final de la partida."
+    },
+    "The Echoverse Fulcrum": {
+      "rol": "respuesta",
+      "estrategia": "Saquea al entrar y, por {5} y exiliarlo, destruye todas las criaturas. Es incoloro: con Ugin en mesa, lanzarlo ya exilia algo."
+    },
+    "Cavern of Souls": {
+      "rol": "tierra",
+      "estrategia": "Nombra <b>Eldrazi</b>: Emrakul no se puede contrarrestar. Su maná de color no sirve para Ugin, que no es criatura; su {C} sí."
+    },
+    "Rockfall Vale": {
+      "rol": "tierra",
+      "estrategia": "Entra girada en los dos primeros turnos: juégala en el 3 o después."
+    },
+    "Stomping Ground": {
+      "rol": "tierra",
+      "estrategia": "Paga 2 vidas en el turno 2 si la necesitas para Tethermage."
+    }
+  },
+  "sinergias": [
+    {
+      "nombre": "Ugin en el turno 4",
+      "bloque": "La rampa",
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "T1-T4",
+      "piezas": [
+        "Llanowar Elves",
+        "Tenured Tethermage",
+        "Aerid Konstrari",
+        "Ugin, Eye of the Storms"
+      ],
+      "resumen": "Cada pieza deja maná para la siguiente: 1 elfo + 3 Heartwood + 3 tierras = los 7 de Ugin en el turno 4.",
+      "pasos": [
+        "T1: Forest → Llanowar Elves.",
+        "T2: Stomping Ground (2 vidas) → Tethermage con Forest, Stomping y el elfo. Sacrificas el Forest: dos Heartwood giradas.",
+        "T3: 2 tierras + elfo + 2 Heartwood = 5 → Aerid (4) y su Heartwood al entrar.",
+        "T4: 3 tierras + elfo + 3 Heartwood = 7 → Ugin, que al lanzarse exilia la mejor amenaza de color del rival."
+      ],
+      "aviso": "Si el rival mata al elfo o a Aerid, todo se retrasa un turno: no te comprometas sin la rampa en mesa.",
+      "citas": [
+        {
+          "carta": "Llanowar Elves",
+          "texto": "{T}: Add {G}."
+        },
+        {
+          "carta": "Tenured Tethermage",
+          "texto": "you may sacrifice a land. If you do, create two tapped Heartwood tokens."
+        },
+        {
+          "carta": "Aerid Konstrari",
+          "texto": "When Aerid Konstrari enters or dies, create a Heartwood token."
+        },
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "When you cast this spell, exile up to one target permanent that's one or more colors."
+        }
+      ],
+      "fuentes": [
+        "draftsim"
+      ]
+    },
+    {
+      "nombre": "Emrakul desde el exilio: tu tierra da dos",
+      "bloque": "La rampa",
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "T3+",
+      "piezas": [
+        "Emrakul, the Exigent Doom",
+        "Heartwood Crafter"
+      ],
+      "resumen": "Por {3} exilias a Emrakul de la mano y una tierra pasa a dar dos manás. Como Emrakul ya no está en la mano, <b>el maná de Crafter sí sirve</b> para pagar tanto esa activación como el lanzamiento desde el exilio.",
+      "pasos": [
+        "T3: activa Emrakul con Crafter + 2 tierras: una tierra da {C}{C} desde ahora.",
+        "Turnos siguientes: suma esa tierra doble, Crafter y tus Heartwood hasta llegar a 10.",
+        "Lanza Emrakul desde el exilio; la tierra doble sigue valiendo para pagarla."
+      ],
+      "aviso": "El maná de Crafter no paga Ugin ni las quemas: son hechizos desde la mano.",
+      "citas": [
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "Exile this card from your hand: Target land gains"
+        },
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "You may use the mana ability Emrakul grants to the land while casting Emrakul from exile."
+        },
+        {
+          "carta": "Heartwood Crafter",
+          "texto": "This mana can't be spent to cast spells from your hand."
+        }
+      ],
+      "fuentes": [
+        "mtgrocks"
+      ]
+    },
+    {
+      "nombre": "Crafter se paga su propio hechizo",
+      "bloque": "La rampa",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "T2",
+      "piezas": [
+        "Heartwood Crafter"
+      ],
+      "resumen": "Crafter entra preparado: su hechizo Soul Tether ({2}{R/G}) se lanza como copia desde el exilio, así que su propio maná incoloro vale para pagarlo. Resultado: una Heartwood en el turno 2.",
+      "pasos": [
+        "T1: Crafter.",
+        "T2: Crafter ({C}) + 2 tierras (una roja o verde) → Soul Tether → Heartwood."
+      ],
+      "citas": [
+        {
+          "carta": "Heartwood Crafter",
+          "texto": "This creature enters prepared."
+        },
+        {
+          "carta": "Heartwood Crafter",
+          "texto": "That creature's controller may cast that copy as long as it remains in exile."
+        },
+        {
+          "carta": "Heartwood Crafter",
+          "texto": "This mana can't be spent to cast spells from your hand."
+        }
+      ]
+    },
+    {
+      "nombre": "Emrakul destapa, Ugin entra",
+      "bloque": "El remate",
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "T6+",
+      "piezas": [
+        "Emrakul, the Exigent Doom",
+        "Ugin, Eye of the Storms"
+      ],
+      "resumen": "Al lanzar Emrakul se destapan todas tus tierras. Con siete tierras, bajas Ugin en el mismo turno y su disparo exilia otra amenaza.",
+      "pasos": [
+        "7 tierras (una doble por Emrakul = 8) + 2 Heartwood = 10 → Emrakul desde el exilio.",
+        "El disparo destapa las 7 tierras. La tierra doble vuelve a dar solo uno.",
+        "Cuando Emrakul resuelva, Ugin con esas 7 → exilia un permanente de color."
+      ],
+      "aviso": "La tierra pierde el {C}{C} en cuanto lanzas a Emrakul: cuenta solo un maná por ella tras destapar.",
+      "citas": [
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "When you cast this spell, untap all lands you control."
+        },
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "until this card is cast from exile"
+        },
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "When you cast this spell, exile up to one target permanent that's one or more colors."
+        }
+      ]
+    },
+    {
+      "nombre": "Ugin castiga cada hechizo incoloro",
+      "bloque": "El remate",
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "Con Ugin",
+      "piezas": [
+        "Ugin, Eye of the Storms",
+        "Emrakul, the Exigent Doom",
+        "The Echoverse Fulcrum"
+      ],
+      "resumen": "Emrakul ({10}) y el Fulcrum ({2}) no tienen símbolos de color: son incoloros. Con Ugin en mesa, lanzar cualquiera de ellos exilia un permanente de color.",
+      "pasos": [
+        "Con Ugin en mesa, el Fulcrum por 2 manás ya es una eliminación: exilia y además saqueas.",
+        "Emrakul con Ugin en mesa: exilia algo y destapa tus tierras."
+      ],
+      "citas": [
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "Whenever you cast a colorless spell, exile up to one target permanent that's one or more colors."
+        },
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "When you cast this spell, untap all lands you control."
+        },
+        {
+          "carta": "The Echoverse Fulcrum",
+          "texto": "When The Echoverse Fulcrum enters, draw a card, then discard a card."
+        }
+      ],
+      "fuentes": [
+        "mtgrocks"
+      ]
+    },
+    {
+      "nombre": "El Fulcrum barre y Ugin se queda",
+      "bloque": "Sobrevivir",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "T7+",
+      "piezas": [
+        "The Echoverse Fulcrum",
+        "Ugin, Eye of the Storms",
+        "Aerid Konstrari",
+        "Tenured Tethermage"
+      ],
+      "resumen": "El Fulcrum destruye todas las criaturas, pero no planeswalkers ni artefactos: Ugin y tus Heartwood siguen ahí, y Aerid al morir deja otra Heartwood.",
+      "pasos": [
+        "Mesa desbordada y Ugin en mesa: activa el Fulcrum en tu fase principal.",
+        "Siguiente turno: +2 de Ugin y reconstruye con las Heartwood intactas."
+      ],
+      "citas": [
+        {
+          "carta": "The Echoverse Fulcrum",
+          "texto": "Destroy all creatures. Activate only as a sorcery."
+        },
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "+2: You gain 3 life and draw a card."
+        },
+        {
+          "carta": "Aerid Konstrari",
+          "texto": "When Aerid Konstrari enters or dies, create a Heartwood token."
+        },
+        {
+          "carta": "Tenured Tethermage",
+          "texto": "They're red and green artifacts"
+        }
+      ],
+      "fuentes": [
+        "mtgrocks"
+      ]
+    },
+    {
+      "nombre": "Cavern en Eldrazi: Emrakul no se contrarresta",
+      "bloque": "El remate",
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "T1",
+      "piezas": [
+        "Cavern of Souls",
+        "Emrakul, the Exigent Doom"
+      ],
+      "resumen": "Nombra Eldrazi al jugar Cavern. Basta con que un solo maná de Cavern pague a Emrakul para que no se pueda contrarrestar, y una vez en mesa su ward obliga a sacrificar tres permanentes para señalarla.",
+      "citas": [
+        {
+          "carta": "Cavern of Souls",
+          "texto": "Spend this mana only to cast a creature spell of the chosen type, and that spell can't be countered."
+        },
+        {
+          "carta": "Cavern of Souls",
+          "texto": "The spell can't be countered if the mana produced by Cavern of Souls is spent to cover any cost of the spell"
+        },
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "Ward—Sacrifice three permanents."
+        }
+      ]
+    },
+    {
+      "nombre": "Charm: tres manás o 6 al volador",
+      "bloque": "La rampa",
+      "tipo": "sinergia",
+      "fuerza": 1,
+      "turno": "T3+",
+      "piezas": [
+        "Konstrari Charm",
+        "Emrakul, the Exigent Doom"
+      ],
+      "resumen": "Pagas {R}{G} y recibes {C}{C}{C}: un maná neto para llegar a Emrakul o Ugin un turno antes. Si el rival tiene un volador peligroso, guárdalo para los 6 de daño.",
+      "citas": [
+        {
+          "carta": "Konstrari Charm",
+          "texto": "Add {C}{C}{C}."
+        },
+        {
+          "carta": "Konstrari Charm",
+          "texto": "Konstrari Charm deals 6 damage to target creature with flying."
+        },
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "You may cast this card for as long as it remains exiled."
+        }
+      ]
+    },
+    {
+      "nombre": "Maná de sobra, quemas grandes",
+      "bloque": "Sobrevivir",
+      "tipo": "sinergia",
+      "fuerza": 1,
+      "turno": "Tarde",
+      "piezas": [
+        "Choco-Comet",
+        "Burst Lightning"
+      ],
+      "resumen": "La rampa hace que las quemas escalen: Comet con X grande a la cara y Burst con kicker por 4.",
+      "citas": [
+        {
+          "carta": "Choco-Comet",
+          "texto": "Choco-Comet deals X damage to any target."
+        },
+        {
+          "carta": "Burst Lightning",
+          "texto": "If this spell was kicked, it deals 4 damage instead."
+        }
+      ]
+    },
+    {
+      "nombre": "El Fulcrum también mata lo tuyo",
+      "bloque": "Ojo",
+      "tipo": "conflicto",
+      "fuerza": 3,
+      "turno": "Ojo",
+      "piezas": [
+        "The Echoverse Fulcrum",
+        "Emrakul, the Exigent Doom",
+        "Llanowar Elves"
+      ],
+      "resumen": "Destruye <b>todas</b> las criaturas: tus elfos, Crafter, Tethermage y también Emrakul. Con Emrakul en mesa, el Fulcrum casi nunca compensa.",
+      "citas": [
+        {
+          "carta": "The Echoverse Fulcrum",
+          "texto": "Destroy all creatures."
+        },
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "Flying, trample"
+        },
+        {
+          "carta": "Llanowar Elves",
+          "texto": "{T}: Add {G}."
+        }
+      ]
+    },
+    {
+      "nombre": "Artefactos: o maná o contadores",
+      "bloque": "Ojo",
+      "tipo": "conflicto",
+      "fuerza": 2,
+      "turno": "Ojo",
+      "piezas": [
+        "Tenured Tethermage",
+        "Aerid Konstrari"
+      ],
+      "resumen": "Girar dos Heartwood para crecer a Tethermage las deja sin dar maná ese turno; el bono de Aerid no cambia, porque cuenta artefactos estén girados o no. Haz crecer a Tethermage solo con el maná que ya no vayas a gastar ese turno.",
+      "citas": [
+        {
+          "carta": "Tenured Tethermage",
+          "texto": "Tap two untapped artifacts you control: Put two +1/+1 counters on this creature."
+        },
+        {
+          "carta": "Aerid Konstrari",
+          "texto": "where X is the number of artifacts you control"
+        }
+      ]
+    },
+    {
+      "nombre": "Ugin puede apuntar a lo tuyo",
+      "bloque": "Ojo",
+      "tipo": "aviso",
+      "fuerza": 1,
+      "turno": "Ojo",
+      "piezas": [
+        "Ugin, Eye of the Storms"
+      ],
+      "resumen": "Los disparos de Ugin exilian «hasta un» permanente de color: si el rival no tiene nada de color, elige ninguno en vez de exiliar tus Heartwood o tus criaturas.",
+      "citas": [
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "exile up to one target permanent that's one or more colors"
+        }
+      ]
+    },
+    {
+      "nombre": "Rockfall Vale no es para el turno 1-2",
+      "bloque": "Ojo",
+      "tipo": "aviso",
+      "fuerza": 1,
+      "turno": "T1-T2",
+      "piezas": [
+        "Rockfall Vale"
+      ],
+      "resumen": "Entra girada si no tienes otras dos tierras. Tethermage sacrifica una tierra en el turno 2: cuenta con ello antes de bajar la Vale.",
+      "citas": [
+        {
+          "carta": "Rockfall Vale",
+          "texto": "This land enters tapped unless you control two or more other lands."
+        }
+      ]
+    }
+  ],
+  "orden": [
+    {
+      "turno": "T1",
+      "carta": "Llanowar Elves",
+      "resumen": "O Crafter. Si tienes ambos, el elfo primero: acelera Tethermage."
+    },
+    {
+      "turno": "T2",
+      "carta": "Tenured Tethermage",
+      "resumen": "Sacrifica una tierra básica por dos Heartwood."
+    },
+    {
+      "turno": "T3",
+      "carta": "Aerid Konstrari",
+      "resumen": "O la activación de Emrakul ({3}) si no tienes Aerid."
+    },
+    {
+      "turno": "T4-T5",
+      "carta": "Ugin, Eye of the Storms",
+      "resumen": "Exilia lo peor del rival al lanzarlo; luego +2."
+    },
+    {
+      "turno": "T5+",
+      "carta": "Emrakul, the Exigent Doom",
+      "resumen": "Desde el exilio, con Cavern si el rival tiene contrahechizos; usa las tierras destapadas."
+    }
+  ],
+  "reglas_oro": [
+    "El maná de Crafter solo paga lo que no viene de tu mano: Soul Tether, la activación de Emrakul y Emrakul desde el exilio.",
+    "Emrakul y el Fulcrum son incoloros: con Ugin en mesa, cada uno exilia algo.",
+    "Lanza Emrakul antes que Ugin si puedes: las tierras destapadas pagan a Ugin.",
+    "Cavern nombrando Eldrazi.",
+    "No actives el Fulcrum con Emrakul en mesa salvo que no haya otra salida."
+  ],
+  "formato": "standard",
+  "plataforma": "arena",
+  "mejoras": [
+    {
+      "titulo": "Dos Cavern menos, dos básicas más",
+      "nivel": "clara",
+      "sale": [
+        {
+          "carta": "Cavern of Souls",
+          "copias": 2
+        }
+      ],
+      "entra": [
+        {
+          "carta": "Mountain",
+          "copias": 1
+        },
+        {
+          "carta": "Forest",
+          "copias": 1
+        }
+      ],
+      "motivo": "El maná de color de Cavern solo paga criaturas del tipo elegido: nombrando Eldrazi, solo a Emrakul. Para todo lo demás (Tethermage, Aerid, Charm, Choco-Comet, Burst) Cavern es una tierra incolora, y el mazo pide <b>R y G desde el turno 2</b>. Con 3 Cavern tienes 13 fuentes rojas para un Choco-Comet de RR. Una sola Cavern basta para el espejo de control, que es lo que hace la lista de referencia de las clasificadas de Arena.",
+      "aviso": "Si tu metajuego es de contrahechizos, quédate con 2 Cavern y quita solo una.",
+      "citas": [
+        {
+          "carta": "Cavern of Souls",
+          "texto": "Spend this mana only to cast a creature spell of the chosen type"
+        },
+        {
+          "carta": "Tenured Tethermage",
+          "texto": "When this creature enters, you may sacrifice a land."
+        }
+      ],
+      "fuentes": [
+        "magicgg"
+      ]
+    },
+    {
+      "titulo": "Fulcrum a 4 copias por Choco-Comet",
+      "nivel": "razonable",
+      "sale": [
+        {
+          "carta": "Choco-Comet",
+          "copias": 2
+        }
+      ],
+      "entra": [
+        {
+          "carta": "The Echoverse Fulcrum",
+          "copias": 2
+        }
+      ],
+      "motivo": "El mazo roba poco y el Fulcrum es <b>incoloro</b>: con Ugin en mesa, lanzarlo por 2 ya exilia un permanente de color, y además saquea para encontrar Ugin o Emrakul. Es además la única barrida contra mesas anchas. Las dos listas de referencia lo juegan, y la de las clasificadas de Arena con 4 copias. Choco-Comet es la quema más exigente del mazo (RR) y la que menos encaja con una base verde.",
+      "aviso": "Contra agresivos rápidos el Fulcrum llega tarde: si tu metajuego es muy agresivo, mantén los Comet.",
+      "citas": [
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "Whenever you cast a colorless spell, exile up to one target permanent that's one or more colors."
+        },
+        {
+          "carta": "The Echoverse Fulcrum",
+          "texto": "When The Echoverse Fulcrum enters, draw a card, then discard a card."
+        },
+        {
+          "carta": "Choco-Comet",
+          "texto": "Choco-Comet deals X damage to any target."
+        }
+      ],
+      "fuentes": [
+        "magicgg",
+        "mtgrocks"
+      ]
+    }
+  ]
+}

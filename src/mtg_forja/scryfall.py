@@ -209,3 +209,40 @@ def rulings(carta: Carta) -> list[str]:
         pass
     time.sleep(0.1)  # Scryfall pide 50-100 ms entre peticiones
     return fuera
+
+
+def consultar(nombres: list[str]) -> dict[str, dict[str, Any]]:
+    """Ficha de cartas que no están en el mazo: las que una mejora propone meter.
+
+    Devuelve, por clave de nombre, el oráculo, el coste, el tipo, la legalidad en
+    cada formato y los juegos donde existe ("arena", "mtgo", "paper"). La legalidad
+    cambia con cada rotación y cada baneo, así que aquí no se usa la caché: se
+    pregunta siempre a Scryfall. Sin red, devuelve lo que haya podido resolver.
+    """
+    unicos = list(dict.fromkeys(n.strip() for n in nombres if n and n.strip()))
+    fix = _fixture()
+    brutos: list[dict[str, Any]] = []
+    if fix is not None:
+        brutos = [fix[_clave(n)] for n in unicos if _clave(n) in fix]
+    else:
+        for i in range(0, len(unicos), LOTE):
+            try:
+                brutos += _pedir(unicos[i : i + LOTE])
+            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+                pass
+            if i + LOTE < len(unicos):
+                time.sleep(0.1)
+    fuera: dict[str, dict[str, Any]] = {}
+    for b in brutos:
+        plano = _aplanar(b)
+        nombre = b["name"].split("//")[0].strip()
+        fuera[_clave(nombre)] = {
+            "nombre": nombre,
+            "coste": plano["coste"],
+            "tipo": plano["tipo"],
+            "oraculo": plano["oraculo"],
+            "legalidades": b.get("legalities") or {},
+            "juegos": b.get("games") or [],
+            "scryfall": b.get("scryfall_uri", ""),
+        }
+    return fuera

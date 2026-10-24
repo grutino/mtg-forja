@@ -92,7 +92,17 @@ de referencia), cítalos en `fuentes`.
     "fuentes": []
   }],
   "orden": [{"turno": "T2", "carta": "…", "resumen": "…"}],
-  "reglas_oro": ["…"]
+  "reglas_oro": ["…"],
+  "formato": "standard",
+  "plataforma": "arena",
+  "mejoras": [{
+    "titulo": "…", "nivel": "clara",
+    "sale": [{"carta": "A", "copias": 2}],
+    "entra": [{"carta": "C", "copias": 2}],
+    "motivo": "…", "aviso": "…",
+    "citas": [{"carta": "C", "texto": "frase literal"}],
+    "fuentes": []
+  }]
 }
 ```
 
@@ -105,9 +115,18 @@ Lo que comprueba el validador:
 | Cada pieza de cada jugada lleva al menos una cita **literal** de su oráculo o de un ruling | Que no se pueda atribuir a una carta lo que no dice |
 | Toda carta nombrada está en el mazo | Ni piezas fantasma ni combos a medias |
 | Cada fuente citada existe y tiene URL | Lo externo se puede comprobar |
+| `mejoras`: máximo 5, `nivel` `clara` o `razonable`, y `formato` presente | Solo cambios evidentes, nunca una lista de deseos |
+| Lo que sale está en el mazo; lo que entra existe en Scryfall, es legal en `formato` y, con `plataforma: arena`, está en Arena | Una mejora que no se puede jugar no es una mejora |
+| Salen y entran las mismas cartas, nadie pasa de 4 copias salvo las básicas | El mazo sigue siendo legal |
+| Cada mejora lleva una cita literal (del mazo o de la carta que entra) o una fuente | El porqué se puede comprobar |
 
 `tipo`: `sinergia`, `conflicto` o `aviso`. `fuerza`: 1 a 3. `turno`: `T2`, `Tarde`,
 `Reacción`, `Ojo`. Puedes usar `<b>` en `resumen`, `pasos`, `aviso`, `veredicto` y `texto`.
+
+**Mejoras propuestas.** Salen en la guía, en su propio apartado. Propón solo cambios
+muy claros (un fallo de maná, una carta que no encaja con el plan) o muy razonables
+(lo que hacen las listas de referencia, con fuente). Si no ves ninguno así, deja
+`mejoras` fuera: no hay que rellenar. Usa `aviso` para decir cuándo no conviene.
 
 **Ojo con las citas de texto recordatorio.** Son literales y el validador las acepta,
 pero el recordatorio describe una mecánica, no un efecto extra de la carta. Cita la

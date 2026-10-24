@@ -80,6 +80,19 @@ ol.sec li::before{content:counter(paso);position:absolute;left:0;top:1px;font-fa
 .firma{font-family:var(--cond);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
  color:#D8B15E;margin-top:16px}
 ol.fuentes{font-size:13px;padding-left:22px}ol.fuentes a{color:var(--brasa)}
+.mejora{background:var(--papel);border:1px solid var(--lin);border-left:4px solid var(--laton);
+ padding:16px 20px;margin-top:18px}
+.mejora h3{margin:0 0 6px;font-size:18px}
+.mejora .nivel{font-family:var(--cond);text-transform:uppercase;letter-spacing:.1em;font-size:10.5px;
+ padding:2px 8px;margin-left:10px;vertical-align:3px;border:1px solid currentColor;color:var(--laton)}
+.mejora .nivel.clara{color:var(--brasa)}
+.mejora p{margin:0 0 10px;max-width:75ch}
+.cambio{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;margin:6px 0 4px}
+.cambio .lado{flex:0 1 auto}
+.cambio .lado h4{font-family:var(--cond);text-transform:uppercase;letter-spacing:.12em;font-size:11px;
+ margin:0 0 6px;color:var(--humo)}
+.cambio .lado .rejilla{display:flex;gap:10px;flex-wrap:wrap}
+.cambio .flecha{align-self:center;font-size:26px;color:var(--humo)}
 .plan{margin-top:20px}.plan h3{margin:0 0 4px;font-size:18px}.plan p{margin:0;max-width:75ch}
 footer{margin-top:52px;padding-top:18px;border-top:2px solid var(--tinta);font-size:12.5px;
  color:var(--humo);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
@@ -171,7 +184,7 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
     if ((doc.orden || []).length) {
       const filas = doc.orden.map((o) =>
         `<div class="combo"><div class="turno">${C.e(o.turno || "")}</div>` +
-        `<h3>${C.e(o.carta || "")}<span class="que">${o.que || ""}</span></h3></div>`).join("");
+        `<h3>${C.e(o.carta || "")}<span class="que">${o.resumen || o.que || ""}</span></h3></div>`).join("");
       partes.push('<section class="seccion"><p class="eyebrow">Secuencia</p>' +
         "<h2>Orden de aparición</h2>" + filas + "</section>");
     }
@@ -186,6 +199,34 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
       `<div class="grupo"><p class="eyebrow">${C.e(C.NOMBRE_ROL[rol] || rol)} ` +
       `<span>${cartas.reduce((a, c) => a + (c.copias || 0), 0)}</span></p>` +
       `<div class="rejilla">${cartas.map((c) => ficha(c, c.nombre)).join("")}</div></div>`).join("");
+    if ((doc.mejoras || []).length) {
+      const lado = (titulo, lista, signo) =>
+        `<div class="lado"><h4>${titulo}</h4><div class="rejilla">` +
+        lista.map((x) => {
+          const f = ficha(Object.assign({}, idx[x.carta] || {}, x), x.carta);
+          return f.replace(/<span class="n">[^]*?<\/span>/, "")
+            .replace('<figure class="c">',
+              `<figure class="c"><span class="n">${signo}${x.copias}<small>×</small></span>`);
+        }).join("") + "</div></div>";
+      partes.push('<section class="seccion"><p class="eyebrow">Si quieres afinarlo</p>' +
+        "<h2>Mejoras propuestas</h2>" +
+        '<p class="intro">Solo cambios muy claros o muy razonables. Las cartas que entran son ' +
+        `legales${doc.formato ? " en " + C.e(doc.formato) : ""} según Scryfall y el mazo queda ` +
+        "con el mismo número de cartas.</p>" +
+        doc.mejoras.map((m) => {
+          const citas = (m.citas || []).length || (m.fuentes || []).length
+            ? '<ul class="citas">' + (m.citas || []).map((ct) =>
+                `<li><b>${C.e(ct.carta)}</b>: <q>${C.e(ct.texto)}</q>` +
+                `<span class="org">${C.e(ct.origen || "")}</span></li>`).join("") +
+              ((m.fuentes || []).length ? `<li>Fuentes ${C.refs(m.fuentes, doc)}</li>` : "") +
+              "</ul>" : "";
+          return `<div class="mejora"><h3>${C.e(m.titulo || "")}` +
+            `<span class="nivel ${C.e(m.nivel || "")}">${C.e(m.nivel || "")}</span></h3>` +
+            `<div class="cambio">${lado("Sale", m.sale || [], "−")}<span class="flecha">→</span>` +
+            `${lado("Entra", m.entra || [], "+")}</div><p>${m.motivo || ""}</p>` +
+            (m.aviso ? `<div class="ojo"><b>Ojo</b>${m.aviso}</div>` : "") + citas + "</div>";
+        }).join("") + "</section>");
+    }
     if ((doc.reglas_oro || []).length) {
       partes.push('<section class="seccion"><p class="eyebrow">Para no olvidar</p>' +
         '<h2>Reglas de oro</h2><ol class="sec" style="margin-top:18px">' +

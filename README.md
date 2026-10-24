@@ -73,6 +73,13 @@ Página larga con cada jugada desarrollada: las piezas ilustradas, la secuencia 
 de ejecución, los avisos y el mazo completo agrupado por función. Pensada para leerla
 una vez y entender el mazo.
 
+Si el experto ve cambios **muy claros o muy razonables**, la guía añade un apartado de
+**Mejoras propuestas**: qué sale, qué entra, por qué y cuándo no conviene. El validador
+comprueba contra Scryfall que lo que entra existe, es legal en el formato del análisis
+(y está en Arena si se indica `"plataforma": "arena"`), que el mazo queda con las mismas
+cartas y sin pasar de 4 copias, y que cada cambio va respaldado por una cita literal o
+una fuente. Como mucho cinco; si no hay ninguna clara, no sale el apartado.
+
 ![Guía de sinergias](docs/capturas/guia.png)
 
 ### La chuleta

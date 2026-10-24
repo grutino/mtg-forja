@@ -146,7 +146,7 @@ def validar_analisis(lista: str, analisis: str, nombre: str = "Mazo") -> str:
     no sale de la carta. El formato está en la skill.
     """
     mazo = scryfall.resolver(lista, nombre)
-    errores = an.validar(mazo, _cargar(analisis), scryfall.rulings)
+    errores = an.validar(mazo, _cargar(analisis), scryfall.rulings, scryfall.consultar)
     return _json({"valido": not errores, "problemas": errores})
 
 
@@ -161,7 +161,7 @@ def forjar(lista: str, analisis: str, nombre: str = "Mazo", ruta: str = "",
     """
     mazo = scryfall.resolver(lista, nombre)
     datos = _cargar(analisis)
-    errores = an.validar(mazo, datos, scryfall.rulings)
+    errores = an.validar(mazo, datos, scryfall.rulings, scryfall.consultar)
     if errores:
         return _json({"forjado": False, "problemas": errores})
     doc = an.documento(mazo, datos)

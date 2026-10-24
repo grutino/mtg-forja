@@ -949,3 +949,62 @@ def test_un_combo_a_medias_no_dibuja_lineas_a_cartas_que_no_llevas():
     # el catálogo lo da como completo, pero Dualcaster Mage no está en la lista
     catalogo = {"completos": [{"cartas": ["Dualcaster Mage", "Daydream"], "produce": ["Infinito"]}]}
     assert combos.como_sinergias(catalogo, mazo) == []
+
+
+# ---------------------------------------------------------------- mejoras propuestas
+
+def _mazo_y_analisis_minimo():
+    from mtg_forja import analisis as an
+    mazo = scryfall.resolver(LISTA, "Prueba")
+    fichas = {c.nombre: {"rol": "motor"} for c in mazo.principal if not c.es_tierra}
+    base = {
+        "revision_experta": {"revisor": "Pruebas", "fecha": "2026-10-24", "veredicto": "ok"},
+        "fuentes": [{"id": "f", "url": "https://example.org"}],
+        "cartas": fichas,
+        "formato": "standard",
+        "plataforma": "arena",
+    }
+    return an, mazo, base
+
+
+def _consultar_falso(legal="legal", juegos=("arena", "paper")):
+    def consultar(nombres):
+        return {scryfall._clave(n): {"nombre": n, "coste": "{1}", "tipo": "Instant",
+                                     "oraculo": "Draw a card. Scry two.",
+                                     "legalidades": {"standard": legal},
+                                     "juegos": list(juegos), "scryfall": ""}
+                for n in nombres}
+    return consultar
+
+
+def test_mejora_valida_pasa_y_llega_a_la_guia():
+    an, mazo, base = _mazo_y_analisis_minimo()
+    sale = next(c for c in mazo.principal if not c.es_tierra)
+    base["mejoras"] = [{"titulo": "Cambio", "nivel": "clara", "motivo": "Porque sí",
+                        "sale": [{"carta": sale.nombre, "copias": 1}],
+                        "entra": [{"carta": "Carta Nueva", "copias": 1}],
+                        "citas": [{"carta": "Carta Nueva", "texto": "Draw a card. Scry two."}]}]
+    assert an.validar(mazo, base, None, _consultar_falso()) == []
+    doc = an.documento(mazo, base)
+    assert doc["mejoras"][0]["entra"][0]["carta"] == "Carta Nueva"
+    assert "oraculo" not in doc["mejoras"][0]["entra"][0]
+    html = guia.render(doc)
+    assert "Mejoras propuestas" in html and "Carta Nueva" in html
+
+
+def test_mejora_ilegal_descuadrada_o_sin_respaldo_no_pasa():
+    an, mazo, base = _mazo_y_analisis_minimo()
+    sale = next(c for c in mazo.principal if not c.es_tierra)
+    base["mejoras"] = [{"titulo": "Mal", "nivel": "obvia", "motivo": "x",
+                        "sale": [{"carta": sale.nombre, "copias": sale.copias + 1}],
+                        "entra": [{"carta": "Carta Nueva", "copias": 1}]}]
+    errores = " | ".join(an.validar(mazo, base, None, _consultar_falso("not_legal", ["paper"])))
+    for trozo in ("'nivel'", "y el mazo lleva", "no es legal en standard",
+                  "no está en MTG Arena", "al menos una cita", "las mismas"):
+        assert trozo in errores, trozo
+
+
+def test_sin_mejoras_no_exige_formato():
+    an, mazo, base = _mazo_y_analisis_minimo()
+    del base["formato"]
+    assert an.validar(mazo, base, None, None) == []

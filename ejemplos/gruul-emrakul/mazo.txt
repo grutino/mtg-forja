@@ -1,0 +1,17 @@
+Deck
+1 Llanowar Elves (DAR) 168
+3 Llanowar Elves (FDN) 227
+4 Heartwood Crafter (FRA) 105
+4 Tenured Tethermage (FRA) 154
+4 Aerid Konstrari (FRA) 121
+4 Emrakul, the Exigent Doom (FRA) 1
+4 Ugin, Eye of the Storms (TDM) 1
+4 Konstrari Charm (FRA) 138
+3 Choco-Comet (FIN) 132
+3 Burst Lightning (FDN) 192
+4 Stomping Ground (RNA) 259
+4 Rockfall Vale (MID) 266
+3 Cavern of Souls (LCI) 269
+8 Forest (KTK) 258
+5 Mountain (KTK) 256
+2 The Echoverse Fulcrum (FRA) 169

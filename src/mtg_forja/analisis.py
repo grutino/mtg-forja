@@ -75,7 +75,10 @@ def datos_para_experto(mazo: Mazo, rulings: Callable[[Any], list[str]] | None = 
         "instrucciones": (
             "Estos son solo hechos. Escribe el análisis como experto: lee cada "
             "oráculo y sus rulings, consulta listas y artículos reales, y respalda "
-            "cada sinergia con citas literales y cada dato externo con una fuente."
+            "cada sinergia con citas literales y cada dato externo con una fuente. "
+            "Si ves cambios de cartas muy claros o muy razonables, añádelos en "
+            "'mejoras' (máximo 5, con 'formato' y, si se juega en Arena, "
+            "'plataforma': 'arena'); si no los hay, no te inventes ninguno."
         ),
     }
 
@@ -112,7 +115,9 @@ def _cita_valida(texto: str, oraculo: str, rulings: list[str]) -> str | None:
 # ---------------------------------------------------------------- validación
 
 def validar(mazo: Mazo, analisis: dict[str, Any],
-            rulings: Callable[[Any], list[str]] | None = None) -> list[str]:
+            rulings: Callable[[Any], list[str]] | None = None,
+            consultar: Callable[[list[str]], dict[str, dict[str, Any]]] | None = None
+            ) -> list[str]:
     """Lista de errores. Vacía significa que el análisis se puede forjar."""
     errores: list[str] = []
     por_nombre = {c.nombre.lower(): c for c in mazo.cartas}
@@ -221,6 +226,147 @@ def validar(mazo: Mazo, analisis: dict[str, Any],
         if o.get("carta") and carta(o["carta"]) is None:
             errores.append(f"orden[{i}]: «{o['carta']}» no está en el mazo.")
 
+    # --- mejoras propuestas
+    errores += _validar_mejoras(mazo, analisis, ids_fuente, carta, rul, consultar)
+    return errores
+
+
+# ---------------------------------------------------------------- mejoras
+
+MAX_MEJORAS = 5
+NIVELES = ("clara", "razonable")
+
+
+def _clave_nombre(nombre: str) -> str:
+    from .scryfall import _clave
+    return _clave(nombre)
+
+
+def _validar_mejoras(mazo: Mazo, analisis: dict[str, Any], ids_fuente: set,
+                     carta: Callable[[str], Any], rul: Callable[[Any], list[str]],
+                     consultar: Callable[[list[str]], dict[str, dict[str, Any]]] | None
+                     ) -> list[str]:
+    """Las mejoras son cambios de cartas que el experto propone, y solo los muy claros.
+
+    Lo que se comprueba aquí son hechos, no criterio: que lo que sale está en el
+    mazo, que lo que entra existe en Scryfall y es legal en el formato (y está en
+    Arena si se juega allí), que el mazo sigue teniendo el mismo número de cartas,
+    que ninguna pasa de 4 copias salvo las tierras básicas, y que cada cambio va
+    respaldado por una cita literal o por una fuente con URL.
+    """
+    mejoras = analisis.get("mejoras") or []
+    if not mejoras:
+        return []
+    errores: list[str] = []
+    if not isinstance(mejoras, list):
+        return ["'mejoras' debe ser una lista."]
+    if len(mejoras) > MAX_MEJORAS:
+        errores.append(f"mejoras: hay {len(mejoras)}; como mucho {MAX_MEJORAS}, y solo las "
+                       "muy claras o muy razonables.")
+    formato = str(analisis.get("formato", "")).strip().lower()
+    plataforma = str(analisis.get("plataforma", "")).strip().lower()
+    if not formato:
+        errores.append("mejoras: falta 'formato' (p. ej. «standard») para comprobar que lo "
+                       "que entra es legal.")
+
+    entran = [str(x.get("carta", "")) for m in mejoras if isinstance(m, dict)
+              for x in (m.get("entra") or []) if isinstance(x, dict)]
+    fichas = consultar(entran) if (consultar and entran) else {}
+    copias = {c.nombre: c.copias for c in mazo.principal}
+    basicas = {c.nombre for c in mazo.principal if "Basic Land" in c.tipo}
+
+    for i, m in enumerate(mejoras):
+        donde = f"mejoras[{i}] «{(m or {}).get('titulo', '')}»"
+        if not isinstance(m, dict):
+            errores.append(f"mejoras[{i}]: debe ser un objeto.")
+            continue
+        for campo in ("titulo", "motivo"):
+            if not str(m.get(campo, "")).strip():
+                errores.append(f"{donde}: falta '{campo}'.")
+        if m.get("nivel") not in NIVELES:
+            errores.append(f"{donde}: 'nivel' debe ser {' o '.join(NIVELES)}.")
+        sale, entra = m.get("sale") or [], m.get("entra") or []
+        if not sale or not entra:
+            errores.append(f"{donde}: necesita 'sale' y 'entra' (cambios carta por carta).")
+
+        def n_copias(x: Any) -> int:
+            try:
+                return int(x.get("copias", 0))
+            except (TypeError, ValueError, AttributeError):
+                return 0
+
+        total_sale = total_entra = 0
+        for x in sale:
+            c = carta((x or {}).get("carta", "")) if isinstance(x, dict) else None
+            n = n_copias(x)
+            total_sale += n
+            if c is None or c.nombre not in copias:
+                errores.append(f"{donde}: sale «{(x or {}).get('carta')}», que no está en el mazo.")
+            elif n < 1 or n > copias.get(c.nombre, 0):
+                errores.append(f"{donde}: sale {n} × «{c.nombre}», y el mazo lleva "
+                               f"{copias.get(c.nombre, 0)}.")
+            else:
+                x["carta"] = c.nombre
+        for x in entra:
+            if not isinstance(x, dict):
+                errores.append(f"{donde}: cada carta de 'entra' es {{carta, copias}}.")
+                continue
+            n = n_copias(x)
+            total_entra += n
+            nombre = str(x.get("carta", ""))
+            if n < 1:
+                errores.append(f"{donde}: entra «{nombre}» sin copias.")
+            enmazo = carta(nombre)
+            if enmazo is not None and not enmazo.banquillo:
+                x["carta"] = enmazo.nombre
+                x.update(coste=enmazo.coste, tipo=enmazo.tipo)
+                tras = copias.get(enmazo.nombre, 0) + n
+                if tras > 4 and enmazo.nombre not in basicas:
+                    errores.append(f"{donde}: «{enmazo.nombre}» quedaría con {tras} copias.")
+                continue
+            f = fichas.get(_clave_nombre(nombre))
+            if f is None:
+                errores.append(f"{donde}: «{nombre}» no se encuentra en Scryfall"
+                               + ("." if consultar else " (no se ha podido consultar)."))
+                continue
+            x.update(carta=f["nombre"], coste=f["coste"], tipo=f["tipo"],
+                     scryfall=f["scryfall"], oraculo=f["oraculo"])
+            if n > 4 and "Basic Land" not in f["tipo"]:
+                errores.append(f"{donde}: «{f['nombre']}» con {n} copias; el máximo es 4.")
+            if formato and f["legalidades"].get(formato) != "legal":
+                errores.append(f"{donde}: «{f['nombre']}» no es legal en {formato} "
+                               f"({f['legalidades'].get(formato, 'sin dato')}).")
+            if plataforma == "arena" and "arena" not in f["juegos"]:
+                errores.append(f"{donde}: «{f['nombre']}» no está en MTG Arena.")
+        if total_sale != total_entra:
+            errores.append(f"{donde}: salen {total_sale} cartas y entran {total_entra}; "
+                           "el mazo tiene que quedar con las mismas.")
+
+        # respaldo: citas literales (de cartas del mazo o de las que entran) o fuentes
+        oraculos_nuevos = {x.get("carta"): x.get("oraculo", "") for x in entra
+                           if isinstance(x, dict) and x.get("oraculo")}
+        for j, ct in enumerate(m.get("citas") or []):
+            c = carta(ct.get("carta", ""))
+            if c is not None:
+                origen = _cita_valida(ct.get("texto", ""), c.oraculo, rul(c))
+                ct["carta"] = c.nombre
+            else:
+                nuevo = next((k for k in oraculos_nuevos
+                              if _clave_nombre(k) == _clave_nombre(ct.get("carta", ""))), None)
+                origen = _cita_valida(ct.get("texto", ""), oraculos_nuevos[nuevo], []) if nuevo else None
+                if nuevo:
+                    ct["carta"] = nuevo
+            if origen is None:
+                errores.append(f"{donde}, cita {j + 1}: «{ct.get('texto', '')}» no aparece literal "
+                               f"en el oráculo ni en los rulings de «{ct.get('carta')}».")
+            else:
+                ct["origen"] = origen
+        for r in m.get("fuentes") or []:
+            if r not in ids_fuente:
+                errores.append(f"{donde}: cita la fuente '{r}', que no está en 'fuentes'.")
+        if not (m.get("citas") or m.get("fuentes")):
+            errores.append(f"{donde}: una mejora necesita al menos una cita literal o una "
+                           "fuente que la respalde.")
     return errores
 
 
@@ -273,6 +419,12 @@ def documento(mazo: Mazo, analisis: dict[str, Any]) -> dict[str, Any]:
         "orden": analisis.get("orden", []),
         "reglas_oro": analisis.get("reglas_oro", []),
         "planes": analisis.get("planes", []),
+        "mejoras": [
+            {**m, "entra": [{k: v for k, v in x.items() if k != "oraculo"}
+                            for x in m.get("entra", [])]}
+            for m in analisis.get("mejoras", [])
+        ],
+        "formato": analisis.get("formato", ""),
         "revision_experta": rev,
         "fuentes": analisis.get("fuentes", []),
         "no_resueltas": mazo.no_resueltas,

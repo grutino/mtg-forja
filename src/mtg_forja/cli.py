@@ -68,7 +68,7 @@ def _forjar(args) -> int:
     if mazo is None:
         return 1
     analisis = json.loads(Path(args.analisis).read_text(encoding="utf-8"))
-    errores = an.validar(mazo, analisis, scryfall.rulings)
+    errores = an.validar(mazo, analisis, scryfall.rulings, scryfall.consultar)
     if errores:
         print(f"El análisis no se puede forjar ({len(errores)} problemas):", file=sys.stderr)
         for e in errores:
