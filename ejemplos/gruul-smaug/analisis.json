@@ -1,0 +1,253 @@
+{
+  "titulo": "Gruul Smaug",
+  "subtitulo": "Estándar · 60 cartas · 24 tierras · rampa con Smaug hacia Ugin y Emrakul",
+  "formato": "standard",
+  "plataforma": "arena",
+  "revision_experta": {
+    "revisor": "Claude Opus 5.5",
+    "fecha": "2026-10-30",
+    "titular": "Una rampa más rápida y mejor plantada contra contrahechizos",
+    "veredicto": "Es la evolución del Gruul Emrakul: el mismo plan de <b>acelerar con elfos y fichas Heartwood hasta Ugin y Emrakul</b>, pero con <b>Smaug</b> como amenaza de cuatro manás que pega desde el turno en que entra y deja un Tesoro en cada mantenimiento, es decir, más maná para Ugin. La base de maná está pensada para llegar a tiempo: Training Compound da R o G desde el primer turno, y las dos Cavern of Souls protegen a Emrakul o a Smaug de los contrahechizos. Sear y Burst Lightning responden en el turno rival, que era el hueco de la versión anterior, y Worldsoul's Rage es a la vez quema y rampa. Sus límites: Ugin no tiene protección contra contrahechizos, el Fulcrum también mata a tus criaturas, y contra los agresivos más rápidos sigue dependiendo de robar un elfo.",
+    "fortalezas": [
+      "Ocho criaturas de maná de coste 1 y Tethermage: Ugin en el turno 4 es habitual.",
+      "Smaug amenaza desde el turno 3 con prisa y genera un Tesoro por turno.",
+      "Las Cavern se eligen al jugarlas: Eldrazi para Emrakul o Dragón para Smaug, y el hechizo no se puede contrarrestar.",
+      "Respuestas instantáneas baratas: 4 Burst Lightning y 2 Sear.",
+      "Ugin exilia algo con cada hechizo incoloro: Emrakul y el Fulcrum."
+    ],
+    "debilidades": [
+      "Ugin es un planeswalker: Cavern no lo protege de un contrahechizo.",
+      "El Fulcrum destruye todas las criaturas, también Smaug, Aerid, Emrakul y tus elfos.",
+      "Cada Tesoro que gastas en maná es un punto menos de daño en el ataque de Smaug.",
+      "Training Compound pide una tierra básica en mesa para dar color: cuidado con lo que sacrificas a Tethermage.",
+      "Poco robo: el saqueo del Fulcrum y el +2 de Ugin."
+    ],
+    "confianza": "media",
+    "fuentes": ["magicgg", "mtgrocks", "draftsim"]
+  },
+  "fuentes": [
+    {"id": "magicgg", "titulo": "Traditional Standard Ranked Decklists, 19-oct-2026 (magic.gg) — lista Gruul con Tethermage, Crafter, Emrakul y Ugin", "url": "https://magic.gg/decklists/traditional-standard-ranked-decklists-october-19-2026"},
+    {"id": "mtgrocks", "titulo": "Mono-Green Eldrazi Ramp 5-0 en liga de Estándar de MTGO (MTG Rocks, 18-oct-2026)", "url": "https://mtgrocks.com/mtg-mono-green-eldrazi-ramp-standard/"},
+    {"id": "draftsim", "titulo": "The 34 Best Reality Fracture Cards for Standard (Draftsim) — Aerid n.º 3, Tethermage n.º 19", "url": "https://draftsim.com/mtg-reality-fracture-standard-cards/"},
+    {"id": "compound", "titulo": "Training Compound (Scryfall)", "url": "https://scryfall.com/card/msh/275/training-compound"}
+  ],
+  "planes": [
+    {"titulo": "Plan A: Smaug en el 3, Ugin en el 4", "texto": "Elfo en el turno 1, Tenured Tethermage en el 2 sacrificando una tierra (dos Heartwood), <b>Smaug en el 3</b> atacando ya con prisa, y en el 4 el Tesoro de Smaug completa los 7 manás de <b>Ugin</b>, que exilia lo mejor del rival al lanzarse."},
+    {"titulo": "Plan B: Emrakul desde el exilio", "texto": "Paga {3} para exiliar a Emrakul de la mano: una tierra pasa a dar dos manás incoloros. Con eso, el maná de Crafter, las Heartwood y los Tesoros llegas a los 10. Al lanzarla <b>se destapan todas tus tierras</b>: úsalas para Ugin. Con una Cavern nombrando Eldrazi, no se puede contrarrestar."},
+    {"titulo": "Cómo se sobrevive", "texto": "Burst Lightning y Sear en el turno rival contra las criaturas tempranas, Worldsoul's Rage como respuesta grande que además te devuelve tierras, y el Fulcrum solo si la mesa del rival es mucho mejor que la tuya."}
+  ],
+  "cartas": {
+    "Llanowar Elves": {"rol": "motor", "estrategia": "Turno 1 siempre que puedas: adelanta Tethermage al turno 2 y Smaug al 3."},
+    "Heartwood Crafter": {"rol": "motor", "estrategia": "Su maná incoloro no paga hechizos de la mano, pero sí su hechizo preparado (Soul Tether, que crea una Heartwood), la activación de Emrakul y a Emrakul desde el exilio."},
+    "Tenured Tethermage": {"rol": "motor", "estrategia": "Sacrifica una tierra por dos Heartwood giradas. Nunca tu única básica: Training Compound la necesita. Luego, con Tesoros y Heartwood sobrantes, crece."},
+    "Aerid Konstrari": {"rol": "amenaza", "estrategia": "Volador de 4 manás que deja una Heartwood al entrar y otra al morir. Su {6} cuenta también los Tesoros de Smaug."},
+    "Smaug the Magnificent": {"rol": "amenaza", "estrategia": "Volador con prisa: pega el turno en que entra. Cada mantenimiento te da un Tesoro, y al atacar hace tanto daño como Tesoros tengas. Elige en cada turno: maná para Ugin o daño."},
+    "Emrakul, the Exigent Doom": {"rol": "amenaza", "estrategia": "El remate: volar, arrollar y un ward de sacrificar tres permanentes. Casi siempre desde el exilio, y con Cavern en Eldrazi contra mazos de contrahechizos."},
+    "Ugin, Eye of the Storms": {"rol": "amenaza", "estrategia": "Exilia al lanzarlo y con cada hechizo incoloro. Su +2 roba y da vida; su 0 añade tres manás para Emrakul. No tiene protección contra contrahechizos: lánzalo cuando el rival tenga el maná girado."},
+    "Sear": {"rol": "respuesta", "estrategia": "Por 2 manás y en el turno rival, 4 de daño: mata casi cualquier criatura temprana o rebaja un planeswalker."},
+    "Burst Lightning": {"rol": "respuesta", "estrategia": "Mata el atacante temprano por un maná; con kicker hace 4 al final de la partida, también a la cara."},
+    "Worldsoul's Rage": {"rol": "respuesta", "estrategia": "Daño X a cualquier objetivo y hasta X tierras de tu mano o cementerio al campo: quema y rampa en una carta."},
+    "The Echoverse Fulcrum": {"rol": "respuesta", "estrategia": "Saquea al entrar; por {5} y exiliarlo destruye todas las criaturas. Es incoloro: con Ugin en mesa, lanzarlo ya exilia algo."},
+    "Training Compound": {"rol": "tierra", "estrategia": "R o G el turno que entra y siempre que tengas una básica. En el turno 1 paga tu elfo."},
+    "Cavern of Souls": {"rol": "tierra", "estrategia": "Elige el tipo según la mano: Eldrazi para Emrakul o Dragon para Smaug (además te da la R del RR)."},
+    "Stomping Ground": {"rol": "tierra", "estrategia": "Paga 2 vidas en los primeros turnos si necesitas los dos colores enderezados."}
+  },
+  "sinergias": [
+    {
+      "nombre": "Smaug en el turno 3, Ugin en el 4",
+      "bloque": "La rampa",
+      "tipo": "sinergia", "fuerza": 3, "turno": "T1-T4",
+      "piezas": ["Llanowar Elves", "Tenured Tethermage", "Smaug the Magnificent", "Ugin, Eye of the Storms"],
+      "resumen": "Cada pieza deja maná para la siguiente, y el Tesoro de Smaug pone el último maná que falta para Ugin.",
+      "pasos": [
+        "T1: Forest → Llanowar Elves.",
+        "T2: segunda tierra → Tethermage con las dos tierras y el elfo. Sacrificas una tierra que no sea tu única básica: dos Heartwood giradas.",
+        "T3: 2 tierras + elfo + 2 Heartwood = 5 → Smaug (4) y ataca ya. Sobra 1 para Burst.",
+        "T4: mantenimiento, Tesoro. 3 tierras + elfo + 2 Heartwood + Tesoro = 7 → Ugin, que exilia lo mejor del rival al lanzarse."
+      ],
+      "aviso": "Si el rival mata al elfo, todo se retrasa un turno.",
+      "citas": [
+        {"carta": "Llanowar Elves", "texto": "{T}: Add {G}."},
+        {"carta": "Tenured Tethermage", "texto": "you may sacrifice a land. If you do, create two tapped Heartwood tokens."},
+        {"carta": "Smaug the Magnificent", "texto": "At the beginning of your upkeep, create a Treasure token."},
+        {"carta": "Ugin, Eye of the Storms", "texto": "When you cast this spell, exile up to one target permanent that's one or more colors."}
+      ],
+      "fuentes": ["draftsim"]
+    },
+    {
+      "nombre": "Los Tesoros de Smaug: maná o daño",
+      "bloque": "Smaug",
+      "tipo": "conflicto", "fuerza": 2, "turno": "T4+",
+      "piezas": ["Smaug the Magnificent", "Ugin, Eye of the Storms"],
+      "resumen": "Cada Tesoro es un maná, pero el ataque de Smaug hace tanto daño como Tesoros conserves. Gástalos para llegar a Ugin o a Emrakul; guárdalos cuando ya tengas el maná y quieras matar algo o rematar al rival.",
+      "pasos": [
+        "Si un Tesoro te deja lanzar Ugin o Emrakul este turno, gástalo.",
+        "Si no, guárdalos: con 3 Tesoros, cada ataque de Smaug quita 3 a lo que elijas."
+      ],
+      "citas": [
+        {"carta": "Smaug the Magnificent", "texto": "Whenever Smaug attacks, he deals damage equal to the number of Treasures you control to any target."},
+        {"carta": "Ugin, Eye of the Storms", "texto": "0: Add {C}{C}{C}."}
+      ]
+    },
+    {
+      "nombre": "Tesoros y Heartwood cuentan como artefactos",
+      "bloque": "Smaug",
+      "tipo": "sinergia", "fuerza": 1, "turno": "Tarde",
+      "piezas": ["Smaug the Magnificent", "Tenured Tethermage", "Aerid Konstrari"],
+      "resumen": "Los Tesoros son artefactos, como las Heartwood: Tethermage puede girar dos para crecer, y la habilidad de {6} de Aerid los cuenta para su bonus de fuerza.",
+      "citas": [
+        {"carta": "Smaug the Magnificent", "texto": "create a Treasure token"},
+        {"carta": "Tenured Tethermage", "texto": "Tap two untapped artifacts you control: Put two +1/+1 counters on this creature."},
+        {"carta": "Aerid Konstrari", "texto": "where X is the number of artifacts you control"}
+      ]
+    },
+    {
+      "nombre": "Worldsoul's Rage devuelve lo que Tethermage sacrificó",
+      "bloque": "La rampa",
+      "tipo": "sinergia", "fuerza": 2, "turno": "T5+",
+      "piezas": ["Worldsoul's Rage", "Tenured Tethermage"],
+      "resumen": "Tethermage manda una tierra al cementerio, y Worldsoul's Rage la vuelve a poner en el campo junto con las de tu mano. Quemas una criatura y rampas a la vez.",
+      "pasos": [
+        "Con 6 manás: Rage con X = 4 → 4 de daño a una criatura o al rival.",
+        "Pon hasta 4 tierras de tu mano o cementerio, giradas: el turno siguiente tienes 10 o más para Emrakul o Ugin."
+      ],
+      "citas": [
+        {"carta": "Worldsoul's Rage", "texto": "Put up to X land cards from your hand and/or graveyard onto the battlefield tapped."},
+        {"carta": "Worldsoul's Rage", "texto": "Worldsoul's Rage deals X damage to any target."},
+        {"carta": "Tenured Tethermage", "texto": "When this creature enters, you may sacrifice a land."}
+      ]
+    },
+    {
+      "nombre": "Emrakul desde el exilio: tu tierra da dos",
+      "bloque": "El remate",
+      "tipo": "sinergia", "fuerza": 3, "turno": "T3+",
+      "piezas": ["Emrakul, the Exigent Doom", "Heartwood Crafter"],
+      "resumen": "Por {3} exilias a Emrakul de la mano y una tierra pasa a dar dos manás. Como ya no está en la mano, <b>el maná de Crafter sí sirve</b> para la activación y para lanzarla desde el exilio.",
+      "pasos": [
+        "Activa Emrakul con Crafter + 2 tierras: una tierra da {C}{C} desde ahora.",
+        "Suma esa tierra doble, Crafter, Heartwood y Tesoros hasta llegar a 10.",
+        "Lanza Emrakul desde el exilio; la tierra doble sigue valiendo para pagarla."
+      ],
+      "aviso": "El maná de Crafter no paga Ugin, Smaug ni las quemas: son hechizos desde la mano.",
+      "citas": [
+        {"carta": "Emrakul, the Exigent Doom", "texto": "Exile this card from your hand: Target land gains"},
+        {"carta": "Emrakul, the Exigent Doom", "texto": "You may use the mana ability Emrakul grants to the land while casting Emrakul from exile."},
+        {"carta": "Heartwood Crafter", "texto": "This mana can't be spent to cast spells from your hand."}
+      ],
+      "fuentes": ["mtgrocks"]
+    },
+    {
+      "nombre": "Crafter se paga su propio hechizo",
+      "bloque": "La rampa",
+      "tipo": "sinergia", "fuerza": 2, "turno": "T2",
+      "piezas": ["Heartwood Crafter"],
+      "resumen": "Crafter entra preparado: su hechizo Soul Tether se lanza como copia desde el exilio, así que su propio maná incoloro vale para pagarlo. Resultado: una Heartwood en el turno 2.",
+      "citas": [
+        {"carta": "Heartwood Crafter", "texto": "This creature enters prepared."},
+        {"carta": "Heartwood Crafter", "texto": "That creature's controller may cast that copy as long as it remains in exile."}
+      ]
+    },
+    {
+      "nombre": "Emrakul destapa, Ugin entra",
+      "bloque": "El remate",
+      "tipo": "sinergia", "fuerza": 3, "turno": "T6+",
+      "piezas": ["Emrakul, the Exigent Doom", "Ugin, Eye of the Storms"],
+      "resumen": "Al lanzar Emrakul se destapan todas tus tierras: con siete tierras bajas Ugin en el mismo turno. Y como Emrakul es incolora, si Ugin ya está en mesa, exilia algo.",
+      "aviso": "La tierra doble pierde el {C}{C} en cuanto lanzas a Emrakul.",
+      "citas": [
+        {"carta": "Emrakul, the Exigent Doom", "texto": "When you cast this spell, untap all lands you control."},
+        {"carta": "Ugin, Eye of the Storms", "texto": "Whenever you cast a colorless spell, exile up to one target permanent that's one or more colors."}
+      ]
+    },
+    {
+      "nombre": "Cavern: Eldrazi o Dragón según la mano",
+      "bloque": "Contra contrahechizos",
+      "tipo": "sinergia", "fuerza": 3, "turno": "T1+",
+      "piezas": ["Cavern of Souls", "Emrakul, the Exigent Doom", "Smaug the Magnificent"],
+      "resumen": "El tipo se elige al jugar cada Cavern. Con Emrakul en la mano, nombra Eldrazi; con Smaug, nombra Dragon: además te da la R que falta para su RR. El hechizo pagado con ese maná no se puede contrarrestar.",
+      "pasos": [
+        "Primera Cavern: el tipo de la amenaza que vas a lanzar antes.",
+        "Segunda Cavern: el otro tipo."
+      ],
+      "citas": [
+        {"carta": "Cavern of Souls", "texto": "As this land enters, choose a creature type."},
+        {"carta": "Cavern of Souls", "texto": "Spend this mana only to cast a creature spell of the chosen type, and that spell can't be countered."},
+        {"carta": "Emrakul, the Exigent Doom", "texto": "Ward—Sacrifice three permanents."},
+        {"carta": "Smaug the Magnificent", "texto": "Flying, haste"}
+      ]
+    },
+    {
+      "nombre": "Ugin no tiene Cavern que lo proteja",
+      "bloque": "Contra contrahechizos",
+      "tipo": "aviso", "fuerza": 3, "turno": "Ojo",
+      "piezas": ["Ugin, Eye of the Storms", "Cavern of Souls"],
+      "resumen": "Cavern solo protege hechizos de criatura, y Ugin es un planeswalker. Lánzalo cuando el rival tenga el maná girado, o después de que haya gastado un contrahechizo en Smaug o Emrakul. Su disparo al lanzarlo se resuelve aunque te contrarresten a Ugin: al menos exilias algo.",
+      "citas": [
+        {"carta": "Cavern of Souls", "texto": "Spend this mana only to cast a creature spell of the chosen type"},
+        {"carta": "Ugin, Eye of the Storms", "texto": "When you cast this spell, exile up to one target permanent that's one or more colors."}
+      ]
+    },
+    {
+      "nombre": "Respuestas en el turno rival",
+      "bloque": "Sobrevivir",
+      "tipo": "sinergia", "fuerza": 2, "turno": "T1-T4",
+      "piezas": ["Sear", "Burst Lightning"],
+      "resumen": "Las dos son instantáneos: deja el maná abierto en el turno rival y mata al atacante cuando ataque. Burst para lo pequeño, Sear para lo de 3 o 4 de resistencia.",
+      "citas": [
+        {"carta": "Sear", "texto": "Sear deals 4 damage to target creature or planeswalker."},
+        {"carta": "Burst Lightning", "texto": "Burst Lightning deals 2 damage to any target. If this spell was kicked, it deals 4 damage instead."}
+      ]
+    },
+    {
+      "nombre": "Ugin castiga cada hechizo incoloro",
+      "bloque": "El remate",
+      "tipo": "sinergia", "fuerza": 2, "turno": "Con Ugin",
+      "piezas": ["Ugin, Eye of the Storms", "The Echoverse Fulcrum"],
+      "resumen": "El Fulcrum cuesta {2} y es incoloro: con Ugin en mesa, lanzarlo exilia un permanente de color y además saqueas para encontrar Emrakul.",
+      "citas": [
+        {"carta": "Ugin, Eye of the Storms", "texto": "Whenever you cast a colorless spell"},
+        {"carta": "The Echoverse Fulcrum", "texto": "When The Echoverse Fulcrum enters, draw a card, then discard a card."}
+      ],
+      "fuentes": ["mtgrocks"]
+    },
+    {
+      "nombre": "El Fulcrum también mata lo tuyo",
+      "bloque": "Ojo",
+      "tipo": "conflicto", "fuerza": 3, "turno": "Ojo",
+      "piezas": ["The Echoverse Fulcrum", "Smaug the Magnificent", "Emrakul, the Exigent Doom"],
+      "resumen": "Destruye <b>todas</b> las criaturas: Smaug, Aerid, Emrakul, tus elfos. Úsalo solo con la mesa perdida; Ugin, las Heartwood y los Tesoros sobreviven.",
+      "citas": [
+        {"carta": "The Echoverse Fulcrum", "texto": "Destroy all creatures. Activate only as a sorcery."},
+        {"carta": "Smaug the Magnificent", "texto": "Flying, haste"},
+        {"carta": "Emrakul, the Exigent Doom", "texto": "Flying, trample"}
+      ]
+    },
+    {
+      "nombre": "No sacrifiques tu única básica",
+      "bloque": "Ojo",
+      "tipo": "conflicto", "fuerza": 2, "turno": "T2",
+      "piezas": ["Training Compound", "Tenured Tethermage"],
+      "resumen": "Training Compound solo da color el turno que entra o si controlas una tierra básica. Si Tethermage te hace sacrificar tu única básica, Compound pasa a dar solo maná incoloro.",
+      "citas": [
+        {"carta": "Training Compound", "texto": "Activate only if this land entered this turn or if you control a basic land."},
+        {"carta": "Tenured Tethermage", "texto": "When this creature enters, you may sacrifice a land."}
+      ],
+      "fuentes": ["compound"]
+    }
+  ],
+  "orden": [
+    {"turno": "T1", "carta": "Llanowar Elves", "resumen": "O Crafter. Si tienes ambos, el elfo primero. Training Compound o un Forest para pagarlo."},
+    {"turno": "T2", "carta": "Tenured Tethermage", "resumen": "Sacrifica una tierra, nunca tu única básica."},
+    {"turno": "T3", "carta": "Smaug the Magnificent", "resumen": "Ataca ya. O Aerid si no tienes RR; o la activación de Emrakul."},
+    {"turno": "T4", "carta": "Ugin, Eye of the Storms", "resumen": "Con el Tesoro de Smaug. Mejor con el maná del rival girado."},
+    {"turno": "T5+", "carta": "Emrakul, the Exigent Doom", "resumen": "Desde el exilio, con Cavern en Eldrazi; usa las tierras destapadas."}
+  ],
+  "reglas_oro": [
+    "Cavern se nombra al jugarla: Eldrazi con Emrakul en la mano, Dragon con Smaug.",
+    "Ugin no se protege con Cavern: lánzalo con el maná del rival girado.",
+    "Gasta los Tesoros de Smaug para llegar a Ugin o Emrakul; si no, guárdalos para su ataque.",
+    "Nunca sacrifiques a Tethermage tu única tierra básica.",
+    "Deja Burst o Sear abiertos en el turno rival en vez de lanzarlos en el tuyo.",
+    "El Fulcrum solo con la mesa perdida: también mata a Smaug y a Emrakul."
+  ]
+}
