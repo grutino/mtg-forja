@@ -23,43 +23,127 @@
       "Sin resultados publicados: hay que probarlo."
     ],
     "confianza": "baja",
-    "fuentes": ["goldfish", "magicgg"]
+    "fuentes": [
+      "goldfish",
+      "magicgg"
+    ]
   },
   "fuentes": [
-    {"id": "goldfish", "titulo": "Big Red, versión con Smaug — lista de partida (MTGGoldfish, 30-oct-2026)", "url": "https://www.mtggoldfish.com/deck/8022504"},
-    {"id": "goldfish2", "titulo": "Big Red, versión con The Legend of Roku (MTGGoldfish, 30-oct-2026)", "url": "https://www.mtggoldfish.com/deck/8022508"},
-    {"id": "magicgg", "titulo": "Traditional Standard Ranked Decklists, 5-oct-2026 (magic.gg) — lista roja de Ugin con Smaug, Magda y Tesoros", "url": "https://magic.gg/decklists/traditional-standard-ranked-decklists-october-5-2026"}
+    {
+      "id": "goldfish",
+      "titulo": "Big Red, versión con Smaug — lista de partida (MTGGoldfish, 30-oct-2026)",
+      "url": "https://www.mtggoldfish.com/deck/8022504"
+    },
+    {
+      "id": "goldfish2",
+      "titulo": "Big Red, versión con The Legend of Roku (MTGGoldfish, 30-oct-2026)",
+      "url": "https://www.mtggoldfish.com/deck/8022508"
+    },
+    {
+      "id": "magicgg",
+      "titulo": "Traditional Standard Ranked Decklists, 5-oct-2026 (magic.gg) — lista roja de Ugin con Smaug, Magda y Tesoros",
+      "url": "https://magic.gg/decklists/traditional-standard-ranked-decklists-october-5-2026"
+    }
   ],
   "planes": [
-    {"titulo": "Plan A: Way, Chandra, Ugin", "texto": "Turno 2: <b>Way of the Pyromancer</b>, que crea una ficha de Jace con 2 de lealtad. Turno 3: el +1 de Jace añade {R} y con 3 tierras bajas <b>Chandra</b>. Turno 4: 4 tierras, el +1 de Jace y el +1 de Chandra ({R}{R}) suman 7 para <b>Ugin</b>, que exilia lo mejor del rival al lanzarse.", "fuentes": ["goldfish"]},
-    {"titulo": "Plan B: Emrakul", "texto": "Exilia a Emrakul de la mano por {3} para que una tierra dé dos manás, y lánzala desde el exilio con ayuda del 0 de Ugin ({C}{C}{C}), los Tesoros y Ashling. O deja que <b>Improvisation Capstone</b> la encuentre y la lance gratis."},
-    {"titulo": "Cómo se sobrevive", "texto": "Chispas en los primeros turnos: Burst Lightning y Lightning Strike a cualquier objetivo, Sear para lo grande y el −3 de Chandra. Cada una que apunte al rival o a lo suyo da un Tesoro con Magda en mesa."}
+    {
+      "titulo": "Plan A: Way, Chandra, Ugin",
+      "texto": "Turno 2: <b>Way of the Pyromancer</b>, que crea una ficha de Jace con 2 de lealtad. Turno 3: el +1 de Jace añade {R} y con 3 tierras bajas <b>Chandra</b>. Turno 4: 4 tierras, el +1 de Jace y el +1 de Chandra ({R}{R}) suman 7 para <b>Ugin</b>, que exilia lo mejor del rival al lanzarse.",
+      "fuentes": [
+        "goldfish"
+      ]
+    },
+    {
+      "titulo": "Plan B: Emrakul",
+      "texto": "Exilia a Emrakul de la mano por {3} para que una tierra dé dos manás, y lánzala desde el exilio con ayuda del 0 de Ugin ({C}{C}{C}), los Tesoros y Ashling. O deja que <b>Improvisation Capstone</b> la encuentre y la lance gratis."
+    },
+    {
+      "titulo": "Cómo se sobrevive",
+      "texto": "Chispas en los primeros turnos: Burst Lightning y Lightning Strike a cualquier objetivo, Sear para lo grande y el −3 de Chandra. Cada una que apunte al rival o a lo suyo da un Tesoro con Magda en mesa."
+    }
   ],
   "cartas": {
-    "Burst Lightning": {"rol": "respuesta", "estrategia": "La chispa del turno 1: mata la primera criatura rival. Con kicker, 4 de daño al final de la partida. Con Magda en mesa, además da un Tesoro."},
-    "Lightning Strike": {"rol": "respuesta", "estrategia": "3 de daño a cualquier objetivo, instantáneo: criaturas de 2–3 manás o remate a la cara."},
-    "Sear": {"rol": "respuesta", "estrategia": "4 de daño a una criatura o planeswalker en el turno rival."},
-    "Way of the Pyromancer": {"rol": "motor", "estrategia": "El motor del mazo: ficha de Jace con 2 de lealtad y «+1: Añade {R}» para todos tus planeswalkers. Juégala en el turno 2."},
-    "Magda, the Hoardmaster": {"rol": "motor", "estrategia": "Un Tesoro girado en cada turno en que cometes un delito (apuntar al rival o a lo suyo). Con tres Tesoros, un dragón 4/4 volador con prisa."},
-    "Ashling, Rekindled": {"rol": "motor", "estrategia": "Saquea al entrar. Pagando {U} se transforma y da dos manás cada turno para hechizos de valor 4 o más: Chandra, Smaug, Ugin, Emrakul."},
-    "The Misty Mountains Cold": {"rol": "motor", "estrategia": "Un Tesoro por capítulo; con cuatro Tesoros, se sacrifica y crea un dragón 6/6 volador."},
-    "Tablet of Discovery": {"rol": "motor", "estrategia": "Maná extra: {R}, o {R}{R} para instantáneos y conjuros (chispas e Improvisation Capstone)."},
-    "Chandra, Torch of Defiance": {"rol": "amenaza", "estrategia": "Su +1 da {R}{R} para Ugin; su −3 mata una criatura; el otro +1 roba o hace 2 de daño."},
-    "Smaug the Magnificent": {"rol": "amenaza", "estrategia": "Volador con prisa que crea un Tesoro en cada mantenimiento y hace daño según tus Tesoros al atacar."},
-    "Ajani Unrelenting": {"rol": "amenaza", "estrategia": "Un Cadete 2/2 por cada habilidad de lealtad que actives, de cualquier planeswalker. Su −3 barre la mesa salvo tus fichas."},
-    "Ugin, Eye of the Storms": {"rol": "amenaza", "estrategia": "Exilia lo mejor del rival al lanzarse. Su 0 da {C}{C}{C} para Emrakul; su +2 roba y da vida."},
-    "Emrakul, the Exigent Doom": {"rol": "amenaza", "estrategia": "El remate. Exíliala de la mano por {3} para doblar una tierra y lánzala desde el exilio; al lanzarla se destapan tus tierras."},
-    "Improvisation Capstone": {"rol": "amenaza", "estrategia": "Exilia cartas hasta sumar valor de maná 4 o más y lanza gratis lo que salga. Si sale Emrakul, la lanzas sin pagar."},
-    "Riverpyre Verge": {"rol": "tierra", "estrategia": "Da {R}, o {U} si controlas una Mountain: es tu fuente de azul para Ashling."},
-    "Fountainport": {"rol": "tierra", "estrategia": "Sumidero de maná al final: Tesoros, peces o robo."},
-    "Petrified Hamlet": {"rol": "tierra", "estrategia": "Nombra la tierra con habilidades del rival (una tierra que se convierte en criatura, por ejemplo) para apagarla."}
+    "Burst Lightning": {
+      "rol": "respuesta",
+      "estrategia": "La chispa del turno 1: mata la primera criatura rival. Con kicker, 4 de daño al final de la partida. Con Magda en mesa, además da un Tesoro."
+    },
+    "Lightning Strike": {
+      "rol": "respuesta",
+      "estrategia": "3 de daño a cualquier objetivo, instantáneo: criaturas de 2–3 manás o remate a la cara."
+    },
+    "Sear": {
+      "rol": "respuesta",
+      "estrategia": "4 de daño a una criatura o planeswalker en el turno rival."
+    },
+    "Way of the Pyromancer": {
+      "rol": "motor",
+      "estrategia": "El motor del mazo: ficha de Jace con 2 de lealtad y «+1: Añade {R}» para todos tus planeswalkers. Juégala en el turno 2."
+    },
+    "Magda, the Hoardmaster": {
+      "rol": "motor",
+      "estrategia": "Un Tesoro girado en cada turno en que cometes un delito (apuntar al rival o a lo suyo). Con tres Tesoros, un dragón 4/4 volador con prisa."
+    },
+    "Ashling, Rekindled": {
+      "rol": "motor",
+      "estrategia": "Saquea al entrar. Pagando {U} se transforma y da dos manás cada turno para hechizos de valor 4 o más: Chandra, Smaug, Ugin, Emrakul."
+    },
+    "The Misty Mountains Cold": {
+      "rol": "motor",
+      "estrategia": "Un Tesoro por capítulo; con cuatro Tesoros, se sacrifica y crea un dragón 6/6 volador."
+    },
+    "Tablet of Discovery": {
+      "rol": "motor",
+      "estrategia": "Maná extra: {R}, o {R}{R} para instantáneos y conjuros (chispas e Improvisation Capstone)."
+    },
+    "Chandra, Torch of Defiance": {
+      "rol": "amenaza",
+      "estrategia": "Su +1 da {R}{R} para Ugin; su −3 mata una criatura; el otro +1 roba o hace 2 de daño."
+    },
+    "Smaug the Magnificent": {
+      "rol": "amenaza",
+      "estrategia": "Volador con prisa que crea un Tesoro en cada mantenimiento y hace daño según tus Tesoros al atacar."
+    },
+    "Ajani Unrelenting": {
+      "rol": "amenaza",
+      "estrategia": "Un Cadete 2/2 por cada habilidad de lealtad que actives, de cualquier planeswalker. Su −3 barre la mesa salvo tus fichas."
+    },
+    "Ugin, Eye of the Storms": {
+      "rol": "amenaza",
+      "estrategia": "Exilia lo mejor del rival al lanzarse. Su 0 da {C}{C}{C} para Emrakul; su +2 roba y da vida."
+    },
+    "Emrakul, the Exigent Doom": {
+      "rol": "amenaza",
+      "estrategia": "El remate. Exíliala de la mano por {3} para doblar una tierra y lánzala desde el exilio; al lanzarla se destapan tus tierras."
+    },
+    "Improvisation Capstone": {
+      "rol": "amenaza",
+      "estrategia": "Exilia cartas hasta sumar valor de maná 4 o más y lanza gratis lo que salga. Si sale Emrakul, la lanzas sin pagar."
+    },
+    "Riverpyre Verge": {
+      "rol": "tierra",
+      "estrategia": "Da {R}, o {U} si controlas una Mountain: es tu fuente de azul para Ashling."
+    },
+    "Fountainport": {
+      "rol": "tierra",
+      "estrategia": "Sumidero de maná al final: Tesoros, peces o robo."
+    },
+    "Petrified Hamlet": {
+      "rol": "tierra",
+      "estrategia": "Nombra la tierra con habilidades del rival (una tierra que se convierte en criatura, por ejemplo) para apagarla."
+    }
   },
   "sinergias": [
     {
       "nombre": "Way, Chandra en el 3, Ugin en el 4",
       "bloque": "El motor de planeswalkers",
-      "tipo": "sinergia", "fuerza": 3, "turno": "T2-T4",
-      "piezas": ["Way of the Pyromancer", "Chandra, Torch of Defiance", "Ugin, Eye of the Storms"],
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "T2-T4",
+      "piezas": [
+        "Way of the Pyromancer",
+        "Chandra, Torch of Defiance",
+        "Ugin, Eye of the Storms"
+      ],
       "resumen": "Way crea una ficha de Jace y da «+1: Añade {R}» a todos tus planeswalkers. Cada planeswalker que bajas es un maná más el turno siguiente.",
       "pasos": [
         "T2: Way of the Pyromancer → ficha de Jace con 2 de lealtad.",
@@ -68,35 +152,74 @@
       ],
       "aviso": "Las habilidades de lealtad solo se activan en tu fase principal: este maná no sirve para chispas en el turno rival.",
       "citas": [
-        {"carta": "Way of the Pyromancer", "texto": "first create a blue Jace planeswalker token"},
-        {"carta": "Way of the Pyromancer", "texto": "Planeswalkers you control have"},
-        {"carta": "Chandra, Torch of Defiance", "texto": "+1: Add {R}{R}."},
-        {"carta": "Ugin, Eye of the Storms", "texto": "When you cast this spell, exile up to one target permanent that's one or more colors."}
+        {
+          "carta": "Way of the Pyromancer",
+          "texto": "first create a blue Jace planeswalker token"
+        },
+        {
+          "carta": "Way of the Pyromancer",
+          "texto": "Planeswalkers you control have"
+        },
+        {
+          "carta": "Chandra, Torch of Defiance",
+          "texto": "+1: Add {R}{R}."
+        },
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "When you cast this spell, exile up to one target permanent that's one or more colors."
+        }
       ],
-      "fuentes": ["goldfish"]
+      "fuentes": [
+        "goldfish"
+      ]
     },
     {
       "nombre": "Ajani crea un Cadete con cada habilidad de lealtad",
       "bloque": "El motor de planeswalkers",
-      "tipo": "sinergia", "fuerza": 2, "turno": "T6+",
-      "piezas": ["Ajani Unrelenting", "Way of the Pyromancer", "Chandra, Torch of Defiance"],
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "T6+",
+      "piezas": [
+        "Ajani Unrelenting",
+        "Way of the Pyromancer",
+        "Chandra, Torch of Defiance"
+      ],
       "resumen": "Ajani crea un 2/2 cada vez que activas una habilidad de lealtad, de cualquier planeswalker. Con la ficha de Jace, Chandra y Ajani en mesa, son tres Cadetes por turno además del maná.",
       "pasos": [
         "Activa primero el +1 de Jace ({R}) y el de Chandra: un Cadete con cada uno.",
         "Deja el +1 de Ajani para el final: da +1/+0 y prisa a todas tus criaturas en mesa, incluidos los Cadetes de antes y el que crea el propio Ajani."
       ],
       "citas": [
-        {"carta": "Ajani Unrelenting", "texto": "Whenever you activate a loyalty ability, create a 2/2 colorless Wizard Soldier creature token named Cadet."},
-        {"carta": "Ajani Unrelenting", "texto": "if you activate his first loyalty ability, the token created will get +1/+0 and gain haste until end of turn"},
-        {"carta": "Way of the Pyromancer", "texto": "Planeswalkers you control have"},
-        {"carta": "Chandra, Torch of Defiance", "texto": "+1: Add {R}{R}."}
+        {
+          "carta": "Ajani Unrelenting",
+          "texto": "Whenever you activate a loyalty ability, create a 2/2 colorless Wizard Soldier creature token named Cadet."
+        },
+        {
+          "carta": "Ajani Unrelenting",
+          "texto": "if you activate his first loyalty ability, the token created will get +1/+0 and gain haste until end of turn"
+        },
+        {
+          "carta": "Way of the Pyromancer",
+          "texto": "Planeswalkers you control have"
+        },
+        {
+          "carta": "Chandra, Torch of Defiance",
+          "texto": "+1: Add {R}{R}."
+        }
       ]
     },
     {
       "nombre": "Cada chispa al rival es un Tesoro",
       "bloque": "Chispas y Tesoros",
-      "tipo": "sinergia", "fuerza": 2, "turno": "T2+",
-      "piezas": ["Magda, the Hoardmaster", "Burst Lightning", "Lightning Strike", "Sear"],
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "T2+",
+      "piezas": [
+        "Magda, the Hoardmaster",
+        "Burst Lightning",
+        "Lightning Strike",
+        "Sear"
+      ],
       "resumen": "Apuntar al rival o a lo suyo es un delito. Con Magda en mesa, la primera chispa de cada turno crea un Tesoro girado, aunque el hechizo no llegue a resolverse.",
       "pasos": [
         "T2: Magda.",
@@ -105,18 +228,39 @@
       ],
       "aviso": "Solo un Tesoro por turno, aunque lances varias chispas.",
       "citas": [
-        {"carta": "Magda, the Hoardmaster", "texto": "Whenever you commit a crime, create a tapped Treasure token. This ability triggers only once each turn."},
-        {"carta": "Magda, the Hoardmaster", "texto": "The spell or ability that constituted a crime doesn’t have to have resolved yet or at all."},
-        {"carta": "Burst Lightning", "texto": "Burst Lightning deals 2 damage to any target."},
-        {"carta": "Lightning Strike", "texto": "Lightning Strike deals 3 damage to any target."},
-        {"carta": "Sear", "texto": "Sear deals 4 damage to target creature or planeswalker."}
+        {
+          "carta": "Magda, the Hoardmaster",
+          "texto": "Whenever you commit a crime, create a tapped Treasure token. This ability triggers only once each turn."
+        },
+        {
+          "carta": "Magda, the Hoardmaster",
+          "texto": "The spell or ability that constituted a crime doesn’t have to have resolved yet or at all."
+        },
+        {
+          "carta": "Burst Lightning",
+          "texto": "Burst Lightning deals 2 damage to any target."
+        },
+        {
+          "carta": "Lightning Strike",
+          "texto": "Lightning Strike deals 3 damage to any target."
+        },
+        {
+          "carta": "Sear",
+          "texto": "Sear deals 4 damage to target creature or planeswalker."
+        }
       ]
     },
     {
       "nombre": "Los Tesoros: maná, dragón o daño de Smaug",
       "bloque": "Chispas y Tesoros",
-      "tipo": "conflicto", "fuerza": 2, "turno": "T4+",
-      "piezas": ["Smaug the Magnificent", "Magda, the Hoardmaster", "The Misty Mountains Cold"],
+      "tipo": "conflicto",
+      "fuerza": 2,
+      "turno": "T4+",
+      "piezas": [
+        "Smaug the Magnificent",
+        "Magda, the Hoardmaster",
+        "The Misty Mountains Cold"
+      ],
       "resumen": "Los mismos Tesoros sirven para tres cosas: maná para Ugin y Emrakul, el dragón 4/4 de Magda (sacrificando tres) o el daño de Smaug al atacar. Y The Misty Mountains Cold necesita que tengas cuatro para darte su 6/6.",
       "pasos": [
         "Si te falta maná para Ugin o Emrakul, gástalos.",
@@ -124,16 +268,31 @@
         "Con Smaug atacando, cada Tesoro que guardas es un punto de daño más."
       ],
       "citas": [
-        {"carta": "Smaug the Magnificent", "texto": "Whenever Smaug attacks, he deals damage equal to the number of Treasures you control to any target."},
-        {"carta": "Magda, the Hoardmaster", "texto": "Sacrifice three Treasures: Create a 4/4 red Scorpion Dragon creature token with flying and haste."},
-        {"carta": "The Misty Mountains Cold", "texto": "Then if you control four or more Treasures, sacrifice this Saga. If you do, create a 6/6 red Dragon creature token with flying."}
+        {
+          "carta": "Smaug the Magnificent",
+          "texto": "Whenever Smaug attacks, he deals damage equal to the number of Treasures you control to any target."
+        },
+        {
+          "carta": "Magda, the Hoardmaster",
+          "texto": "Sacrifice three Treasures: Create a 4/4 red Scorpion Dragon creature token with flying and haste."
+        },
+        {
+          "carta": "The Misty Mountains Cold",
+          "texto": "Then if you control four or more Treasures, sacrifice this Saga. If you do, create a 6/6 red Dragon creature token with flying."
+        }
       ]
     },
     {
       "nombre": "Ashling transformada: dos manás para lo caro",
       "bloque": "El motor de planeswalkers",
-      "tipo": "sinergia", "fuerza": 2, "turno": "T3+",
-      "piezas": ["Ashling, Rekindled", "Riverpyre Verge", "Ugin, Eye of the Storms"],
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "T3+",
+      "piezas": [
+        "Ashling, Rekindled",
+        "Riverpyre Verge",
+        "Ugin, Eye of the Storms"
+      ],
       "resumen": "Pagando {U} al inicio de tu fase principal, Ashling se transforma y desde entonces da dos manás en cada turno para hechizos de valor 4 o más: Chandra, Smaug, Ajani, Ugin, Emrakul. El {U} sale de Riverpyre Verge o de un Tesoro.",
       "pasos": [
         "T2: Ashling (saquea si quieres).",
@@ -141,17 +300,34 @@
         "T4: otros dos manás de Ashling + tierras → Ugin."
       ],
       "citas": [
-        {"carta": "Ashling, Rekindled", "texto": "At the beginning of your first main phase, you may pay {U}. If you do, transform Ashling."},
-        {"carta": "Ashling, Rekindled", "texto": "add two mana of any one color. Spend this mana only to cast spells with mana value 4 or greater."},
-        {"carta": "Riverpyre Verge", "texto": "{T}: Add {U}. Activate only if you control an Island or a Mountain."},
-        {"carta": "Ugin, Eye of the Storms", "texto": "0: Add {C}{C}{C}."}
+        {
+          "carta": "Ashling, Rekindled",
+          "texto": "At the beginning of your first main phase, you may pay {U}. If you do, transform Ashling."
+        },
+        {
+          "carta": "Ashling, Rekindled",
+          "texto": "add two mana of any one color. Spend this mana only to cast spells with mana value 4 or greater."
+        },
+        {
+          "carta": "Riverpyre Verge",
+          "texto": "{T}: Add {U}. Activate only if you control an Island or a Mountain."
+        },
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "0: Add {C}{C}{C}."
+        }
       ]
     },
     {
       "nombre": "Emrakul desde el exilio",
       "bloque": "El remate",
-      "tipo": "sinergia", "fuerza": 3, "turno": "T3+",
-      "piezas": ["Emrakul, the Exigent Doom", "Ugin, Eye of the Storms"],
+      "tipo": "sinergia",
+      "fuerza": 3,
+      "turno": "T3+",
+      "piezas": [
+        "Emrakul, the Exigent Doom",
+        "Ugin, Eye of the Storms"
+      ],
       "resumen": "Por {3} exilias a Emrakul de la mano y una tierra pasa a dar dos manás. Con el 0 de Ugin ({C}{C}{C}) y los Tesoros llegas a los 10, y al lanzarla se destapan tus tierras. Al ser incolora, Ugin exilia algo más.",
       "pasos": [
         "T3: activa Emrakul: una Mountain da {C}{C}.",
@@ -159,91 +335,211 @@
         "Se destapan tus tierras: lanza otra cosa con ellas."
       ],
       "citas": [
-        {"carta": "Emrakul, the Exigent Doom", "texto": "Exile this card from your hand: Target land gains"},
-        {"carta": "Emrakul, the Exigent Doom", "texto": "When you cast this spell, untap all lands you control."},
-        {"carta": "Ugin, Eye of the Storms", "texto": "Whenever you cast a colorless spell, exile up to one target permanent that's one or more colors."},
-        {"carta": "Ugin, Eye of the Storms", "texto": "0: Add {C}{C}{C}."}
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "Exile this card from your hand: Target land gains"
+        },
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "When you cast this spell, untap all lands you control."
+        },
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "Whenever you cast a colorless spell, exile up to one target permanent that's one or more colors."
+        },
+        {
+          "carta": "Ugin, Eye of the Storms",
+          "texto": "0: Add {C}{C}{C}."
+        }
       ]
     },
     {
       "nombre": "Improvisation Capstone puede sacar a Emrakul gratis",
       "bloque": "El remate",
-      "tipo": "sinergia", "fuerza": 2, "turno": "T7+",
-      "piezas": ["Improvisation Capstone", "Emrakul, the Exigent Doom", "Tablet of Discovery"],
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "T7+",
+      "piezas": [
+        "Improvisation Capstone",
+        "Emrakul, the Exigent Doom",
+        "Tablet of Discovery"
+      ],
       "resumen": "Capstone exilia cartas hasta sumar valor 4 o más y te deja lanzar gratis lo que salga. Si aparece Emrakul (o Ugin, o Smaug), entra sin pagar, y el disparo de Emrakul al lanzarse destapa tus tierras igual. Tablet paga dos de los siete manás de Capstone.",
       "citas": [
-        {"carta": "Improvisation Capstone", "texto": "You may cast any number of spells from among them without paying their mana costs."},
-        {"carta": "Improvisation Capstone", "texto": "Timing restrictions based on the cards' types are ignored."},
-        {"carta": "Emrakul, the Exigent Doom", "texto": "When you cast this spell, untap all lands you control."},
-        {"carta": "Tablet of Discovery", "texto": "{T}: Add {R}{R}. Spend this mana only to cast instant and sorcery spells."}
+        {
+          "carta": "Improvisation Capstone",
+          "texto": "You may cast any number of spells from among them without paying their mana costs."
+        },
+        {
+          "carta": "Improvisation Capstone",
+          "texto": "Timing restrictions based on the cards' types are ignored."
+        },
+        {
+          "carta": "Emrakul, the Exigent Doom",
+          "texto": "When you cast this spell, untap all lands you control."
+        },
+        {
+          "carta": "Tablet of Discovery",
+          "texto": "{T}: Add {R}{R}. Spend this mana only to cast instant and sorcery spells."
+        }
       ]
     },
     {
       "nombre": "Chispas para los primeros turnos",
       "bloque": "Sobrevivir",
-      "tipo": "sinergia", "fuerza": 2, "turno": "T1-T3",
-      "piezas": ["Burst Lightning", "Lightning Strike", "Sear", "Chandra, Torch of Defiance"],
+      "tipo": "sinergia",
+      "fuerza": 2,
+      "turno": "T1-T3",
+      "piezas": [
+        "Burst Lightning",
+        "Lightning Strike",
+        "Sear",
+        "Chandra, Torch of Defiance"
+      ],
       "resumen": "Mientras montas los planeswalkers, las chispas mantienen la mesa limpia: Burst para lo de 2 de resistencia, Strike para lo de 3, Sear y el −3 de Chandra para lo de 4. Así nadie ataca a tu ficha de Jace ni a Chandra.",
       "citas": [
-        {"carta": "Burst Lightning", "texto": "If this spell was kicked, it deals 4 damage instead."},
-        {"carta": "Lightning Strike", "texto": "Lightning Strike deals 3 damage to any target."},
-        {"carta": "Sear", "texto": "Sear deals 4 damage to target creature or planeswalker."},
-        {"carta": "Chandra, Torch of Defiance", "texto": "Chandra deals 4 damage to target creature."}
+        {
+          "carta": "Burst Lightning",
+          "texto": "If this spell was kicked, it deals 4 damage instead."
+        },
+        {
+          "carta": "Lightning Strike",
+          "texto": "Lightning Strike deals 3 damage to any target."
+        },
+        {
+          "carta": "Sear",
+          "texto": "Sear deals 4 damage to target creature or planeswalker."
+        },
+        {
+          "carta": "Chandra, Torch of Defiance",
+          "texto": "Chandra deals 4 damage to target creature."
+        }
       ]
     },
     {
       "nombre": "El −3 de Ajani también mata lo tuyo",
       "bloque": "Ojo",
-      "tipo": "conflicto", "fuerza": 2, "turno": "Ojo",
-      "piezas": ["Ajani Unrelenting", "Magda, the Hoardmaster", "Smaug the Magnificent", "Ashling, Rekindled"],
+      "tipo": "conflicto",
+      "fuerza": 2,
+      "turno": "Ojo",
+      "piezas": [
+        "Ajani Unrelenting",
+        "Magda, the Hoardmaster",
+        "Smaug the Magnificent",
+        "Ashling, Rekindled"
+      ],
       "resumen": "Hace 4 de daño a todas las criaturas menos a <b>tus fichas</b>: Magda, Ashling y Smaug mueren; los Cadetes y los dragones de Magda y de Misty sobreviven. Úsalo cuando tu mesa sea sobre todo de fichas.",
       "citas": [
-        {"carta": "Ajani Unrelenting", "texto": "Ajani deals 4 damage to each creature except for tokens you control."},
-        {"carta": "Magda, the Hoardmaster", "texto": "Create a 4/4 red Scorpion Dragon creature token"},
-        {"carta": "Smaug the Magnificent", "texto": "Flying, haste"},
-        {"carta": "Ashling, Rekindled", "texto": "you may discard a card. If you do, draw a card."}
+        {
+          "carta": "Ajani Unrelenting",
+          "texto": "Ajani deals 4 damage to each creature except for tokens you control."
+        },
+        {
+          "carta": "Magda, the Hoardmaster",
+          "texto": "Create a 4/4 red Scorpion Dragon creature token"
+        },
+        {
+          "carta": "Smaug the Magnificent",
+          "texto": "Flying, haste"
+        },
+        {
+          "carta": "Ashling, Rekindled",
+          "texto": "you may discard a card. If you do, draw a card."
+        }
       ]
     },
     {
       "nombre": "El maná de Way solo en tu fase principal",
       "bloque": "Ojo",
-      "tipo": "aviso", "fuerza": 2, "turno": "Ojo",
-      "piezas": ["Way of the Pyromancer"],
+      "tipo": "aviso",
+      "fuerza": 2,
+      "turno": "Ojo",
+      "piezas": [
+        "Way of the Pyromancer"
+      ],
       "resumen": "El «+1: Añade {R}» es una habilidad de lealtad, no una de maná: usa la pila, solo se activa en tu fase principal con la pila vacía y una vez por turno y planeswalker. No sirve para responder en el turno rival.",
       "citas": [
-        {"carta": "Way of the Pyromancer", "texto": "Loyalty abilities can't be mana abilities."},
-        {"carta": "Way of the Pyromancer", "texto": "Only one loyalty ability of each planeswalker may be activated per turn"}
+        {
+          "carta": "Way of the Pyromancer",
+          "texto": "Loyalty abilities can't be mana abilities."
+        },
+        {
+          "carta": "Way of the Pyromancer",
+          "texto": "Only one loyalty ability of each planeswalker may be activated per turn"
+        }
       ]
     },
     {
       "nombre": "Una segunda Way solo suma lealtad",
       "bloque": "Ojo",
-      "tipo": "aviso", "fuerza": 1, "turno": "Ojo",
-      "piezas": ["Way of the Pyromancer"],
+      "tipo": "aviso",
+      "fuerza": 1,
+      "turno": "Ojo",
+      "piezas": [
+        "Way of the Pyromancer"
+      ],
       "resumen": "Si ya tienes una ficha de Jace, la segunda Way no crea otra: pone 2 contadores en la que tienes. Y como Way es legendaria, solo te quedas con una en mesa.",
       "citas": [
-        {"carta": "Way of the Pyromancer", "texto": "If you control a Jace planeswalker token, you can't choose to create a new one when you empower Jace."}
+        {
+          "carta": "Way of the Pyromancer",
+          "texto": "If you control a Jace planeswalker token, you can't choose to create a new one when you empower Jace."
+        }
       ]
     },
     {
       "nombre": "Poco azul para Ashling",
       "bloque": "Ojo",
-      "tipo": "aviso", "fuerza": 1, "turno": "Ojo",
-      "piezas": ["Ashling, Rekindled", "Riverpyre Verge", "Magda, the Hoardmaster"],
+      "tipo": "aviso",
+      "fuerza": 1,
+      "turno": "Ojo",
+      "piezas": [
+        "Ashling, Rekindled",
+        "Riverpyre Verge",
+        "Magda, the Hoardmaster"
+      ],
       "resumen": "Solo 4 Riverpyre Verge dan {U}. Si no tienes ninguna, un Tesoro de Magda, Smaug o Misty también lo paga. Sin azul, Ashling es solo un 2 manás que saquea.",
       "citas": [
-        {"carta": "Ashling, Rekindled", "texto": "you may pay {U}. If you do, transform Ashling."},
-        {"carta": "Riverpyre Verge", "texto": "Activate only if you control an Island or a Mountain."},
-        {"carta": "Magda, the Hoardmaster", "texto": "create a tapped Treasure token"}
+        {
+          "carta": "Ashling, Rekindled",
+          "texto": "you may pay {U}. If you do, transform Ashling."
+        },
+        {
+          "carta": "Riverpyre Verge",
+          "texto": "Activate only if you control an Island or a Mountain."
+        },
+        {
+          "carta": "Magda, the Hoardmaster",
+          "texto": "create a tapped Treasure token"
+        }
       ]
     }
   ],
   "orden": [
-    {"turno": "T1", "carta": "Burst Lightning", "resumen": "Guárdala para la primera criatura del rival."},
-    {"turno": "T2", "carta": "Way of the Pyromancer", "resumen": "Prioridad máxima. Si no la tienes: Magda o Ashling."},
-    {"turno": "T3", "carta": "Chandra, Torch of Defiance", "resumen": "Con el {R} de Jace. +1 ({R}{R}) si vas a por Ugin; −3 si hay una amenaza."},
-    {"turno": "T4", "carta": "Ugin, Eye of the Storms", "resumen": "Exilia lo mejor del rival al lanzarlo."},
-    {"turno": "T5+", "carta": "Emrakul, the Exigent Doom", "resumen": "Desde el exilio, con el 0 de Ugin y los Tesoros; o con Improvisation Capstone."}
+    {
+      "turno": "T1",
+      "carta": "Burst Lightning",
+      "resumen": "Guárdala para la primera criatura del rival."
+    },
+    {
+      "turno": "T2",
+      "carta": "Way of the Pyromancer",
+      "resumen": "Prioridad máxima. Si no la tienes: Magda o Ashling."
+    },
+    {
+      "turno": "T3",
+      "carta": "Chandra, Torch of Defiance",
+      "resumen": "Con el {R} de Jace. +1 ({R}{R}) si vas a por Ugin; −3 si hay una amenaza."
+    },
+    {
+      "turno": "T4",
+      "carta": "Ugin, Eye of the Storms",
+      "resumen": "Exilia lo mejor del rival al lanzarlo."
+    },
+    {
+      "turno": "T5+",
+      "carta": "Emrakul, the Exigent Doom",
+      "resumen": "Desde el exilio, con el 0 de Ugin y los Tesoros; o con Improvisation Capstone."
+    }
   ],
   "reglas_oro": [
     "Way of the Pyromancer en el turno 2 por encima de todo: cada planeswalker luego es un maná más.",
@@ -252,5 +548,118 @@
     "El +1 de Ajani, el último: así todos los Cadetes del turno atacan con prisa.",
     "El −3 de Ajani mata a Magda, Ashling y Smaug: solo con mesa de fichas.",
     "Exilia a Emrakul por {3} pronto: es rampa aunque nunca la lances."
-  ]
+  ],
+  "mulligan": {
+    "resumen": "El mazo necesita tierras pronto y una jugada barata que aguante los primeros turnos. Lo caro (Ugin, Ajani, Capstone) no salva una mano que no hace nada hasta el turno 4.",
+    "tierras": [
+      2,
+      5
+    ],
+    "quedarse": [
+      "3–4 tierras con una jugada de 2 (Way of the Pyromancer, Magda o Ashling) o una chispa: la mano ideal.",
+      "2 tierras con Way of the Pyromancer o con dos cartas de 1–2 manás: la ficha de Jace pone el tercer maná. Si empiezas segundo, mejor todavía.",
+      "5 tierras con Chandra, Smaug o Ugin y algo barato para los primeros turnos.",
+      {
+        "texto": "Emrakul en la mano no es una carta muerta: por {3} es rampa en el turno 3.",
+        "cartas": [
+          "Emrakul, the Exigent Doom"
+        ]
+      }
+    ],
+    "mulligan": [
+      "0–1 tierras, siempre: ni Way ni Tablet llegan a tiempo.",
+      "6–7 tierras.",
+      {
+        "texto": "Manos que no hacen nada antes del turno 4: solo Ugin, Ajani, Capstone o Emrakul y tierras.",
+        "cartas": [
+          "Ugin, Eye of the Storms",
+          "Ajani Unrelenting",
+          "Improvisation Capstone"
+        ]
+      },
+      "2 tierras sin ninguna carta de 1–2 manás."
+    ],
+    "tras_mulligan": "Con 6 cartas, manda al fondo primero lo caro y repetido: la segunda Emrakul, el segundo Ugin o Ajani, Capstone. Quédate con 3 tierras si puedes.",
+    "claves": [
+      {
+        "nombre": "Way of the Pyromancer",
+        "cartas": [
+          "Way of the Pyromancer"
+        ]
+      },
+      {
+        "nombre": "Una jugada de 2 (Way, Magda o Ashling)",
+        "cartas": [
+          "Way of the Pyromancer",
+          "Magda, the Hoardmaster",
+          "Ashling, Rekindled"
+        ]
+      },
+      {
+        "nombre": "Una chispa barata (Burst, Strike o Sear)",
+        "cartas": [
+          "Burst Lightning",
+          "Lightning Strike",
+          "Sear"
+        ]
+      }
+    ]
+  },
+  "tierras": {
+    "resumen": "Casi todo el mazo pide solo rojo, así que la base es sencilla: 16 Mountain y 4 Riverpyre Verge dan R. Las únicas sutilezas son el azul para Ashling (solo de Riverpyre Verge o de un Tesoro) y las 4 tierras que dan maná incoloro, que no pagan los símbolos rojos.",
+    "secuencia": [
+      "T1: Mountain. Así una Riverpyre Verge ya puede dar azul desde el turno siguiente.",
+      "T2: Riverpyre Verge si tienes Ashling: tiene que estar en mesa antes del turno en que pagas su {U}.",
+      "Fountainport y Petrified Hamlet, cuando ya tengas cubierto el rojo de tus cartas (Chandra y Smaug piden RR).",
+      "Petrified Hamlet, mejor cuando hayas visto qué tierras con habilidades juega el rival."
+    ],
+    "detalle": {
+      "Mountain": {
+        "que_hace": "Da {R}. Además hace que Riverpyre Verge pueda dar azul.",
+        "como_jugarla": "Tu tierra del turno 1 casi siempre. Con 16 copias, el rojo no suele faltar."
+      },
+      "Riverpyre Verge": {
+        "que_hace": "Da {R} siempre, y {U} si controlas una Island o una Mountain. Es tu única tierra que da azul, el que necesita Ashling para transformarse.",
+        "como_jugarla": "Bájala después de una Mountain. El {U} de Ashling se paga al empezar tu fase principal, antes de jugar la tierra del turno: la Verge tiene que estar ya en mesa, sin girar.",
+        "citas": [
+          {
+            "carta": "Riverpyre Verge",
+            "texto": "{T}: Add {U}. Activate only if you control an Island or a Mountain."
+          },
+          {
+            "carta": "Ashling, Rekindled",
+            "texto": "At the beginning of your first main phase, you may pay {U}."
+          }
+        ]
+      },
+      "Fountainport": {
+        "que_hace": "Da {C}, que no paga símbolos rojos. Al final de la partida gasta el maná que te sobra: Tesoros, peces 1/1 o robo sacrificando una ficha.",
+        "como_jugarla": "No la bajes en los primeros turnos si te falta rojo. Más tarde, sacrifica un Cadete de Ajani o un Tesoro sobrante para robar, o fabrica Tesoros para Smaug y Magda.",
+        "citas": [
+          {
+            "carta": "Fountainport",
+            "texto": "{4}, {T}: Create a Treasure token."
+          },
+          {
+            "carta": "Fountainport",
+            "texto": "{2}, {T}, Sacrifice a token: Draw a card."
+          }
+        ]
+      },
+      "Petrified Hamlet": {
+        "que_hace": "Da {C}. Al entrar nombras una tierra, y las habilidades que no son de maná de las tierras con ese nombre dejan de funcionar, las del rival y las tuyas.",
+        "como_jugarla": "Guárdala hasta ver una tierra del rival que se convierta en criatura o que haga algo más que dar maná, y nombra esa. Nunca nombres Fountainport: también apagarías la tuya.",
+        "citas": [
+          {
+            "carta": "Petrified Hamlet",
+            "texto": "Activated abilities of sources with the chosen name can't be activated unless they're mana abilities."
+          },
+          {
+            "carta": "Petrified Hamlet",
+            "texto": "You can choose the name of any land card."
+          }
+        ]
+      }
+    }
+  }
 }

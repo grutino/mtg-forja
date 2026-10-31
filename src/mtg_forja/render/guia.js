@@ -93,6 +93,13 @@ ol.fuentes{font-size:13px;padding-left:22px}ol.fuentes a{color:var(--brasa)}
  margin:0 0 6px;color:var(--humo)}
 .cambio .lado .rejilla{display:flex;gap:10px;flex-wrap:wrap}
 .cambio .flecha{align-self:center;font-size:26px;color:var(--humo)}
+.tierra{display:flex;gap:18px;align-items:flex-start;margin-top:18px;padding-top:14px;
+ border-top:1px solid var(--lin)}
+.tierra .c{flex:0 0 auto;margin-left:10px}
+.tierra h3{margin:0 0 4px;font-size:17px}
+.tierra p{margin:0 0 8px;max-width:70ch}
+.tierra .k{font-family:var(--cond);text-transform:uppercase;letter-spacing:.1em;font-size:11px;
+ color:var(--humo);margin-right:6px}
 .plan{margin-top:20px}.plan h3{margin:0 0 4px;font-size:18px}.plan p{margin:0;max-width:75ch}
 footer{margin-top:52px;padding-top:18px;border-top:2px solid var(--tinta);font-size:12.5px;
  color:var(--humo);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
@@ -199,6 +206,45 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
       `<div class="grupo"><p class="eyebrow">${C.e(C.NOMBRE_ROL[rol] || rol)} ` +
       `<span>${cartas.reduce((a, c) => a + (c.copias || 0), 0)}</span></p>` +
       `<div class="rejilla">${cartas.map((c) => ficha(c, c.nombre)).join("")}</div></div>`).join("");
+    if (doc.tierras_guia) {
+      const t = doc.tierras_guia;
+      const filas = (t.detalle || []).map((d) => {
+        const citas = (d.citas || []).length ? '<ul class="citas">' + d.citas.map((ct) =>
+          `<li><b>${C.e(ct.carta)}</b>: <q>${C.e(ct.texto)}</q>` +
+          `<span class="org">${C.e(ct.origen || "")}</span></li>`).join("") + "</ul>" : "";
+        return `<div class="tierra">${ficha(idx[d.nombre] || d, d.nombre)}<div>` +
+          `<h3>${C.e(d.nombre)}</h3>` +
+          `<p><span class="k">Qué hace</span>${d.que_hace}</p>` +
+          `<p><span class="k">Cómo jugarla</span>${d.como_jugarla}</p>${citas}</div></div>`;
+      }).join("");
+      const sec = (t.secuencia || []).length
+        ? `<h3 style="margin-top:22px">En qué orden bajarlas</h3><ol class="sec">` +
+          t.secuencia.map((x) => `<li>${x}</li>`).join("") + "</ol>" : "";
+      partes.push('<section class="seccion"><p class="eyebrow">La base de maná</p><h2>Las tierras</h2>' +
+        (t.resumen ? `<p class="intro">${t.resumen}${C.refs(t.fuentes, doc)}</p>` : "") +
+        sec + filas + "</section>");
+    }
+    if (doc.mulligan) {
+      const m = doc.mulligan, st = m.estadisticas || {};
+      const li = (l) => (l || []).map((it) =>
+        `<li>${typeof it === "string" ? it : (it.texto || "")}</li>`).join("");
+      const pct = (p) => `${Math.round(p * 100)} %`;
+      const datos = [];
+      if (st.en_rango_7 !== undefined) {
+        datos.push(`Mano de 7 con ${m.tierras[0]}–${m.tierras[1]} tierras: <b>${pct(st.en_rango_7)}</b>; ` +
+          `tras mulligan a 6: <b>${pct(st.en_rango_6)}</b>.`);
+      }
+      for (const k of st.claves || []) datos.push(`${C.e(k.nombre)}: <b>${pct(k.p7)}</b> en la mano de 7.`);
+      partes.push('<section class="seccion"><p class="eyebrow">Antes de empezar</p><h2>Mulligan</h2>' +
+        (m.resumen ? `<p class="intro">${m.resumen}${C.refs(m.fuentes, doc)}</p>` : "") +
+        '<div class="veredicto"><div class="cols">' +
+        `<div><h4>Quédate</h4><ul>${li(m.quedarse)}</ul></div>` +
+        `<div><h4>Mulligan</h4><ul>${li(m.mulligan)}</ul></div></div>` +
+        (datos.length ? `<p style="margin:12px 0 0;font-size:13px;color:var(--humo)">${datos.join(" ")} ` +
+          `Calculado con ${st.tierras} tierras en ${st.cartas} cartas.</p>` : "") +
+        (m.tras_mulligan ? `<div class="ojo"><b>Si haces mulligan</b>${m.tras_mulligan}</div>` : "") +
+        "</div></section>");
+    }
     if ((doc.mejoras || []).length) {
       const lado = (titulo, lista, signo) =>
         `<div class="lado"><h4>${titulo}</h4><div class="rejilla">` +

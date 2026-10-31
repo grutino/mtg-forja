@@ -226,9 +226,152 @@ def validar(mazo: Mazo, analisis: dict[str, Any],
         if o.get("carta") and carta(o["carta"]) is None:
             errores.append(f"orden[{i}]: «{o['carta']}» no está en el mazo.")
 
+    # --- mulligan
+    principal = {c.nombre.lower() for c in mazo.principal}
+    errores += _validar_mulligan(analisis.get("mulligan"),
+                                 lambda n: n.strip().lower() in principal, ids_fuente)
+
+    # --- base de maná
+    errores += _validar_tierras(mazo, analisis.get("tierras"), carta, rul, ids_fuente)
+
     # --- mejoras propuestas
     errores += _validar_mejoras(mazo, analisis, ids_fuente, carta, rul, consultar)
     return errores
+
+
+# ---------------------------------------------------------------- base de maná
+
+def _validar_tierras(mazo: Mazo, t: Any, carta: Callable[[str], Any],
+                     rul: Callable[[Any], list[str]], ids_fuente: set) -> list[str]:
+    """Cómo se juega cada tierra lo explica el experto. Si da el apartado, tiene que
+    cubrir todas las tierras del mazo principal, y sus citas tienen que ser literales."""
+    if t is None:
+        return []
+    if not isinstance(t, dict) or not isinstance(t.get("detalle"), dict):
+        return ["'tierras' debe ser {resumen, secuencia, detalle: {nombre: {que_hace, como_jugarla}}}."]
+    errores: list[str] = []
+    tierras = {c.nombre.lower(): c.nombre for c in mazo.principal if c.es_tierra}
+    vistas = set()
+    for nombre, f in t["detalle"].items():
+        clave = str(nombre).strip().lower()
+        if clave not in tierras:
+            errores.append(f"tierras: «{nombre}» no es una tierra del mazo principal.")
+            continue
+        vistas.add(clave)
+        f = f or {}
+        for campo in ("que_hace", "como_jugarla"):
+            if not str(f.get(campo, "")).strip():
+                errores.append(f"tierras «{nombre}»: falta '{campo}'.")
+        for j, ct in enumerate(f.get("citas", []) or []):
+            c = carta(ct.get("carta", ""))
+            if c is None or _cita_valida(ct.get("texto", ""), c.oraculo, rul(c)) is None:
+                errores.append(f"tierras «{nombre}», cita {j + 1}: «{ct.get('texto', '')}» no aparece "
+                               f"literal en el oráculo ni en los rulings de «{ct.get('carta')}».")
+            else:
+                ct["origen"] = _cita_valida(ct.get("texto", ""), c.oraculo, rul(c))
+                ct["carta"] = c.nombre
+    for clave, nombre in tierras.items():
+        if clave not in vistas:
+            errores.append(f"tierras: falta explicar «{nombre}».")
+    for r in t.get("fuentes", []) or []:
+        if r not in ids_fuente:
+            errores.append(f"tierras: cita la fuente '{r}', que no está en 'fuentes'.")
+    return errores
+
+
+def _documento_tierras(mazo: Mazo, t: dict[str, Any]) -> dict[str, Any]:
+    por_clave = {str(k).strip().lower(): v for k, v in t.get("detalle", {}).items()}
+    detalle = []
+    for c in sorted((c for c in mazo.principal if c.es_tierra), key=lambda c: -c.copias):
+        f = por_clave.get(c.nombre.lower(), {})
+        detalle.append({"nombre": c.nombre, "copias": c.copias, "tipo": c.tipo,
+                        "basica": c.es_basica, "que_hace": f.get("que_hace", ""),
+                        "como_jugarla": f.get("como_jugarla", ""), "citas": f.get("citas", [])})
+    return {"resumen": t.get("resumen", ""), "secuencia": t.get("secuencia", []),
+            "fuentes": t.get("fuentes", []), "detalle": detalle}
+
+
+# ---------------------------------------------------------------- mulligan
+
+MANO = 7
+
+
+def _validar_mulligan(m: Any, en_principal: Callable[[str], bool], ids_fuente: set) -> list[str]:
+    """El criterio de mulligan es del experto; aquí solo se comprueba que esté completo
+    y que las cartas que nombra estén en el mazo principal."""
+    if m is None:
+        return []
+    if not isinstance(m, dict):
+        return ["'mulligan' debe ser un objeto {resumen, quedarse, mulligan, ...}."]
+    errores: list[str] = []
+    for campo in ("quedarse", "mulligan"):
+        lista = m.get(campo)
+        if not isinstance(lista, list) or not lista:
+            errores.append(f"mulligan: '{campo}' tiene que ser una lista con al menos un criterio.")
+            continue
+        for i, it in enumerate(lista):
+            texto = it if isinstance(it, str) else (it or {}).get("texto", "")
+            if not str(texto).strip():
+                errores.append(f"mulligan.{campo}[{i}]: falta el texto.")
+            if isinstance(it, dict):
+                for n in it.get("cartas", []) or []:
+                    if not en_principal(str(n)):
+                        errores.append(f"mulligan.{campo}[{i}]: «{n}» no está en el mazo principal.")
+    t = m.get("tierras")
+    if t is not None:
+        ok = (isinstance(t, list) and len(t) == 2 and all(isinstance(x, int) for x in t)
+              and 0 <= t[0] <= t[1] <= MANO)
+        if not ok:
+            errores.append("mulligan: 'tierras' debe ser [mínimo, máximo] entre 0 y 7.")
+    for i, k in enumerate(m.get("claves", []) or []):
+        if not isinstance(k, dict) or not str(k.get("nombre", "")).strip() or not k.get("cartas"):
+            errores.append(f"mulligan.claves[{i}]: necesita 'nombre' y 'cartas'.")
+            continue
+        for n in k["cartas"]:
+            if not en_principal(str(n)):
+                errores.append(f"mulligan.claves[{i}]: «{n}» no está en el mazo principal.")
+    for r in m.get("fuentes", []) or []:
+        if r not in ids_fuente:
+            errores.append(f"mulligan: cita la fuente '{r}', que no está en 'fuentes'.")
+    return errores
+
+
+def _hiper(exitos: int, total: int, robadas: int, k: int) -> float:
+    """Probabilidad de robar exactamente k éxitos (distribución hipergeométrica)."""
+    from math import comb
+    if k < 0 or k > robadas or k > exitos or robadas - k > total - exitos:
+        return 0.0
+    return comb(exitos, k) * comb(total - exitos, robadas - k) / comb(total, robadas)
+
+
+def estadisticas_mano(mazo: Mazo, m: dict[str, Any]) -> dict[str, Any]:
+    """Números exactos de la mano inicial. Es aritmética sobre la lista, no criterio."""
+    total, tierras = mazo.total, mazo.tierras
+    dist = [_hiper(tierras, total, MANO, k) for k in range(MANO + 1)]
+    fuera: dict[str, Any] = {"cartas": total, "tierras": tierras,
+                             "dist7": [round(p, 4) for p in dist]}
+    rango = m.get("tierras")
+    if rango:
+        lo, hi = rango
+        fuera["en_rango_7"] = round(sum(dist[lo:hi + 1]), 4)
+        # Mulligan de Londres: robas 7 y pones una al fondo. Con L tierras puedes
+        # quedarte con L (si tienes un hechizo que bajar) o con L-1 (si bajas una tierra).
+        p6 = 0.0
+        for L, p in enumerate(dist):
+            posibles = ({L} if L < MANO else set()) | ({L - 1} if L > 0 else set())
+            if any(lo <= x <= hi for x in posibles):
+                p6 += p
+        fuera["en_rango_6"] = round(p6, 4)
+    por_nombre = {c.nombre.lower(): c for c in mazo.principal}
+    claves = []
+    for k in m.get("claves", []) or []:
+        nombres = [por_nombre[n.strip().lower()].nombre for n in k["cartas"]
+                   if n.strip().lower() in por_nombre]
+        copias = sum(por_nombre[n.lower()].copias for n in nombres)
+        claves.append({"nombre": k["nombre"], "cartas": nombres, "copias": copias,
+                       "p7": round(1 - _hiper(copias, total, MANO, 0), 4)})
+    fuera["claves"] = claves
+    return fuera
 
 
 # ---------------------------------------------------------------- mejoras
@@ -425,6 +568,11 @@ def documento(mazo: Mazo, analisis: dict[str, Any]) -> dict[str, Any]:
             for m in analisis.get("mejoras", [])
         ],
         "formato": analisis.get("formato", ""),
+        "tierras_guia": (_documento_tierras(mazo, analisis["tierras"])
+                         if isinstance(analisis.get("tierras"), dict) else None),
+        "mulligan": ({**analisis["mulligan"],
+                      "estadisticas": estadisticas_mano(mazo, analisis["mulligan"])}
+                     if isinstance(analisis.get("mulligan"), dict) else None),
         "revision_experta": rev,
         "fuentes": analisis.get("fuentes", []),
         "no_resueltas": mazo.no_resueltas,

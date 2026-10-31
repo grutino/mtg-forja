@@ -95,6 +95,18 @@ de referencia), cítalos en `fuentes`.
   "reglas_oro": ["…"],
   "formato": "standard",
   "plataforma": "arena",
+  "mulligan": {
+    "resumen": "…", "tierras": [2, 4],
+    "quedarse": ["…", {"texto": "…", "cartas": ["A"]}],
+    "mulligan": ["…"],
+    "tras_mulligan": "qué mandar al fondo con 6",
+    "claves": [{"nombre": "Un elfo de coste 1", "cartas": ["A", "B"]}]
+  },
+  "tierras": {
+    "resumen": "…", "secuencia": ["T1: …", "…"],
+    "detalle": {"Nombre de tierra": {"que_hace": "…", "como_jugarla": "…",
+                                     "citas": [{"carta": "…", "texto": "literal"}]}}
+  },
   "mejoras": [{
     "titulo": "…", "nivel": "clara",
     "sale": [{"carta": "A", "copias": 2}],
@@ -119,9 +131,20 @@ Lo que comprueba el validador:
 | Lo que sale está en el mazo; lo que entra existe en Scryfall, es legal en `formato` y, con `plataforma: arena`, está en Arena | Una mejora que no se puede jugar no es una mejora |
 | Salen y entran las mismas cartas, nadie pasa de 4 copias salvo las básicas | El mazo sigue siendo legal |
 | Cada mejora lleva una cita literal (del mazo o de la carta que entra) o una fuente | El porqué se puede comprobar |
+| `mulligan`: `quedarse` y `mulligan` no vacíos, `tierras` entre 0 y 7, cartas nombradas en el mazo principal | La chuleta no promete manos imposibles |
+| `tierras`: todas las tierras del mazo principal explicadas, con `que_hace` y `como_jugarla` | Ninguna tierra queda sin explicar |
 
 `tipo`: `sinergia`, `conflicto` o `aviso`. `fuerza`: 1 a 3. `turno`: `T2`, `Tarde`,
 `Reacción`, `Ojo`. Puedes usar `<b>` en `resumen`, `pasos`, `aviso`, `veredicto` y `texto`.
+
+**Mulligan.** Sale en la cara 2 de la chuleta y en la guía. El criterio es tuyo: qué
+manos te quedas y cuáles devuelves, y qué mandar al fondo con 6 cartas. La forja añade
+la aritmética exacta: probabilidad de cada número de tierras en la mano de 7, de caer en
+el rango `tierras` con 7 y tras un mulligan a 6, y de ver al menos una de las `claves`.
+
+**Tierras.** Si das el apartado, explica **todas** las tierras del mazo principal: qué hace
+cada una y cómo jugarla bien (turno, orden, qué no hacer), más una `secuencia` corta de
+qué bajar primero. Las citas son opcionales y, si las pones, deben ser literales.
 
 **Mejoras propuestas.** Salen en la guía, en su propio apartado. Propón solo cambios
 muy claros (un fallo de maná, una carta que no encaja con el plan) o muy razonables

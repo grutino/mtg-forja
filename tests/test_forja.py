@@ -1008,3 +1008,47 @@ def test_sin_mejoras_no_exige_formato():
     an, mazo, base = _mazo_y_analisis_minimo()
     del base["formato"]
     assert an.validar(mazo, base, None, None) == []
+
+
+# ---------------------------------------------------------------- mulligan y tierras
+
+def test_mulligan_valida_y_calcula():
+    an, mazo, base = _mazo_y_analisis_minimo()
+    hechizo = next(c for c in mazo.principal if not c.es_tierra)
+    base["mulligan"] = {"quedarse": ["2-4 tierras"], "mulligan": ["0-1 tierras"],
+                        "tierras": [2, 4],
+                        "claves": [{"nombre": "La carta", "cartas": [hechizo.nombre]}]}
+    assert an.validar(mazo, base, None, None) == []
+    st = an.documento(mazo, base)["mulligan"]["estadisticas"]
+    assert abs(sum(st["dist7"]) - 1) < 1e-3
+    assert 0 < st["en_rango_7"] <= 1 and 0 < st["en_rango_6"] <= 1
+    assert st["claves"][0]["copias"] == hechizo.copias
+    assert "Mulligan" in chuleta.render(an.documento(mazo, base))
+
+
+def test_mulligan_incompleto_no_pasa():
+    an, mazo, base = _mazo_y_analisis_minimo()
+    base["mulligan"] = {"quedarse": [], "mulligan": ["x"], "tierras": [5, 2],
+                        "claves": [{"nombre": "Fantasma", "cartas": ["Carta Que No Está"]}]}
+    errores = " | ".join(an.validar(mazo, base, None, None))
+    for trozo in ("'quedarse'", "'tierras'", "no está en el mazo principal"):
+        assert trozo in errores, trozo
+
+
+def test_tierras_cubre_todas_y_cita_literal():
+    an, mazo, base = _mazo_y_analisis_minimo()
+    tierras = [c for c in mazo.principal if c.es_tierra]
+    if not tierras:
+        pytest.skip("el mazo de prueba no tiene tierras")
+    base["tierras"] = {"detalle": {tierras[0].nombre: {"que_hace": "x", "como_jugarla": "y",
+                                                       "citas": [{"carta": tierras[0].nombre,
+                                                                  "texto": "esto no lo dice ninguna carta"}]}}}
+    errores = " | ".join(an.validar(mazo, base, None, None))
+    assert "no aparece literal" in errores
+    if len({c.nombre for c in tierras}) > 1:
+        assert "falta explicar" in errores
+    base["tierras"]["detalle"] = {c.nombre: {"que_hace": "x", "como_jugarla": "y"} for c in tierras}
+    assert an.validar(mazo, base, None, None) == []
+    doc = an.documento(mazo, base)
+    assert len(doc["tierras_guia"]["detalle"]) == len(tierras)
+    assert "Las tierras" in guia.render(doc) and "Tierras" in chuleta.render(doc)

@@ -82,6 +82,16 @@ una fuente. Como mucho cinco; si no hay ninguna clara, no sale el apartado.
 
 ![Guía de sinergias](docs/capturas/guia.png)
 
+### Mulligan y tierras
+
+La guía y la cara 2 de la chuleta incluyen, si el análisis los trae:
+
+- **Mulligan:** qué manos quedarse y cuáles devolver según el experto, y qué mandar al
+  fondo tras un mulligan. La forja añade las probabilidades exactas de la mano inicial
+  (cuántas tierras, y si verás las cartas clave), calculadas sobre la lista.
+- **Las tierras:** qué hace cada tierra del mazo, cómo jugarla bien y en qué orden
+  bajarlas. El validador exige que estén explicadas todas.
+
 ### La chuleta
 
 Dos caras A4 densas, sin literatura, para imprimir y tener al lado mientras juegas.

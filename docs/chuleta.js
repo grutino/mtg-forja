@@ -54,6 +54,22 @@ p{margin:0}
 .ob i{display:block;font-style:normal;font-family:var(--cond);font-weight:700;font-size:6.4pt;
  color:var(--brasa);letter-spacing:.06em}
 .ob em{font-style:normal;display:block;font-size:6.8pt}
+.mull{display:flex;gap:5mm;margin-top:3px}
+.mull>div{flex:1;min-width:0;padding:4px 7px 5px;border:.8pt solid var(--lin);border-top-width:2.4pt}
+.mull .si{border-top-color:#3E6B3A}.mull .no{border-top-color:var(--brasa)}
+.mull h3{margin:0 0 3px;font-family:var(--cond);font-size:6.8pt;text-transform:uppercase;
+ letter-spacing:.14em}
+.mull .si h3{color:#3E6B3A}.mull .no h3{color:var(--brasa)}
+.mull ul{margin:0;padding-left:11px}.mull li{font-size:7.6pt;line-height:1.28;margin-bottom:2px}
+.prob{display:flex;gap:6mm;align-items:flex-end;margin-top:6px}
+.barras{display:flex;gap:2px;align-items:flex-end;height:40px}
+.barras span{width:17px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+ height:100%;font-family:var(--cond);font-size:5.6pt;color:var(--humo)}
+.barras b{display:block;width:100%;background:var(--lin);border-radius:1px 1px 0 0}
+.barras .ok b{background:#3E6B3A}.barras .ok{color:var(--tinta);font-weight:700}
+.barras i{font-style:normal;margin-top:2px}
+.cifras{flex:1;font-size:7.4pt;line-height:1.35}
+.cifras b{font-family:var(--cond);font-size:8.6pt}
 .pie{margin-top:auto;padding-top:5px;border-top:1pt solid var(--tinta);display:flex;
  justify-content:space-between;font-family:var(--cond);font-size:5.8pt;text-transform:uppercase;
  letter-spacing:.1em;color:var(--humo)}
@@ -92,12 +108,56 @@ p{margin:0}
     const reglas = (doc.reglas_oro || []).map((r, i) =>
       `<p class="x" style="margin-bottom:4px"><b>${i + 1}.</b> ${typeof r === "string" ? r : (r.texto || "")}</p>`).join("");
 
+    const m = doc.mulligan;
+    let mull = "";
+    if (m) {
+      const items = (l) => (l || []).map((it) =>
+        `<li>${typeof it === "string" ? it : (it.texto || "")}</li>`).join("");
+      const st = m.estadisticas || {};
+      const [lo, hi] = m.tierras || [-1, -1];
+      const max = Math.max(...(st.dist7 || [1]));
+      const barras = (st.dist7 || []).map((p, k) =>
+        `<span class="${k >= lo && k <= hi ? "ok" : ""}">${Math.round(p * 100)}%` +
+        `<b style="height:${Math.round(28 * p / max)}px"></b><i>${k}</i></span>`).join("");
+      const pct = (p) => `<b>${Math.round(p * 100)} %</b>`;
+      const cifras = [];
+      if (st.en_rango_7 !== undefined) {
+        cifras.push(`Mano de 7 con ${lo}–${hi} tierras: ${pct(st.en_rango_7)}`);
+        cifras.push(`Tras mulligan a 6 (robas 7, una al fondo): ${pct(st.en_rango_6)}`);
+      }
+      for (const k of st.claves || []) {
+        cifras.push(`${C.e(k.nombre)} (${k.copias} cartas) en la mano de 7: ${pct(k.p7)}`);
+      }
+      mull = '<h2 style="margin-top:12px">Mulligan</h2>' +
+        (m.resumen ? `<p class="x">${m.resumen}</p>` : "") +
+        `<div class="mull"><div class="si"><h3>Quédate</h3><ul>${items(m.quedarse)}</ul></div>` +
+        `<div class="no"><h3>Mulligan</h3><ul>${items(m.mulligan)}</ul></div></div>` +
+        (barras ? `<div class="prob"><div><div class="barras">${barras}</div>` +
+          `<p class="sub" style="margin-top:3px">Tierras en la mano de 7 · ${st.tierras} de ${st.cartas}</p></div>` +
+          `<div class="cifras">${cifras.map((c) => `<p>${c}</p>`).join("")}</div></div>` : "") +
+        (m.tras_mulligan ? `<p class="o" style="margin-top:6px"><b>Si haces mulligan:</b> ${m.tras_mulligan}</p>` : "");
+    }
+
+    let tierras = "";
+    if (doc.tierras_guia) {
+      const t = doc.tierras_guia;
+      tierras = '<h2 style="margin-top:12px">Tierras</h2>' +
+        ((t.secuencia || []).length ? '<p class="x" style="margin-bottom:5px"><b>Orden:</b> ' +
+          t.secuencia.join(" · ") + "</p>" : "") +
+        '<div class="cols">' + (t.detalle || []).map((d) =>
+          `<div class="r"><div class="ts">${mini(d.nombre, d.copias)}</div><div class="d">` +
+          `<p class="h">${C.e(d.nombre)}</p><p class="x">${d.como_jugarla}</p></div></div>`).join("") +
+        "</div>";
+    }
+
     let cara2 = "";
-    if (orden || reglas) {
+    if (orden || reglas || mull || tierras) {
       cara2 = `<div class="hoja">
-<div class="cab"><div><h1>Orden <em>· y reglas</em></h1>
-<p class="sub">La secuencia por defecto y los principios que no cambian</p></div></div>
+<div class="cab"><div><h1>Orden <em>· mulligan, tierras y reglas</em></h1>
+<p class="sub">La secuencia por defecto, qué mano jugar, cómo usar cada tierra y los principios que no cambian</p></div></div>
 ${orden ? '<h2>Orden de aparición</h2><div class="orden">' + orden + "</div>" : ""}
+${mull}
+${tierras}
 ${reglas ? '<h2 style="margin-top:12px">Reglas de oro</h2><div class="cols">' + reglas + "</div>" : ""}
 <div class="pie"><span>Cara 2 · secuencia</span><span>${C.firma(doc)} · MTG Forja</span></div></div>`;
     }
