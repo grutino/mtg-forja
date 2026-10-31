@@ -1,0 +1,28 @@
+Deck
+16 Mountain (KTK) 256
+4 Riverpyre Verge (DFT) 260
+2 Fountainport (BLB) 253
+2 Petrified Hamlet (SOS) 259
+3 Chandra, Torch of Defiance (FRA) 244
+2 Ajani Unrelenting (FRA) 242
+3 Ugin, Eye of the Storms (TDM) 1
+3 Magda, the Hoardmaster (OTJ) 133
+3 Ashling, Rekindled (ECL) 124
+3 Smaug the Magnificent (HOB) 110
+2 Emrakul, the Exigent Doom (FRA) 1
+4 Burst Lightning (FDN) 192
+2 Lightning Strike (MSH) 142
+2 Sear (ECL) 154
+2 Way of the Pyromancer (FRA) 254
+3 The Misty Mountains Cold (HOB) 104
+3 Tablet of Discovery (SOS) 132
+1 Improvisation Capstone (SOS) 120
+
+Sideboard
+3 Ghost Vacuum (DSK) 248
+3 Abrade (FDN) 188
+2 Hexing Squelcher (ECL) 145
+4 Avengers Disassembled (MSH) 124
+1 Sear (ECL) 154
+1 Chandra, Torch of Defiance (FRA) 244
+1 Sire of Seven Deaths (FDN) 1
