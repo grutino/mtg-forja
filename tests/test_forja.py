@@ -1080,3 +1080,18 @@ def test_exportar_para_arena_respeta_codigos_de_la_lista():
     m2 = scryfall.resolver(con_codigo, "x")
     if m2.cartas and m2.cartas[0].resuelta:
         assert "(M10) 146" in arena.exportar(m2, con_codigo)
+
+
+def test_html_unico_con_pestanas():
+    from mtg_forja.render import todo
+    an, mazo, base = _mazo_y_analisis_minimo()
+    doc = an.documento(mazo, base)
+    doc["arena"] = "Deck\n1 Algo\n"
+    html = todo.render(doc)
+    for k in ("guia", "chuleta", "mapa", "arena"):
+        assert f'id="b-{k}"' in html
+    for k in ("guia", "chuleta", "mapa"):
+        assert f'id="d-{k}"' in html
+    # ningún documento embebido puede cerrar el <script> que lo contiene
+    cuerpo = html.split('id="d-guia">', 1)[1].split("</script>", 1)[0]
+    assert "<" not in cuerpo

@@ -33,6 +33,8 @@ from .render import chuleta as r_chuleta
 from .render import guia as r_guia
 from .render import incrustar as r_incrustar
 from .render import mapa as r_mapa
+from .render import todo as r_todo
+from .cli import archivo_unico
 
 try:  # los SDK que la aceptan la anuncian en el handshake como serverInfo.version
     mcp = _Servidor("mtg-forja", version=__version__)
@@ -153,9 +155,10 @@ def validar_analisis(lista: str, analisis: str, nombre: str = "Mazo") -> str:
 
 @mcp.tool()
 def forjar(lista: str, analisis: str, nombre: str = "Mazo", ruta: str = "",
-           incrustar_imagenes: bool = False) -> str:
-    """Valida el análisis del experto y, si cuadra, genera guía, chuleta, mapa y el
-    mazo para importar en MTG Arena (campo `arena` de la respuesta y `arena.txt`).
+           incrustar_imagenes: bool = False, separados: bool = False) -> str:
+    """Valida el análisis del experto y, si cuadra, genera un solo HTML con pestañas
+    (guía, chuleta, mapa y Arena) y el mazo para importar en MTG Arena (campo `arena`
+    de la respuesta y `arena.txt`). Con `separados`, también los tres HTML sueltos.
 
     Si hay problemas no se escribe ningún archivo y se devuelven. Con
     `incrustar_imagenes` las cartas van dentro del HTML (para visores que
@@ -168,10 +171,13 @@ def forjar(lista: str, analisis: str, nombre: str = "Mazo", ruta: str = "",
         return _json({"forjado": False, "problemas": errores})
     doc = an.documento(mazo, datos)
     doc["arena"] = arena.exportar(mazo, lista)
-    htmls = {"guia.html": r_guia.render(doc), "chuleta.html": r_chuleta.render(doc),
-             "mapa.html": r_mapa.render(doc)}
-    if incrustar_imagenes:
-        htmls = r_incrustar.incrustar_documentos(htmls, doc)
+    htmls = {archivo_unico(doc): r_todo.render(doc, incrustar_imagenes)}
+    if separados:
+        sueltos = {"guia.html": r_guia.render(doc), "chuleta.html": r_chuleta.render(doc),
+                   "mapa.html": r_mapa.render(doc)}
+        if incrustar_imagenes:
+            sueltos = r_incrustar.incrustar_documentos(sueltos, doc)
+        htmls.update(sueltos)
     base = Path(ruta) if ruta else SALIDA
     base.mkdir(parents=True, exist_ok=True)
     rutas = {}

@@ -159,7 +159,7 @@ def test_el_cli_no_forja_un_analisis_invalido(tmp_path, monkeypatch):
     assert cli.main(["forjar", str(lista), "-a", str(tmp_path / "b.json"),
                      "-o", str(salida)]) == 0
     assert {p.name for p in salida.iterdir()} == {
-        "guia.html", "chuleta.html", "mapa.html", "documento.json", "arena.txt"}
+        "prueba.html", "documento.json", "arena.txt"}
 
 
 def test_el_cli_viejo_explica_el_cambio(tmp_path, capsys):

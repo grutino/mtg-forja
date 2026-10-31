@@ -62,6 +62,17 @@ new MutationObserver(ms=>ms.forEach(m=>{if(m.type==='attributes')fija(m.target);
 document.addEventListener('DOMContentLoaded',()=>barre(document.documentElement));})();</script>"""
 
 
+# Para los documentos que viajan dentro del HTML único: las imágenes están una sola
+# vez, en la página que los contiene, y cada documento las lee de ahí.
+PARCHE_HIJO = PARCHE.replace("const M=%s;", "const M=(window.parent&&window.parent.FORJA_IMG)||{};")
+
+
+def incrustar_hijo(html: str) -> str:
+    if re.search(r"<head[^>]*>", html):
+        return re.sub(r"<head[^>]*>", lambda m: m.group(0) + PARCHE_HIJO, html, count=1)
+    return PARCHE_HIJO + html
+
+
 def incrustar(html: str, mapa: dict[str, str]) -> str:
     """Inserta el parche al principio de <head>, antes de que se pinte nada."""
     if not mapa:

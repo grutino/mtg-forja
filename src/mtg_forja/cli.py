@@ -27,6 +27,7 @@ from .render import chuleta as r_chuleta
 from .render import guia as r_guia
 from .render import incrustar as r_incrustar
 from .render import mapa as r_mapa
+from .render import todo as r_todo
 
 ORDENES = ("datos", "forjar")
 
@@ -47,6 +48,11 @@ def _resolver(ruta: str, nombre: str, texto: str | None = None):
               file=sys.stderr)
         return None
     return mazo
+
+
+def archivo_unico(doc) -> str:
+    """Nombre del HTML único: el del mazo, en minúsculas y con guiones."""
+    return (scryfall._slug(doc.get("titulo") or "mazo") or "mazo") + ".html"
 
 
 def _datos(args) -> int:
@@ -78,13 +84,14 @@ def _forjar(args) -> int:
         return 2
     doc = an.documento(mazo, analisis)
     doc["arena"] = arena.exportar(mazo, texto)
-    htmls = {
-        "guia.html": r_guia.render(doc),
-        "chuleta.html": r_chuleta.render(doc),
-        "mapa.html": r_mapa.render(doc),
-    }
-    if args.incrustar_imagenes:
-        htmls = r_incrustar.incrustar_documentos(htmls, doc)
+    # Un solo HTML con todo; los tres documentos sueltos, solo si se piden.
+    htmls = {archivo_unico(doc): r_todo.render(doc, args.incrustar_imagenes)}
+    if args.separados:
+        sueltos = {"guia.html": r_guia.render(doc), "chuleta.html": r_chuleta.render(doc),
+                   "mapa.html": r_mapa.render(doc)}
+        if args.incrustar_imagenes:
+            sueltos = r_incrustar.incrustar_documentos(sueltos, doc)
+        htmls.update(sueltos)
     destino = Path(args.salida)
     destino.mkdir(parents=True, exist_ok=True)
     for nombre, html in htmls.items():
@@ -95,7 +102,7 @@ def _forjar(args) -> int:
     rev = doc["revision_experta"]
     print(f"{mazo.total} cartas · {len(doc['sinergias'])} jugadas · "
           f"{doc['forjado']['citas_verificadas']} citas verificadas · "
-          f"revisado por {rev.get('revisor')} · {destino.resolve()}")
+          f"revisado por {rev.get('revisor')} · {(destino / archivo_unico(doc)).resolve()}")
     print("\nPara importar en MTG Arena (Mazos → Importar):\n")
     print(doc["arena"])
     return 0
@@ -123,6 +130,8 @@ def main(argv: list[str] | None = None) -> int:
         q.add_argument("-n", "--nombre", default="Mazo", help="nombre del mazo")
         q.add_argument("-o", "--salida", default="salida", help="carpeta de destino")
     f.add_argument("-a", "--analisis", required=True, help="análisis del experto en JSON")
+    f.add_argument("--separados", action="store_true",
+                   help="generar también guia.html, chuleta.html y mapa.html sueltos")
     f.add_argument("--incrustar-imagenes", action="store_true",
                    help="meter las imágenes dentro del HTML (para visores que bloquean la red)")
 

@@ -138,6 +138,9 @@ Lo que comprueba el validador:
 `tipo`: `sinergia`, `conflicto` o `aviso`. `fuerza`: 1 a 3. `turno`: `T2`, `Tarde`,
 `Reacción`, `Ojo`. Puedes usar `<b>` en `resumen`, `pasos`, `aviso`, `veredicto` y `texto`.
 
+**Un solo HTML.** `forjar` deja un único archivo con pestañas (guía, chuleta, mapa y
+Arena). Entrégale ese archivo al usuario; los tres sueltos solo se generan con `separados`.
+
 **El mazo para Arena.** Cada forja genera también `arena.txt` (y el campo `arena` de la
 respuesta del servidor): la lista con edición y número de colección, lista para pegar en
 Arena. Respeta los códigos de la lista original y, si faltan, busca una impresión que exista

@@ -40,6 +40,11 @@ describe esa versión antigua.
 
 ## Qué genera
 
+Un solo archivo HTML por mazo, con cuatro pestañas: **Guía**, **Chuleta** (con botón para
+imprimirla), **Mapa** y **Arena** (la lista para importar, con botón de copiar). Con
+`--incrustar-imagenes`, las imágenes de las cartas van una sola vez dentro del archivo y
+las tres pestañas las comparten.
+
 Pegas una lista de mazo y salen tres documentos HTML autónomos. Estas capturas son
 salida real del mazo de ejemplo: 45 cartas y 39 sinergias detectadas.
 
@@ -315,8 +320,9 @@ mtg-forja datos  mazo.txt -o salida                         # hechos para el exp
 mtg-forja forjar mazo.txt -a analisis.json -o salida        # documentos del análisis
 ```
 
-`forjar` genera `salida/guia.html`, `salida/chuleta.html`, `salida/mapa.html` y
-`salida/documento.json`, solo si el análisis pasa la validación.
+`forjar` genera **un solo HTML** con pestañas (guía, chuleta, mapa y Arena), con el
+nombre del mazo, más `arena.txt` y `documento.json`, solo si el análisis pasa la
+validación. Con `--separados` deja además `guia.html`, `chuleta.html` y `mapa.html` sueltos.
 
 ---
 
