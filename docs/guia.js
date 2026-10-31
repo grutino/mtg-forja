@@ -101,6 +101,11 @@ ol.fuentes{font-size:13px;padding-left:22px}ol.fuentes a{color:var(--brasa)}
 .tierra .k{font-family:var(--cond);text-transform:uppercase;letter-spacing:.1em;font-size:11px;
  color:var(--humo);margin-right:6px}
 .porque{margin:8px 0 0;font-size:14.5px;line-height:1.5;max-width:75ch}
+.arena{background:var(--papel);border:1px solid var(--lin);padding:14px 18px;margin-top:12px;
+ font-size:13px;line-height:1.45;white-space:pre-wrap;overflow-x:auto}
+.copiar{margin-top:16px;font-family:var(--cond);text-transform:uppercase;letter-spacing:.1em;
+ font-size:12px;padding:7px 14px;border:1px solid var(--tinta);background:var(--tinta);color:var(--papel);
+ cursor:pointer}
 .plan{margin-top:20px}.plan h3{margin:0 0 4px;font-size:18px}.plan p{margin:0;max-width:75ch}
 footer{margin-top:52px;padding-top:18px;border-top:2px solid var(--tinta);font-size:12.5px;
  color:var(--humo);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
@@ -302,6 +307,14 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
     partes.push('<section class="seccion"><p class="eyebrow">Referencia</p>' +
       "<h2>El mazo completo</h2>" + rejillas + "</section>");
 
+    if (doc.arena) {
+      partes.push('<section class="seccion"><p class="eyebrow">Para jugarlo</p><h2>El mazo para Arena</h2>' +
+        '<p class="intro">Copia la lista y pégala en MTG Arena: Mazos → Importar.</p>' +
+        '<button type="button" class="copiar" onclick="navigator.clipboard &amp;&amp; ' +
+        'navigator.clipboard.writeText(document.getElementById(\'arena-txt\').textContent)' +
+        '.then(()=>{this.textContent=\'Copiado\'})">Copiar lista</button>' +
+        `<pre id="arena-txt" class="arena">${C.e(doc.arena)}</pre></section>`);
+    }
     const fuentesHtml = (doc.fuentes || []).length
       ? '<section class="seccion"><p class="eyebrow">De dónde sale</p><h2>Fuentes</h2>' +
         '<ol class="fuentes">' + doc.fuentes.map((f) =>

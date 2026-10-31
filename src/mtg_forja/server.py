@@ -26,6 +26,7 @@ except ImportError:  # SDK de MCP 1.x
 
 from . import __version__
 from . import analisis as an
+from . import arena
 from . import combos
 from . import scryfall
 from .render import chuleta as r_chuleta
@@ -153,7 +154,8 @@ def validar_analisis(lista: str, analisis: str, nombre: str = "Mazo") -> str:
 @mcp.tool()
 def forjar(lista: str, analisis: str, nombre: str = "Mazo", ruta: str = "",
            incrustar_imagenes: bool = False) -> str:
-    """Valida el análisis del experto y, si cuadra, genera guía, chuleta y mapa.
+    """Valida el análisis del experto y, si cuadra, genera guía, chuleta, mapa y el
+    mazo para importar en MTG Arena (campo `arena` de la respuesta y `arena.txt`).
 
     Si hay problemas no se escribe ningún archivo y se devuelven. Con
     `incrustar_imagenes` las cartas van dentro del HTML (para visores que
@@ -165,6 +167,7 @@ def forjar(lista: str, analisis: str, nombre: str = "Mazo", ruta: str = "",
     if errores:
         return _json({"forjado": False, "problemas": errores})
     doc = an.documento(mazo, datos)
+    doc["arena"] = arena.exportar(mazo, lista)
     htmls = {"guia.html": r_guia.render(doc), "chuleta.html": r_chuleta.render(doc),
              "mapa.html": r_mapa.render(doc)}
     if incrustar_imagenes:
@@ -176,7 +179,9 @@ def forjar(lista: str, analisis: str, nombre: str = "Mazo", ruta: str = "",
         (base / n).write_text(h, encoding="utf-8")
         rutas[n] = str((base / n).resolve())
     (base / "documento.json").write_text(_json(doc), encoding="utf-8")
-    return _json({"forjado": True, "jugadas": len(doc["sinergias"]),
+    (base / "arena.txt").write_text(doc["arena"], encoding="utf-8")
+    rutas["arena.txt"] = str((base / "arena.txt").resolve())
+    return _json({"forjado": True, "arena": doc["arena"], "jugadas": len(doc["sinergias"]),
                   "citas_verificadas": doc["forjado"]["citas_verificadas"],
                   "revisor": doc["revision_experta"].get("revisor"), "archivos": rutas})
 

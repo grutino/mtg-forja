@@ -138,6 +138,12 @@ Lo que comprueba el validador:
 `tipo`: `sinergia`, `conflicto` o `aviso`. `fuerza`: 1 a 3. `turno`: `T2`, `Tarde`,
 `Reacción`, `Ojo`. Puedes usar `<b>` en `resumen`, `pasos`, `aviso`, `veredicto` y `texto`.
 
+**El mazo para Arena.** Cada forja genera también `arena.txt` (y el campo `arena` de la
+respuesta del servidor): la lista con edición y número de colección, lista para pegar en
+Arena. Respeta los códigos de la lista original y, si faltan, busca una impresión que exista
+en Arena. Después de forjar, entrégala siempre al usuario junto con los documentos; la guía
+la incluye al final con un botón de copiar.
+
 **La chuleta resume, la guía explica.** Todo lo que sale en la chuleta tiene que estar
 explicado a fondo en la guía. Por eso cada paso de `orden` y cada regla de `reglas_oro`
 llevan un `porque`: la chuleta enseña el resumen y la guía, el razonamiento. El validador

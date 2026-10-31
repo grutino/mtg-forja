@@ -1066,3 +1066,17 @@ def test_orden_y_reglas_exigen_el_porque_para_la_guia():
     assert an.validar(mazo, base, None, None) == []
     html = guia.render(an.documento(mazo, base))
     assert "explicado" in html and "explicada" in html
+
+
+def test_exportar_para_arena_respeta_codigos_de_la_lista():
+    from mtg_forja import arena
+    lista = LISTA
+    mazo = scryfall.resolver(lista, "Prueba")
+    texto = arena.exportar(mazo, lista)
+    assert texto.startswith("Deck\n")
+    principal = [l for l in texto.split("\n\nSideboard")[0].splitlines()[1:] if l]
+    assert sum(int(l.split()[0]) for l in principal) == mazo.total
+    con_codigo = "4 Lightning Bolt (M10) 146\n"
+    m2 = scryfall.resolver(con_codigo, "x")
+    if m2.cartas and m2.cartas[0].resuelta:
+        assert "(M10) 146" in arena.exportar(m2, con_codigo)

@@ -82,6 +82,12 @@ una fuente. Como mucho cinco; si no hay ninguna clara, no sale el apartado.
 
 ![Guía de sinergias](docs/capturas/guia.png)
 
+### El mazo para Arena
+
+Cada vez que se forja un mazo, la forja deja también `arena.txt`: la lista en el formato
+de importación de MTG Arena, con edición y número de colección. La guía la incluye al
+final, con un botón para copiarla, y la línea de comandos la imprime al terminar.
+
 ### La chuleta resume, la guía explica
 
 Todo lo que aparece en la chuleta está explicado a fondo en la guía: cada paso del orden

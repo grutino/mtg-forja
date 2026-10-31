@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 from . import analisis as an
+from . import arena
 from . import scryfall
 from .render import chuleta as r_chuleta
 from .render import guia as r_guia
@@ -34,8 +35,8 @@ def _leer_lista(ruta: str) -> str:
     return sys.stdin.read() if ruta == "-" else Path(ruta).read_text(encoding="utf-8")
 
 
-def _resolver(ruta: str, nombre: str):
-    mazo = scryfall.resolver(_leer_lista(ruta), nombre)
+def _resolver(ruta: str, nombre: str, texto: str | None = None):
+    mazo = scryfall.resolver(texto if texto is not None else _leer_lista(ruta), nombre)
     if not mazo.cartas:
         print("No se ha reconocido ninguna carta en la lista.", file=sys.stderr)
         return None
@@ -64,7 +65,8 @@ def _datos(args) -> int:
 
 
 def _forjar(args) -> int:
-    mazo = _resolver(args.lista, args.nombre)
+    texto = _leer_lista(args.lista)
+    mazo = _resolver(args.lista, args.nombre, texto)
     if mazo is None:
         return 1
     analisis = json.loads(Path(args.analisis).read_text(encoding="utf-8"))
@@ -75,6 +77,7 @@ def _forjar(args) -> int:
             print("  · " + e, file=sys.stderr)
         return 2
     doc = an.documento(mazo, analisis)
+    doc["arena"] = arena.exportar(mazo, texto)
     htmls = {
         "guia.html": r_guia.render(doc),
         "chuleta.html": r_chuleta.render(doc),
@@ -88,10 +91,13 @@ def _forjar(args) -> int:
         (destino / nombre).write_text(html, encoding="utf-8")
     (destino / "documento.json").write_text(json.dumps(doc, ensure_ascii=False, indent=2),
                                             encoding="utf-8")
+    (destino / "arena.txt").write_text(doc["arena"], encoding="utf-8")
     rev = doc["revision_experta"]
     print(f"{mazo.total} cartas · {len(doc['sinergias'])} jugadas · "
           f"{doc['forjado']['citas_verificadas']} citas verificadas · "
           f"revisado por {rev.get('revisor')} · {destino.resolve()}")
+    print("\nPara importar en MTG Arena (Mazos → Importar):\n")
+    print(doc["arena"])
     return 0
 
 
