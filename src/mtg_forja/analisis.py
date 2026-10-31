@@ -225,6 +225,16 @@ def validar(mazo: Mazo, analisis: dict[str, Any],
     for i, o in enumerate(analisis.get("orden", [])):
         if o.get("carta") and carta(o["carta"]) is None:
             errores.append(f"orden[{i}]: «{o['carta']}» no está en el mazo.")
+        # La chuleta enseña el resumen; la guía tiene que explicar el porqué.
+        if not str(o.get("porque", "")).strip():
+            errores.append(f"orden[{i}] «{o.get('carta', '')}»: falta 'porque' (la guía explica "
+                           "cada paso de la secuencia).")
+
+    # --- reglas de oro: el texto va a la chuleta, el porqué a la guía
+    for i, r in enumerate(analisis.get("reglas_oro", [])):
+        if not isinstance(r, dict) or not str(r.get("texto", "")).strip() \
+                or not str(r.get("porque", "")).strip():
+            errores.append(f"reglas_oro[{i}]: debe ser {{texto, porque}}; la guía explica cada regla.")
 
     # --- mulligan
     principal = {c.nombre.lower() for c in mazo.principal}

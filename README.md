@@ -82,6 +82,11 @@ una fuente. Como mucho cinco; si no hay ninguna clara, no sale el apartado.
 
 ![Guía de sinergias](docs/capturas/guia.png)
 
+### La chuleta resume, la guía explica
+
+Todo lo que aparece en la chuleta está explicado a fondo en la guía: cada paso del orden
+de juego y cada regla de oro llevan su porqué, y la forja no genera nada sin él.
+
 ### Mulligan y tierras
 
 La guía y la cara 2 de la chuleta incluyen, si el análisis los trae:

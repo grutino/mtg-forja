@@ -489,36 +489,59 @@
     {
       "turno": "T1",
       "carta": "Llanowar Elves",
-      "resumen": "O Crafter. Si tienes ambos, el elfo primero. Training Compound o un Forest para pagarlo."
+      "resumen": "O Crafter. Si tienes ambos, el elfo primero. Training Compound o un Forest para pagarlo.",
+      "porque": "El elfo primero porque en el turno 2 te deja 3 manás para Tethermage. Para pagarlo necesitas verde en el turno 1: Forest, Training Compound (que el turno que entra da color) o Stomping Ground pagando 2 vidas."
     },
     {
       "turno": "T2",
       "carta": "Tenured Tethermage",
-      "resumen": "Sacrifica una tierra, nunca tu única básica."
+      "resumen": "Sacrifica una tierra, nunca tu única básica.",
+      "porque": "Tethermage cambia una tierra por dos Heartwood. Nunca sacrifiques tu única básica: Training Compound solo da color si controlas una."
     },
     {
       "turno": "T3",
       "carta": "Smaug the Magnificent",
-      "resumen": "Ataca ya. O Aerid si no tienes RR; o la activación de Emrakul."
+      "resumen": "Ataca ya. O Aerid si no tienes RR; o la activación de Emrakul.",
+      "porque": "Smaug tiene prisa: ataca el turno que entra y desde el siguiente crea un Tesoro en cada mantenimiento. Si no tienes RR, Aerid hace un papel parecido; si no tienes ninguno, exiliar a Emrakul es rampa."
     },
     {
       "turno": "T4",
       "carta": "Ugin, Eye of the Storms",
-      "resumen": "Con el Tesoro de Smaug. Mejor con el maná del rival girado."
+      "resumen": "Con el Tesoro de Smaug. Mejor con el maná del rival girado.",
+      "porque": "El Tesoro de Smaug pone el séptimo maná. Ugin no tiene protección contra contrahechizos: mejor lanzarlo cuando el rival haya gastado su maná."
     },
     {
       "turno": "T5+",
       "carta": "Emrakul, the Exigent Doom",
-      "resumen": "Desde el exilio, con Cavern en Eldrazi; usa las tierras destapadas."
+      "resumen": "Desde el exilio, con Cavern en Eldrazi; usa las tierras destapadas.",
+      "porque": "Con Cavern nombrando Eldrazi, Emrakul no se puede contrarrestar. Al lanzarla se destapan tus tierras para lanzar algo más ese mismo turno."
     }
   ],
   "reglas_oro": [
-    "Cavern se nombra al jugarla: Eldrazi con Emrakul en la mano, Dragon con Smaug.",
-    "Ugin no se protege con Cavern: lánzalo con el maná del rival girado.",
-    "Gasta los Tesoros de Smaug para llegar a Ugin o Emrakul; si no, guárdalos para su ataque.",
-    "Nunca sacrifiques a Tethermage tu única tierra básica.",
-    "Deja Burst o Sear abiertos en el turno rival en vez de lanzarlos en el tuyo.",
-    "El Fulcrum solo con la mesa perdida: también mata a Smaug y a Emrakul."
+    {
+      "texto": "Cavern se nombra al jugarla: Eldrazi con Emrakul en la mano, Dragon con Smaug.",
+      "porque": "El tipo se fija cuando la tierra entra y no se puede cambiar después. Mira tu mano antes de jugarla: Dragon además te da la R que falta para el RR de Smaug."
+    },
+    {
+      "texto": "Ugin no se protege con Cavern: lánzalo con el maná del rival girado.",
+      "porque": "Cavern solo protege hechizos de criatura y Ugin es un planeswalker. Si el rival no tiene maná libre, no puede contrarrestarlo. Y aunque lo contrarresten, su disparo al lanzarlo se resuelve."
+    },
+    {
+      "texto": "Gasta los Tesoros de Smaug para llegar a Ugin o Emrakul; si no, guárdalos para su ataque.",
+      "porque": "Smaug hace al atacar tanto daño como Tesoros tienes. Cada Tesoro gastado es un punto menos de daño: gástalos solo si te desbloquean una carta importante."
+    },
+    {
+      "texto": "Nunca sacrifiques a Tethermage tu única tierra básica.",
+      "porque": "Training Compound solo da R o G si controlas una tierra básica. Sin básicas, tus Compound pasan a dar solo incoloro."
+    },
+    {
+      "texto": "Deja Burst o Sear abiertos en el turno rival en vez de lanzarlos en el tuyo.",
+      "porque": "Son instantáneos. Si esperas al turno rival, eliges el objetivo cuando ya sabes qué ataca y qué baja, y en tu turno no gastas maná que te hace falta para tus amenazas."
+    },
+    {
+      "texto": "El Fulcrum solo con la mesa perdida: también mata a Smaug y a Emrakul.",
+      "porque": "Destruye todas las criaturas, las tuyas incluidas. Si tu mesa es mejor que la del rival, activarlo te hace perder más a ti."
+    }
   ],
   "mulligan": {
     "resumen": "Es una rampa: la mano tiene que acelerar desde el turno 1 o tener tierras de sobra con amenazas. Un elfo sin verde para pagarlo, o dos tierras sin elfo y todo caro, se quedan atrás.",

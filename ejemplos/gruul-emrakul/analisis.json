@@ -486,35 +486,55 @@
     {
       "turno": "T1",
       "carta": "Llanowar Elves",
-      "resumen": "O Crafter. Si tienes ambos, el elfo primero: acelera Tethermage."
+      "resumen": "O Crafter. Si tienes ambos, el elfo primero: acelera Tethermage.",
+      "porque": "El elfo primero porque solo cuesta un maná verde y en el turno 2 te deja 3 manás para Tethermage. Crafter primero te daría una Heartwood, pero su maná incoloro no paga a Tethermage desde la mano."
     },
     {
       "turno": "T2",
       "carta": "Tenured Tethermage",
-      "resumen": "Sacrifica una tierra básica por dos Heartwood."
+      "resumen": "Sacrifica una tierra básica por dos Heartwood.",
+      "porque": "Tethermage cambia una tierra por dos fichas Heartwood: pierdes un maná ese turno y ganas uno extra desde el siguiente. Sacrifica una básica de la que tengas repuesto."
     },
     {
       "turno": "T3",
       "carta": "Aerid Konstrari",
-      "resumen": "O la activación de Emrakul ({3}) si no tienes Aerid."
+      "resumen": "O la activación de Emrakul ({3}) si no tienes Aerid.",
+      "porque": "Aerid es un volador 5/4 que deja una Heartwood al entrar y otra al morir. Sin Aerid, exiliar a Emrakul por {3} también es rampa: una de tus tierras pasa a dar dos."
     },
     {
       "turno": "T4-T5",
       "carta": "Ugin, Eye of the Storms",
-      "resumen": "Exilia lo peor del rival al lanzarlo; luego +2."
+      "resumen": "Exilia lo peor del rival al lanzarlo; luego +2.",
+      "porque": "Al lanzar Ugin exilias el mejor permanente de color del rival, aunque luego le maten a Ugin. Después, su +2 te da vida y cartas mientras preparas a Emrakul."
     },
     {
       "turno": "T5+",
       "carta": "Emrakul, the Exigent Doom",
-      "resumen": "Desde el exilio, con Cavern si el rival tiene contrahechizos; usa las tierras destapadas."
+      "resumen": "Desde el exilio, con Cavern si el rival tiene contrahechizos; usa las tierras destapadas.",
+      "porque": "Desde el exilio, con la tierra doble y las Heartwood, llegas a los 10. Al lanzarla se destapan tus tierras: con ellas puedes bajar Ugin el mismo turno."
     }
   ],
   "reglas_oro": [
-    "El maná de Crafter solo paga lo que no viene de tu mano: Soul Tether, la activación de Emrakul y Emrakul desde el exilio.",
-    "Emrakul y el Fulcrum son incoloros: con Ugin en mesa, cada uno exilia algo.",
-    "Lanza Emrakul antes que Ugin si puedes: las tierras destapadas pagan a Ugin.",
-    "Cavern nombrando Eldrazi.",
-    "No actives el Fulcrum con Emrakul en mesa salvo que no haya otra salida."
+    {
+      "texto": "El maná de Crafter solo paga lo que no viene de tu mano: Soul Tether, la activación de Emrakul y Emrakul desde el exilio.",
+      "porque": "Su texto dice que ese maná no puede pagar hechizos desde la mano. Si cuentas con él para Ugin o una quema, te quedarás corto."
+    },
+    {
+      "texto": "Emrakul y el Fulcrum son incoloros: con Ugin en mesa, cada uno exilia algo.",
+      "porque": "Ugin exilia un permanente de color cada vez que lanzas un hechizo incoloro. El Fulcrum cuesta solo 2: con Ugin en mesa es una eliminación barata."
+    },
+    {
+      "texto": "Lanza Emrakul antes que Ugin si puedes: las tierras destapadas pagan a Ugin.",
+      "porque": "Emrakul destapa tus tierras al lanzarse. Si lanzas antes a Ugin, ese maná ya está gastado y Emrakul no te lo devuelve para nada útil."
+    },
+    {
+      "texto": "Cavern nombrando Eldrazi.",
+      "porque": "Emrakul es tu amenaza más cara y la que el rival querrá contrarrestar. Con el maná de Cavern nombrando Eldrazi no puede."
+    },
+    {
+      "texto": "No actives el Fulcrum con Emrakul en mesa salvo que no haya otra salida.",
+      "porque": "El Fulcrum destruye todas las criaturas, también a Emrakul. Solo compensa si la mesa del rival te va a ganar antes."
+    }
   ],
   "formato": "standard",
   "plataforma": "arena",

@@ -1052,3 +1052,17 @@ def test_tierras_cubre_todas_y_cita_literal():
     doc = an.documento(mazo, base)
     assert len(doc["tierras_guia"]["detalle"]) == len(tierras)
     assert "Las tierras" in guia.render(doc) and "Tierras" in chuleta.render(doc)
+
+
+def test_orden_y_reglas_exigen_el_porque_para_la_guia():
+    an, mazo, base = _mazo_y_analisis_minimo()
+    hechizo = next(c for c in mazo.principal if not c.es_tierra)
+    base["orden"] = [{"turno": "T1", "carta": hechizo.nombre, "resumen": "x"}]
+    base["reglas_oro"] = ["una regla sin explicar"]
+    errores = " | ".join(an.validar(mazo, base, None, None))
+    assert "falta 'porque'" in errores and "reglas_oro[0]" in errores
+    base["orden"][0]["porque"] = "explicado"
+    base["reglas_oro"] = [{"texto": "regla", "porque": "explicada"}]
+    assert an.validar(mazo, base, None, None) == []
+    html = guia.render(an.documento(mazo, base))
+    assert "explicado" in html and "explicada" in html

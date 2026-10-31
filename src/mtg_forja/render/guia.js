@@ -100,6 +100,7 @@ ol.fuentes{font-size:13px;padding-left:22px}ol.fuentes a{color:var(--brasa)}
 .tierra p{margin:0 0 8px;max-width:70ch}
 .tierra .k{font-family:var(--cond);text-transform:uppercase;letter-spacing:.1em;font-size:11px;
  color:var(--humo);margin-right:6px}
+.porque{margin:8px 0 0;font-size:14.5px;line-height:1.5;max-width:75ch}
 .plan{margin-top:20px}.plan h3{margin:0 0 4px;font-size:18px}.plan p{margin:0;max-width:75ch}
 footer{margin-top:52px;padding-top:18px;border-top:2px solid var(--tinta);font-size:12.5px;
  color:var(--humo);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
@@ -191,7 +192,9 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
     if ((doc.orden || []).length) {
       const filas = doc.orden.map((o) =>
         `<div class="combo"><div class="turno">${C.e(o.turno || "")}</div>` +
-        `<h3>${C.e(o.carta || "")}<span class="que">${o.resumen || o.que || ""}</span></h3></div>`).join("");
+        `<h3>${C.e(o.carta || "")}<span class="que">${o.resumen || o.que || ""}</span></h3>` +
+        `<div class="piezas">${ficha(idx[o.carta], o.carta)}</div>` +
+        (o.porque ? `<p class="porque">${o.porque}</p>` : "") + "</div>").join("");
       partes.push('<section class="seccion"><p class="eyebrow">Secuencia</p>' +
         "<h2>Orden de aparición</h2>" + filas + "</section>");
     }
@@ -224,6 +227,21 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
         (t.resumen ? `<p class="intro">${t.resumen}${C.refs(t.fuentes, doc)}</p>` : "") +
         sec + filas + "</section>");
     }
+    function barrasMull(m, st) {
+      if (!(st.dist7 || []).length) return "";
+      const [lo, hi] = m.tierras || [-1, -1];
+      const max = Math.max(...st.dist7);
+      const b = st.dist7.map((p, k) => {
+        const ok = k >= lo && k <= hi;
+        return `<span style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;` +
+          `width:34px;font-family:var(--cond);font-size:11px;color:${ok ? "var(--tinta)" : "var(--humo)"}">` +
+          `${Math.round(p * 100)}%<b style="display:block;width:24px;height:${Math.round(60 * p / max)}px;` +
+          `background:${ok ? "#3E6B3A" : "var(--lin)"};margin-top:2px"></b>${k}</span>`;
+      }).join("");
+      return `<div style="margin-top:16px"><div style="display:flex;gap:4px;align-items:flex-end;height:92px">${b}</div>` +
+        `<p style="margin:4px 0 0;font-size:12px;color:var(--humo)">Cuántas tierras trae la mano de 7 ` +
+        `(en verde, las que te quedas). Si la mano tiene menos o más, mira los criterios de arriba.</p></div>`;
+    }
     if (doc.mulligan) {
       const m = doc.mulligan, st = m.estadisticas || {};
       const li = (l) => (l || []).map((it) =>
@@ -240,6 +258,7 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
         '<div class="veredicto"><div class="cols">' +
         `<div><h4>Quédate</h4><ul>${li(m.quedarse)}</ul></div>` +
         `<div><h4>Mulligan</h4><ul>${li(m.mulligan)}</ul></div></div>` +
+        barrasMull(m, st) +
         (datos.length ? `<p style="margin:12px 0 0;font-size:13px;color:var(--humo)">${datos.join(" ")} ` +
           `Calculado con ${st.tierras} tierras en ${st.cartas} cartas.</p>` : "") +
         (m.tras_mulligan ? `<div class="ojo"><b>Si haces mulligan</b>${m.tras_mulligan}</div>` : "") +
@@ -276,7 +295,8 @@ footer span{font-family:var(--cond);letter-spacing:.06em;text-transform:uppercas
     if ((doc.reglas_oro || []).length) {
       partes.push('<section class="seccion"><p class="eyebrow">Para no olvidar</p>' +
         '<h2>Reglas de oro</h2><ol class="sec" style="margin-top:18px">' +
-        doc.reglas_oro.map((r) => `<li>${typeof r === "string" ? r : (r.texto || "")}</li>`).join("") +
+        doc.reglas_oro.map((r) => typeof r === "string" ? `<li>${r}</li>` :
+          `<li><b>${r.texto || ""}</b>${r.porque ? `<p class="porque">${r.porque}</p>` : ""}</li>`).join("") +
         "</ol></section>");
     }
     partes.push('<section class="seccion"><p class="eyebrow">Referencia</p>' +

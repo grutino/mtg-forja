@@ -518,36 +518,59 @@
     {
       "turno": "T1",
       "carta": "Burst Lightning",
-      "resumen": "Guárdala para la primera criatura del rival."
+      "resumen": "Guárdala para la primera criatura del rival.",
+      "porque": "Las chispas valen más contra las criaturas del rival que contra su cara al principio. Si la mesa está limpia, tu ficha de Jace y tus planeswalkers sobreviven. Con Magda en mesa, además da un Tesoro."
     },
     {
       "turno": "T2",
       "carta": "Way of the Pyromancer",
-      "resumen": "Prioridad máxima. Si no la tienes: Magda o Ashling."
+      "resumen": "Prioridad máxima. Si no la tienes: Magda o Ashling.",
+      "porque": "Way crea una ficha de Jace y da a todos tus planeswalkers «+1: Añade {R}». Desde el turno 3 cada planeswalker es un maná más: por eso es tu mejor jugada de 2. Sin ella, Magda y Ashling también te dan maná más adelante."
     },
     {
       "turno": "T3",
       "carta": "Chandra, Torch of Defiance",
-      "resumen": "Con el {R} de Jace. +1 ({R}{R}) si vas a por Ugin; −3 si hay una amenaza."
+      "resumen": "Con el {R} de Jace. +1 ({R}{R}) si vas a por Ugin; −3 si hay una amenaza.",
+      "porque": "Con el {R} de la ficha de Jace tienes 4 manás en el turno 3. Elige su +1 de {R}{R} si quieres Ugin en el turno 4, o su −3 si el rival tiene una criatura que va a por tus planeswalkers."
     },
     {
       "turno": "T4",
       "carta": "Ugin, Eye of the Storms",
-      "resumen": "Exilia lo mejor del rival al lanzarlo."
+      "resumen": "Exilia lo mejor del rival al lanzarlo.",
+      "porque": "4 tierras + el {R} de Jace + el {R}{R} de Chandra suman 7. Al lanzarse, Ugin exilia el mejor permanente de color del rival, aunque luego no sobreviva."
     },
     {
       "turno": "T5+",
       "carta": "Emrakul, the Exigent Doom",
-      "resumen": "Desde el exilio, con el 0 de Ugin y los Tesoros; o con Improvisation Capstone."
+      "resumen": "Desde el exilio, con el 0 de Ugin y los Tesoros; o con Improvisation Capstone.",
+      "porque": "Con la tierra doble de Emrakul, el {C}{C}{C} de Ugin y los Tesoros llegas a los 10. Si sale con Improvisation Capstone, entra gratis y se destapan tus tierras igual."
     }
   ],
   "reglas_oro": [
-    "Way of the Pyromancer en el turno 2 por encima de todo: cada planeswalker luego es un maná más.",
-    "El maná de los planeswalkers solo existe en tu fase principal: las chispas para el turno rival se pagan con tierras.",
-    "Primera chispa del turno al rival o a lo suyo con Magda en mesa: un Tesoro.",
-    "El +1 de Ajani, el último: así todos los Cadetes del turno atacan con prisa.",
-    "El −3 de Ajani mata a Magda, Ashling y Smaug: solo con mesa de fichas.",
-    "Exilia a Emrakul por {3} pronto: es rampa aunque nunca la lances."
+    {
+      "texto": "Way of the Pyromancer en el turno 2 por encima de todo: cada planeswalker luego es un maná más.",
+      "porque": "Sin Way, Chandra y Ugin llegan uno o dos turnos más tarde. Es la carta que hace funcionar el resto del mazo."
+    },
+    {
+      "texto": "El maná de los planeswalkers solo existe en tu fase principal: las chispas para el turno rival se pagan con tierras.",
+      "porque": "Las habilidades de lealtad no son habilidades de maná: solo se activan en tu fase principal. Si quieres responder en el turno rival, deja tierras sin girar."
+    },
+    {
+      "texto": "Primera chispa del turno al rival o a lo suyo con Magda en mesa: un Tesoro.",
+      "porque": "Apuntar al rival o a sus cartas es un delito, y Magda crea un Tesoro con el primer delito de cada turno. La segunda chispa del turno ya no da Tesoro."
+    },
+    {
+      "texto": "El +1 de Ajani, el último: así todos los Cadetes del turno atacan con prisa.",
+      "porque": "El +1 de Ajani da +1/+0 y prisa solo a las criaturas que ya están en mesa. Si activas antes los demás planeswalkers, sus Cadetes ya están ahí y también atacan."
+    },
+    {
+      "texto": "El −3 de Ajani mata a Magda, Ashling y Smaug: solo con mesa de fichas.",
+      "porque": "Hace 4 de daño a todas las criaturas menos a tus fichas. Si en tu mesa hay sobre todo Cadetes y dragones, barres al rival y tú no pierdes nada."
+    },
+    {
+      "texto": "Exilia a Emrakul por {3} pronto: es rampa aunque nunca la lances.",
+      "porque": "Una de tus tierras pasa a dar dos manás para siempre. Eso acelera Ugin, Ajani y Capstone aunque Emrakul no llegue a lanzarse."
+    }
   ],
   "mulligan": {
     "resumen": "El mazo necesita tierras pronto y una jugada barata que aguante los primeros turnos. Lo caro (Ugin, Ajani, Capstone) no salva una mano que no hace nada hasta el turno 4.",

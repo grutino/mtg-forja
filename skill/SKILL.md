@@ -91,8 +91,8 @@ de referencia), cítalos en `fuentes`.
               {"carta": "B", "texto": "…"}],
     "fuentes": []
   }],
-  "orden": [{"turno": "T2", "carta": "…", "resumen": "…"}],
-  "reglas_oro": ["…"],
+  "orden": [{"turno": "T2", "carta": "…", "resumen": "…", "porque": "…"}],
+  "reglas_oro": [{"texto": "…", "porque": "…"}],
   "formato": "standard",
   "plataforma": "arena",
   "mulligan": {
@@ -133,9 +133,15 @@ Lo que comprueba el validador:
 | Cada mejora lleva una cita literal (del mazo o de la carta que entra) o una fuente | El porqué se puede comprobar |
 | `mulligan`: `quedarse` y `mulligan` no vacíos, `tierras` entre 0 y 7, cartas nombradas en el mazo principal | La chuleta no promete manos imposibles |
 | `tierras`: todas las tierras del mazo principal explicadas, con `que_hace` y `como_jugarla` | Ninguna tierra queda sin explicar |
+| `porque` en cada paso de `orden` y en cada regla de `reglas_oro` | Lo que resume la chuleta, la guía lo explica |
 
 `tipo`: `sinergia`, `conflicto` o `aviso`. `fuerza`: 1 a 3. `turno`: `T2`, `Tarde`,
 `Reacción`, `Ojo`. Puedes usar `<b>` en `resumen`, `pasos`, `aviso`, `veredicto` y `texto`.
+
+**La chuleta resume, la guía explica.** Todo lo que sale en la chuleta tiene que estar
+explicado a fondo en la guía. Por eso cada paso de `orden` y cada regla de `reglas_oro`
+llevan un `porque`: la chuleta enseña el resumen y la guía, el razonamiento. El validador
+no deja forjar sin ellos.
 
 **Mulligan.** Sale en la cara 2 de la chuleta y en la guía. El criterio es tuyo: qué
 manos te quedas y cuáles devuelves, y qué mandar al fondo con 6 cartas. La forja añade
